@@ -63,8 +63,8 @@
     \underline{Observation} $A \wedge B \leq A, A \wedge B \leq B$. moreover if
     $C \leq A$ and $C \leq B$ then $C \leq A \wedge B$ (for all proprieties)
 
-    Which means that $A \wedge B$ define a infimum of $A$ and $B$ greatest lower
-    bound \underline{glb}
+    Which means that $A \wedge B$ define a infimum of $A$ and $B$ (greatest lower
+    bound, or \underline{glb})
 
   \define $A \Rightarrow B = (\neg A) \vee B = \neg (A \wedge \neg B)$.
 
@@ -74,7 +74,7 @@
     \item $A \wedge (A \Rightarrow B) \leq B$
     \item $A \vee \neg A \leq \text{true}$
     \item $A \wedge \neg A \geq \text{false}$
-  \end{itemize}\paragraph{Frege} : ideography (first proof system)
+  \end{itemize}\paragraph{Frege} Ideography (first proof system)
 
   The idea that a mathematical proof is a mathematical object. In particular
   there may be different proofs of a proposition $A$ formula.
@@ -101,7 +101,7 @@
   \end{center}
 
 
-  Lambek understood connection between.
+  Lambek understood connection between:
 
   \begin{center}
   \begin{tikzpicture}
@@ -128,34 +128,33 @@
   \ex $(\mathbb N, +, 0), (\mathbb Z, +, 0), (\mathbb N, \times, 1)$ and any
   group.
 
-  Free monoide on a set (=alphabet) $A$ $A^*$ contains finite sequences of
-  element $A$ $w = [a_1 \ldots a_n]$
+  Free monoid on a set (=alphabet) $A$. % todo: phrase qui veut rien dire ici
+  $A^*$ contains finite sequences of element $A$ $w = [a_1 \ldots a_n]$
 
   \begin{itemize}
-    \item multiplication is concatenation
-    \item neutral element is empty word
+    \item Binary operation is concatenation.
+    \item Neutral element is the empty word.
   \end{itemize}
 
   \section{Categories, functors, natural transformations}
 
   \define A category $\mathcal C$ is a \underline{graph}
     \begin{itemize}
-      \item whose node are called objects
-      \item whose edges are called morphism/maps/arrow.
+      \item Whose nodes are called objects
+      \item Whose edges are called morphism/maps/arrow.
     \end{itemize}
 
     The objects of $\mathcal C$ form a \underline{class} of objects.
-    Every pair of objects $A, B$
 
     Every pair of object $A,B$ comes with a set $Hom(A, B)$ of morphisms
-    $A \xrightarrow{f} B$, $f \in Home(A, B)$
+    $A \xrightarrow{f} B$, $f \in Hom(A, B)$
 
-    The graph is equipped with :
+    The graph is equipped with:
 
     \begin{itemize}
-      \item an morphisms $id_A \in Home(A, A)$ for all object $A$ of $\mathcal C$
-      \item a composition defined as a function $\circ_{A,B,C} : Hom(B, C)
-        \times Hom(A, B) \to Hom(A, C)$ for every objects $A,B,C$ of category
+      \item A morphism $id_A \in Hom(A, A)$ for all object $A$ of $\mathcal C$
+      \item A composition defined as a function $\circ_{A,B,C}: Hom(B, C)
+        \times Hom(A, B) \to Hom(A, C)$ for every objects $A,B,C$ of
         $\mathcal C$
 
         It satisfying the following equation :
@@ -209,17 +208,17 @@
 
   \ex
 
-  \underline{Ordered Set} : Claim every ordered set $A$ defines a category
+  \underline{Ordered Set}: Every ordered set $A$ defines a category.
     \begin{itemize}
-      \item object : elements of $A$
-      \item morphisms : $a \to b \Leftrightarrow a \leq b$
+      \item Objects: elements of $A$
+      \item Morphisms : $a \to b \Leftrightarrow a \leq b$
         \[ Hom(a, b) =
           \begin{cases}
             \text{singleton} & a \leq b \\
             \emptyset
           \end{cases} \]
 
-      The composition is defined by transitivity :
+      The composition is defined by transitivity:
 
         \begin{center}
           \begin{tikzpicture}
@@ -240,23 +239,27 @@
         \end{center}
     \end{itemize}
 
-    \define An order category $\mathcal C$ is a category when $Hom(A,B)$ is a
+    \define An ordered category $\mathcal C$ is a category where $Hom(A,B)$ is a
     singleton for all object $A, B $ of $\mathcal C$.
 
-    \obs an order category is the some thing as a pre-order ($=$ trans, refl).
+    \obs An ordered category is the same thing as a pre-order ($=$ trans, refl).
 
-    \ex \underline{monoid}
+    \ex \underline{Monoid}
     \begin{itemize}
-      \item A category with one object $*$, $M = Hom(*, *)$ defined a monoid
-
+      \item A category with one object $*$, $M = Hom(*, *)$ define a monoid.
         \begin{itemize}
           \item $\circ : Hom(*, *) \times Hom(*,*) \to Hom(*, *)$
-          \item $id_* \in M = Hom(*, *)$ defined the neutral element
+          \item $id_* \in M = Hom(*, *)$ define the neutral element
         \end{itemize}
-      \item Conversely every monoid $M = (M, \bullet, e)$ defined a category
-        $\mathcal B M$ or $\Sigma M$ with on object $*$ and $Hom(*, *) = M$
-        composition defined $y \circ x = y \bullet x$ $id_*$ defined the neutral
+      \item Conversely every monoid $M = (M, \bullet, e)$ defines a category
+        $\mathcal B M$ or $\Sigma M$ with:
+        \begin{itemize}
+          \item One object $*$
+          \item $Hom(*, *) = M$
+          \item Composition defined by $y \circ x = y \bullet x$ with $e$, the neutral
         element.
+
+        \end{itemize}
 
       \begin{center}
       \begin{tikzpicture}
