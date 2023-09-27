@@ -1,0 +1,72 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{braket}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={2cm, 2cm}]{geometry}
+\usepackage{hyperref}
+\usepackage{capt-of}
+
+\usepackage{tikz}
+\usetikzlibrary{angles,quotes}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{define}{Definition}%[section]
+\newtheorem*{ex}{Example}%[section]
+\newtheorem*{obs}{Observation}%[section]
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\title{TD n$^\circ$2}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+  
+  An object $A$ in category $\mathcal C$ is called \underline{terminal} when
+  there exists exactly one morphism $C \to A$ for any object $C$ of $\mathcal C$
+
+  \begin{enumerate}
+    \item What is a terminal object in an ordered set seen as an ordered
+      category.
+    \item Describe a terminal object of {\bf Set} and{\bf Top} and Graph, the
+      category graph and graph homomorphism.
+    \item Show that if $A$ is terminal and $f : A \to B$ is an isomorphism then B
+      is terminal too.
+    \item Suppose that $A$ and $B$ are terminal object in $\mathcal C$ show that
+      exists an isomorphism $A \xrightarrow{f} B$ is unique.
+  \end{enumerate}
+
+  \underline{\bf Correction} :
+
+  \begin{enumerate}
+    \item A terminal object in an ordered set is \underline{the} maximum.
+    \item Any singleton in {\bf Set} or in {\bf Top} and the graph for the
+      category graph.
+    \item Let $C \in \mathcal C$ and $g$ the unique morphism from $C$ to $A$.
+      Then $f \circ g$ is a morphism from $C$ to $B$. \\ Let $h \in Hom(C, B)$,
+      then $f \circ h \in Hom(C, A) = \{g\}$. So we have $h = f \circ g$.
+  \end{enumerate}
+
+\end{document}
