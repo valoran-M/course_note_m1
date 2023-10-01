@@ -67,6 +67,30 @@
     \item Let $C \in \mathcal C$ and $g$ the unique morphism from $C$ to $A$.
       Then $f \circ g$ is a morphism from $C$ to $B$. \\ Let $h \in Hom(C, B)$,
       then $f \circ h \in Hom(C, A) = \{g\}$. So we have $h = f \circ g$.
+
+      \begin{center}
+      \begin{tikzpicture}
+        \node (CA) at (-5, 0) {$Hom(C, A)$};
+        \node (F0) at (-5, -0.5) {$C \xrightarrow{g} A$};
+
+        \node (CB) at ( 0, 0) {$Hom(C, B)$};
+        \node (F1)  at ( 0, -0.5) {$C \xrightarrow{g} A \xrightarrow{f} B$};
+
+        \node (CA') at ( 5, 0) {$Hom(C, A)$};
+        \node (F2)  at ( 5, -0.5) {$C \xrightarrow{g} A \xrightarrow{f} B
+          \xrightarrow{f^{-1}} A$};
+
+        \draw[->] (CA) to node[above] {$Hom(C, f)$} (CB);
+        \draw[->] (CB) to node[above] {$Hom(C, f^{-1})$} (CA');
+        \draw[|->] (F0) to (F1);
+        \draw[|->] (F1) to (F2);
+
+      \end{tikzpicture}
+      \end{center}
+
+    \item Let $f : A \to B$ and $g : B \to A$ (unique). We have $g \circ f : A \to A =
+      Id_A$ (A is terminal) and $f \circ g : B \to B$ (B is terminal). We show
+      that $g$ is the inverse of $f$ so $f$ is an isomorphism and it is unique. 
   \end{enumerate}
 
 \end{document}
