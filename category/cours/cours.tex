@@ -25,6 +25,7 @@
 \newtheorem*{define}{Definition}%[section]
 \newtheorem*{ex}{Example}%[section]
 \newtheorem*{obs}{Observation}%[section]
+\newtheorem*{remk}{Remark}%[section]
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
@@ -135,7 +136,7 @@
     \item Neutral element is the empty word.
   \end{itemize}
 
-  \section{Categories, functors, natural transformations}
+  \section{Categories}
 
   \define A category $\mathcal C$ is a \underline{graph}
     \begin{itemize}
@@ -273,4 +274,111 @@
       \end{tikzpicture}
       \end{center}
     \end{itemize}
+
+  \section{Functors}
+
+    A functor $F : \mathcal A \to \mathcal B$ between category $\mathcal A$ and
+    $\mathcal B$ is a graph homomorphism :
+    \begin{itemize}
+      \item $F$ associates an object $FA$ in $\mathcal B$ to every object $A$
+        in $\mathcal A$
+      \item $F$ associates a morphism $FA \xrightarrow{Ff} F A'$ in $\mathcal
+        B$ to every morphism $A \xrightarrow{f} A'$ in $\mathcal A$.
+    \end{itemize}
+    It preserves composition and identity
+
+    \begin{center}
+    \begin{tikzpicture}
+      \node (Aa)  at (-2, -0.7) {$A$};
+      \node (Aa') at (-2,  0.7) {$A'$};
+      \draw[->] (Aa) to node[right] (f) {$f$} (Aa');
+      \draw (-2, 0) ellipse (0.7cm and 1.5cm);
+
+      \node (FAa)  at (2, -0.7) {$FA$};
+      \node (FAa') at (2,  0.7) {$FA'$};
+      \draw[->] (FAa) to node[left] (Ff) {$Ff$} (FAa');
+      \draw (2, 0) ellipse (0.7cm and 1.5cm);
+
+      \draw[|->] (Aa) to (FAa);
+      \draw[|->] (Aa') to (FAa');
+      \draw[|->] (f) to (Ff);
+      
+      \node (A)   at (3, -5) {$A$};
+      \node (A')  at (3, -4) {$A'$};
+      \node (A'') at (3, -3) {$A''$};
+      \draw[->] (A)  edge node[left] {$f$} (A')
+                (A') edge node[left] {$g$} (A'');
+
+      \node (FA)   at (5.5, -5) {$FA$};
+      \node (FA')  at (5.5, -4) {$FA'$};
+      \node (FA'') at (5.5, -3) {$FA''$};
+      \draw[->] (FA)  edge node[right] {$Ff$} (FA')
+                (FA') edge node[right] {$Fg$} (FA'');
+
+      \draw[->] (A)  to (3.5,  -5) to node[right] {$g\circ_A f$} (3.5, -3) to (A'');
+      \draw[->] (FA) to (6.2, -5) to node[right]
+                {$F g\circ_b F f = F(g \circ_A f)$} (6.2, -3) to (FA'');
+
+      \node (A1)  at (-5, -5) {$A$};
+      \node (A2)  at (-5, -3) {$A$};
+      \node (FA1) at (-3, -5) {$FA$};
+      \node (FA2) at (-3, -3) {$FA$};
+
+      \draw[->] (A1) to node[right] {$Id_A$} (A2);
+      \draw[->] (FA1) to node[right] {$F(Id_A) = Id_{FA}$} (FA2);
+    \end{tikzpicture}
+    \end{center}
+
+  \ex List of different application :
+  \begin{itemize}
+    \item A Functor $F : \mathcal A \to \mathcal B$ between order category
+      is a same thing as a monotone (=order preserving) function. The reason is
+      that the preservation of composition and identity holds in $\mathcal B$.
+    \item A functor $F : \mathcal B M \to \mathcal B N$ between categories with
+      one object is a function $H \to M$ which defined monoid homomorphism.
+
+      $$F(m \circ_M n) = F m \circ_N Fn$$
+
+    \item  functor $F : \mathcal B M \to$ \textit{Set} is a same thing as a
+      \textit{Set} $X = F(*)$ equipped with a family of functions $F_m : X \to
+      X$ satisfying the equation :
+      \begin{itemize}
+        \item $F m \circ F n = F (m \bullet n)$
+        \item $F(e) = Id_X$
+      \end{itemize}
+      $\hookrightarrow$ Equivalently a function
+      \begin{align*}
+        M \times X &\mapsto X \\
+        (m, x) &\to m \bullet x
+      \end{align*}
+
+      Where we write $F_m(x) = m \bullet x$ and \underline{action} of Mon X
+      satisfying the equations of $(m \bullet_M n) \bullet x = m \bullet
+      (m \bullet x)$ and $e \bullet x$.
+
+      \ex Given a finite set $A$ (alphabet) of letters. We construct the monoid
+      $A^*$ of finite words on $A$  equipped with concatenation as composition
+      and empty element as neutral element. We write $[a_1\ldots a_n] \in A^*$
+      and $\epsilon$ : the empty word noted $[]$. A functor $\mathcal B A^*
+      \xrightarrow{F}$ \textit{Set} is a set $Q = F(*)$ equipped with an action
+      that it a function :
+
+      \begin{align*}
+        A^* \times Q &\to Q \\
+        ([w], q) &\to [w] \bullet q
+      \end{align*}
+
+      \remk this action $A \times Q \to Q$ is equivalent to the data of  a
+      family $\delta_a : Q \to Q$ of function called transition function of a
+      deterministic total automata with \text{Set} of $Q$ of states.
+
+      \ex Given a functor $\mathcal B M \to$ \textit{Set} construct a category
+      $\int F$ (Grothendieck construction) whose object are the elements of
+      $F(*)$, whose morphisms $x \xrightarrow{m} y$ are of the form $x \mapsto m
+      \bullet x$. Show that $\int F$ comes with a functors $\pi : \int F \to
+      \mathcal B M$.
+    
+    \end{itemize}
+  \section{Transformation}
+
 \end{document}
