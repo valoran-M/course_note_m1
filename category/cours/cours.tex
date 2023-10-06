@@ -1,4 +1,3 @@
-
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
@@ -17,6 +16,7 @@
 \usepackage{capt-of}
 
 \usepackage{tikz}
+\usetikzlibrary{arrows}
 \usetikzlibrary{angles,quotes}
 
 \theoremstyle{plain}
@@ -24,8 +24,13 @@
 \theoremseparator{~--}
 \newtheorem*{define}{Definition}%[section]
 \newtheorem*{ex}{Example}%[section]
+\newtheorem*{exe}{Exercise}%[section]
 \newtheorem*{obs}{Observation}%[section]
 \newtheorem*{remk}{Remark}%[section]
+\newtheorem*{nota}{Notation}%[section]
+\newtheorem*{fact}{Fact}%[section]
+\newtheorem*{claim}{Claim}%[section]
+\newtheorem*{supo}{Suppose}%[section]
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
@@ -372,13 +377,209 @@
       family $\delta_a : Q \to Q$ of function called transition function of a
       deterministic total automata with \text{Set} of $Q$ of states.
 
-      \ex Given a functor $\mathcal B M \to$ \textit{Set} construct a category
+      \exe Given a functor $\mathcal B M \to$ \textit{Set} construct a category
       $\int F$ (Grothendieck construction) whose object are the elements of
       $F(*)$, whose morphisms $x \xrightarrow{m} y$ are of the form $x \mapsto m
       \bullet x$. Show that $\int F$ comes with a functors $\pi : \int F \to
       \mathcal B M$.
-    
     \end{itemize}
+
   \section{Transformation}
+    
+    Suppose given functors $F, G : \mathcal A \to \mathcal B$ we want to
+    ``compare'' $F$ and $G$ in the same way as we compare two monotone
+    functions $f, g: (A, \leq_A) \to (B \leq_g)$ between ordered set.
+
+    \underline{In ordered Set we have} :
+
+      \begin{center}
+      \begin{tikzpicture}
+        \node (A) at (-0.7, 0) {$A$};
+        \node (B) at ( 0.7, 0) {$B$};
+
+        \node[rotate=90] at ( 0, 0) {$\leq$};
+
+        \draw[->] (A) to[bend right=50] node[below] {$g$} (B);
+        \draw[->] (A) to[bend left =50] node[above] {$f$} (B);
+        \end{tikzpicture}
+      \end{center}
+      $$f \leq_A g \Leftrightarrow \forall a \in A, f(a) \leq_B g(a)$$
+
+      \define A transformation $\theta : F \Rightarrow G : \mathcal A \to
+      \mathcal B$ is a family of morphisms $\theta : FA \to GA$ in $\mathcal B$
+      parametrised by the object $A$ of $\mathcal A$
+
+      \nota We write :
+      \begin{center}
+      \begin{tikzpicture}
+        \node (A) at (-1, 0) {$\mathcal A$};
+        \node (B) at ( 1, 0) {$\mathcal B$};
+
+        \draw[->] (A) to[bend right=50] node[below] {$G$} (B);
+        \draw[->] (A) to[bend left =50] node[above] {$F$} (B);
+        \draw[double equal sign distance, -implies] (0, -0.4) to node[right]
+          {$\theta$} (0, 0.4);
+
+        \draw (4, 0) ellipse (0.4cm and 0.5cm);
+        \node (A) at (4, 0) {$A$};
+        \node at (4, -0.9cm) {$\mathcal A$};
+
+        \draw (8,  0.9) ellipse (0.4cm and 0.5cm);
+        \draw (8, -0.9) ellipse (0.4cm and 0.5cm);
+        \node (GA) at (8,  0.9) {$GA$};
+        \node (FA) at (8, -0.9) {$FA$};
+
+        \draw (8, 0) ellipse (0.8cm and 2cm);
+        \node at (8, -2.5cm) {$\mathcal B$};
+
+        \draw (4,  0.5cm) -- node[above] {$G$} (8, 1.4cm);
+        \draw (4, -0.5cm) -- (8, 0.4cm);
+
+        \draw (4,  0.5cm) -- (8, -0.4cm);
+        \draw (4, -0.5cm) -- node[below] {$F$} (8, -1.4cm);
+
+        \draw[->] (8, -0.3) to node[right] {$\theta$} (8, 0.3);
+
+        \draw[|->] (A) to (GA);
+        \draw[|->] (A) to (FA);
+      \end{tikzpicture}
+      \end{center}
+
+      \fact Every pair of categories $\mathcal A, \mathcal B$ defined a
+      category \textit{Trans}$(\mathcal A, \mathcal B)$ object are functors $F: A
+      \to B$ and morphism are transformation $\theta : F \Rightarrow G$.
+
+      \begin{tikzpicture}
+        \node[text width=2.25cm] at (0, 0) {$\psi : G \Rightarrow H$
+        $\varphi : F \Rightarrow G$};
+
+        \node (A) at (2, 0) {$\mathcal A$};
+        \node (B) at (4, 0) {$\mathcal B$};
+
+        \draw[->] (A) edge[bend right=80] node[below, pos=0.3] {$F$} (B);
+        \draw[->] (A) edge node[above, pos=0.2] {$G$} (B);
+        \draw[->] (A) edge[bend left =80] node[above, pos=0.3] {$H$} (B);
+        \draw[double equal sign distance, -implies]
+          (3, 0.1) to node[right] {$\psi$} (3, 0.7);
+
+        \draw[double equal sign distance, -implies]
+          (3, -0.7) to node[right] {$\varphi$} (3, -0.1);
+      \end{tikzpicture}
+
+      The composite transposition it's easy to define $(\psi \circ \varphi)_A =
+      \psi_A \circ \varphi_A$ and the identity is $Id_F : F \Rightarrow F$
+      $(Id_F)_A = Id_{FA}$.
+
+      We can write this :
+
+      \begin{center}
+      \begin{tikzpicture}
+        \coordinate (A) at (0, 0);
+        \coordinate (B) at (5, 0);
+
+        \draw (A) ellipse (0.3cm and 0.5cm);
+        \node at (A) {$A$};
+        \node at (0, -0.8) {$\mathcal A$};
+
+        \draw (B) ellipse (0.7cm and 2.5cm);
+        \node at (5, -2.8) {$\mathcal B$};
+
+        \draw (5, 1.5) ellipse (0.3cm and 0.5cm);
+        \node (HA) at (5, 1.5) {$HA$};
+        \draw (5, 0) ellipse (0.3cm and 0.5cm);
+        \node (GA) at (5, 0) {$GA$};
+        \draw (5, -1.5) ellipse (0.3cm and 0.5cm);
+        \node (FA) at (5, -1.5) {$FA$};
+
+        \draw (0, 0.5cm) -- node[above] {$H$} (5, 2);
+        \draw (0, -0.5cm) -- (5, 1);
+
+        \draw (0, 0.5cm) -- (5, 0.5);
+        \draw (0, -0.5cm) -- node[above, pos=0.7] {$G$} (5, -0.5);
+
+        \draw (0, 0.5cm) -- (5, -1);
+        \draw (0, -0.5cm) -- node[below] {$F$} (5, -2);
+
+        \draw[->] (5, -1) to node[right] {$\varphi_A$} (5, -0.5);
+        \draw[->] (5, 0.5) to node[right] {$\psi_A$} (5, 1);
+        \draw[->] (5.3, -1.5) to[bend right=80] node[right]
+                  {$\psi_A \circ \varphi_A$} (5.3, 1.5);
+      \end{tikzpicture}
+      \end{center}
+
+  \subsection{Post-composition}
+  
+    \supo Given a transformation $\varphi : F \Rightarrow G : \mathcal A \to
+      \mathcal B$ and a functor $H : \mathcal B \to \mathcal C$
+
+      \begin{tikzpicture}
+        \node (A) at (2, 0) {$\mathcal A$};
+        \node (B) at (4, 0) {$\mathcal B$};
+        \node (C) at (6, 0) {$\mathcal C$};
+
+        \draw[->] (A) edge[bend right=50] node[below] {$G$} (B);
+        \draw[->] (A) edge[bend left =50] node[above] {$F$} (B);
+        \draw[double equal sign distance, -implies]
+          (3, -0.4) to node[right] {$\varphi$} (3, 0.4);
+        \draw[->] (B) edge node[above] {$H$} (C);
+      \end{tikzpicture}
+
+      We define the transformation
+
+      \begin{align*}
+        H \circ_l \varphi_A &: \mathcal A \mapsto \varphi \\
+        & H F A \to H G A
+      \end{align*}
+
+      We can represent this transformation like this :
+
+      \begin{center}
+      \begin{tikzpicture}
+        \draw (4, 0) ellipse (0.4cm and 0.5cm);
+        \node (A) at (4, 0) {$A$};
+        \node at (4, -0.9cm) {$\mathcal A$};
+
+        \draw (8,  0.9) ellipse (0.4cm and 0.5cm);
+        \draw (8, -0.9) ellipse (0.4cm and 0.5cm);
+        \node (GA) at (8,  0.9) {$GA$};
+        \node (FA) at (8, -0.9) {$FA$};
+
+        \draw (8, 0) ellipse (0.8cm and 2cm);
+        \node at (8, -2.5cm) {$\mathcal B$};
+
+        \draw (4,  0.5cm) -- node[above] {$G$} (8, 1.4cm);
+        \draw (4, -0.5cm) -- (8, 0.4cm);
+
+        \draw (4,  0.5cm) -- (8, -0.4cm);
+        \draw (4, -0.5cm) -- node[below] {$F$} (8, -1.4cm);
+
+        \draw[->] (8, -0.3) to node[right] {$\varphi_A$} (8, 0.3);
+
+        \draw[|->] (A) to (GA);
+        \draw[|->] (A) to (FA);
+
+        \draw (12,  0.9) ellipse (0.5cm and 0.5cm);
+        \draw (12, -0.9) ellipse (0.5cm and 0.5cm);
+        \node (HGA) at (12,  0.9) {$HGA$};
+        \node (HFA) at (12, -0.9) {$HFA$};
+
+        \draw (12, 0) ellipse (0.8cm and 2cm);
+        \draw (12, 0) ellipse (1cm and 2.9cm);
+        \node at (12, -3.4cm) {$\mathcal C$};
+
+        \draw (8, 1.4cm) -- (12, 1.4cm);
+        \draw (8, 0.4cm) -- (12, 0.4cm);
+
+        \draw (8, -0.4cm) -- (12, -0.4cm);
+        \draw (8, -1.4cm) -- (12, -1.4cm);
+
+        \draw (8, 2cm) -- node[above] {$H$} (12, 2cm);
+        \draw (8, -2cm) -- (12, -2cm);
+
+        \draw[->] (12, -0.3) to node[right] {$H_{\varphi_A}$} (12, 0.3);
+      \end{tikzpicture}
+      \end{center}
+
+    \subsection{Pre-composition}
 
 \end{document}

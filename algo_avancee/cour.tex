@@ -8,7 +8,6 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
-\usepackage{hyperref}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -18,6 +17,11 @@
     linkcolor=blue,
     urlcolor=blue
 }
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{define}{Définition}%[section]
 
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning, arrows}
@@ -637,5 +641,17 @@
       Trouver $M \subseteq, \forall v \in V, \min_{m \in M}(v, m) \leq D$
       et $|M|$ est minimum
 
+
+  \section{Métaheuristique}
+
+    \subsection{Introduction}
+
+      \define Heuristiques : 
+
+    \subsection{Métaheuristiques à parcours}
+
+    \subsection{Métaheurisitiques à population}
+
+    \subsection{\'Evaluation de la performance d'une heuristique}
 
 \end{document}
