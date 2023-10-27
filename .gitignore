@@ -343,3 +343,12 @@ setup.log
 _opam/
 
 # End of https://www.toptal.com/developers/gitignore/api/latex,ocaml
+
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+jupyterhub*
+
