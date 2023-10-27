@@ -1,0 +1,250 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{braket}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{hyperref}
+\usepackage{capt-of}
+
+\usepackage{tikz}
+\usetikzlibrary{angles,quotes}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercise}%[section]
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\title{Home work 1}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Bell Basis}
+
+    \begin{align*}
+      \ket{\Phi^+} &= \frac{1}{\sqrt 2} (\ket{00} + \ket{11}) \\
+      \ket{\Phi^-} &= \frac{1}{\sqrt 2} (\ket{00} - \ket{11}) \\
+      \ket{\Psi^+} &= \frac{1}{\sqrt 2} (\ket{01} + \ket{10}) \\
+      \ket{\Psi^+} &= \frac{1}{\sqrt 2} (\ket{01} - \ket{10})
+    \end{align*}
+
+    \begin{exo}
+      Show that these 4 vectors form an orthonormal basis
+
+      \begin{enumerate}
+        \item We need to show that the norm of the 4 vectors is equal to 1
+
+          This part is simple, because they all have the same constant 2 times,
+          except for a sign which is ignored because it is squared.
+
+          $$ \frac{1}{\sqrt 2}^2 + (\mp\frac{1}{\sqrt 2})^2
+             = \frac 1 2 + \frac 1 2 = 1$$
+
+        \item We need to show that they are pairwise orthogonal
+
+          It simple to show that $\ket{\Phi^\mp}$ and $\ket{\Psi^\mp}$ are
+          orthogonal, because the constants are not on the same ``ket'', so we
+          have $\langle \Phi^\mp|\Psi^\mp \rangle =
+          \frac{1}{\sqrt{2}} \times 0 
+          +   0 \times \frac{1}{\sqrt{2}}
+          \mp 0 \times \frac{1}{\sqrt{2}}
+          \mp \frac{1}{\sqrt{2}} \times 0 = 0$
+
+          Finally, the same calculation is used to show $\ket{\Phi^+}$ is
+          orthogonal to $\ket{\Phi^-}$ and $\ket{\Psi^+}$ is orthogonal to
+          $\ket{\Psi^-}$.
+
+          \begin{align*}
+            \langle \Phi^+ | \Phi^- \rangle = \langle \Psi^+ | \Psi^- \rangle
+            = \frac{1}{\sqrt{2}} \times \frac{1}{\sqrt{2}} +
+              \frac{1}{\sqrt{2}} \times \frac{-1}{\sqrt{2}}
+            = \frac 1 2 - \frac 1 2 = 0
+          \end{align*}
+      \end{enumerate}
+
+      All norm of the vectors is equal to 1 and they are all orthogonal.
+
+      These 4 vectors form an orthonormal basis.
+    \end{exo}
+
+    \begin{exo}
+      Consider the ket vector
+
+      $$\ket{\varphi} = \frac{2}{\sqrt 5} \ket{01} + \frac{i}{\sqrt 5} \ket{10}$$
+
+      \begin{enumerate}[label=(\alph*)]
+        \item Show that this is a vector of norm 1
+
+          $$ \langle \varphi|\varphi \rangle =
+             \left( \frac{2}{\sqrt 5} \right) ^2 +
+                    \frac{i}{\sqrt 5} \times \overline{\frac{i}{\sqrt 5}}
+            = \frac 4 5 + \frac{i \times -i}{5} = \frac 4 5 + \frac 1 5 = 1$$
+
+          \item Write it as a linear combination of $\ket{\Phi^+}, \ket{\Phi^-},
+                \ket{\Psi^+}$ and $\ket{\Psi^-}$.
+
+            We want to fin $\alpha$ and $\beta$ such that
+            $\alpha \ket{\Psi^+} + \beta \ket{\Psi^-} = \ket{\varphi}$.
+            We don't need $\ket{\Phi^\mp}$, because $\ket{00}$ and $\ket{11}$
+            don't appear in $\ket{\varphi}$.
+\newpage
+$$
+\left\{
+\begin{array}{r l c}
+  \alpha \frac{1}{\sqrt 2} + \beta \frac{1}{\sqrt 2} &= \frac{2}{\sqrt 5} \\
+  \alpha \frac{1}{\sqrt 2} - \beta \frac{1}{\sqrt 2} &= \frac{i}{\sqrt 5}
+\end{array}
+\right. \Rightarrow
+\left\{
+\begin{array}{c c c l}
+  \alpha \frac{1}{\sqrt 2} &+& \beta \frac{1}{\sqrt 2} &= \frac{2}{\sqrt 5} \\
+  \alpha \frac{2}{\sqrt 2} & & &= \frac{2}{\sqrt 5} + \frac{i}{\sqrt 5} \Rightarrow
+  \alpha = \frac{2 \sqrt 2}{2 \sqrt 5} + \frac{i \sqrt 2}{2 \sqrt 5} =
+  \frac{\sqrt{10}}{5} + \frac{i\sqrt{10}}{10}
+\end{array}
+\right.
+$$
+
+          So we have the final equation
+
+\begin{align*}
+  \beta \frac{1}{\sqrt 2} &= \frac{\sqrt 5}{5} - \frac{i\sqrt{5}}{10} \\
+  \beta &= \frac{\sqrt{10}}{5} - \frac{i\sqrt{10}}{10}
+\end{align*}
+
+    Finally we have $\ket{\varphi} =
+                      (\frac{\sqrt{10}}{5} + \frac{i\sqrt{10}}{10}) \ket{\Psi^+}
+                    + (\frac{\sqrt{10}}{5} - \frac{i\sqrt{10}}{10}) \ket{\Psi^-}$
+
+        \item Compute $\langle \varphi | \Psi^+ \rangle$
+
+$$
+  \langle \varphi | \Psi^+ \rangle = \frac{2}{\sqrt 5} \times \frac{1}{\sqrt 2}
+          + \frac{-i}{\sqrt 5} \times \frac{1}{\sqrt 2} =
+          \frac{2}{\sqrt{10}} - \frac{i}{\sqrt{10}}
+$$
+      \end{enumerate}
+    \end{exo}
+
+  \section{Reversible Computation}
+
+    We calculate the circuit $C_1$ for the values $\ket{00}, \ket{01}, \ket{10}$
+    and $\ket{11}$.
+
+    \begin{align*}
+      C_1 (\ket{00}) &= \ket{00} \\
+      C_1 (\ket{01}) &= \ket{10} \\
+      C_1 (\ket{10}) &= \ket{01} \\
+      C_1 (\ket{11}) &= \ket{11}
+    \end{align*}
+
+    We can formulate $C_1$ as follows :
+    \begin{align*}
+      C_1 : \mathcal H \otimes \mathcal H &\to \mathcal H \otimes \mathcal H \\
+      \ket{x} \otimes \ket{y} &\mapstochar\to \ket y \otimes \ket x
+    \end{align*}
+
+    Informally, we can say that $C_1$ swap $\ket x$ and $\ket y$
+
+  \section{Play with Controls}
+
+    We calculate the circuit $C_2$ for the values $\ket{00}, \ket{01}, \ket{10}$
+    and $\ket{11}$.
+
+    \begin{align*}
+      C_2 (\ket{00}) &= \ket{00} \\
+      C_2 (\ket{01}) &= e^{i\theta} \ket{01} \\
+      C_2 (\ket{10}) &= e^{i\theta} \ket{10} \\
+      C_2 (\ket{11}) &= \ket{11}
+    \end{align*}
+
+    We can formulate $C_2$ as follows :
+    \begin{align*}
+      C_2 : \mathcal H \otimes \mathcal H &\to \mathcal H \otimes \mathcal H \\
+      \ket{x} \otimes \ket{y} &\mapstochar\to \ket x \otimes
+      (e^{i\theta}((x \oplus y) \oplus (1 \oplus x \oplus y))) \ket y
+    \end{align*}
+
+  \newpage
+
+  \section{Another one}
+
+    We calculate the circuit $C_3$ for $\ket{xy}$.
+
+    \begin{align*}
+      \mathcal{H} \otimes \mathcal{H} (\ket{xy}) =&
+          \frac{1}{\sqrt 2} (\ket 0 + (-1)^x \ket 1) \otimes
+          \frac{1}{\sqrt 2} (\ket 0 + (-1)^y \ket 1) \\
+       =& \frac{1}{2} (\ket{00} + (-1)^x \ket{01} +
+                      (-1)^y \ket{10} + (-1)^{x + y} \ket {11}) \\
+      \text{CNOT} \to& 
+          \frac{1}{2} (\ket{00} + (-1)^x \ket{11} +
+                      (-1)^y \ket{10} + (-1)^{x + y} \ket {01}) \\
+    \mathcal{H} \otimes \mathcal{H} \to& 
+           \frac{1}{4} ((\ket{00} + \ket{01} + \ket{10} + \ket{11})\\
+              &(-1)^x    (\ket{00} - \ket{01} - \ket{10} + \ket{11}) \\
+              &(-1)^y    (\ket{00} + \ket{01} - \ket{10} - \ket{11}) \\
+              &(-1)^{x+y}(\ket{00} - \ket{01} + \ket{10} - \ket{11})) \\
+        =& \frac{1}{4} ((1 + (-1)^x + (-1)^y + (-1)^{x+y})\ket{00} \\
+                      & (1 + (-1)^{x+1} + (-1)^y + (-1)^{x+y+1})\ket{01} \\
+                      & (1 + (-1)^{x+1} + (-1)^{y+1} + (-1)^{x+y})\ket{10}) \\
+                      & (1 + (-1)^x     + (-1)^{y+1} + (-1)^{x+y+1})\ket{11}
+    \end{align*}
+
+    So we have the following results :
+
+    \begin{align*}
+      C_3 \ket{00} &= \ket{00} \\ 
+      C_3 \ket{01} &= \ket{11} \\
+      C_3 \ket{10} &= \ket{10} \\ 
+      C_3 \ket{11} &= \ket{01} 
+    \end{align*}
+
+    We can formulate $C_3$ as follows :
+
+    \begin{align*}
+     C_3 : \mathcal H \otimes \mathcal H &\to \mathcal H \otimes \mathcal H \\
+      \ket{x} \otimes \ket{y} &\mapstochar\to \ket{x \oplus y} \otimes \ket y
+    \end{align*}
+
+    We can also define like that :
+
+    \centering
+    \begin{tikzpicture}
+      \node (X) at (0, 0)    {$\ket x$};
+      \node (Y) at (0, -1.5) {$\ket y$};
+
+      \draw (0.5, 0)    -- (3.5, 0);
+      \draw (0.5, -1.5) -- (3.5, -1.5);
+
+      \fill[circle] (2, -1.5) circle (3pt);
+      \draw[circle] (2, 0)    circle (6pt);
+      \draw (2, 6pt) -- (2, -6pt);
+
+      \draw (2, -6pt) -- (2, -1.5);
+    \end{tikzpicture}
+
+\end{document}
