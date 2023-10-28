@@ -1,0 +1,20 @@
+\documentclass[border=2px]{standalone}
+
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+\begin{document}
+\scalebox{1.0}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{{eig}_{0} :  } & \lstick{{eig}_{0} :  } & \gate{\mathrm{H}} & \ctrl{4} & \qw & \qw & \qw & \multigate{3}{\mathrm{IQFT}}_<<<{0} & \meter & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{1} :  } & \lstick{{eig}_{1} :  } & \gate{\mathrm{H}} & \qw & \ctrl{3} & \qw & \qw & \ghost{\mathrm{IQFT}}_<<<{1} & \qw & \meter & \qw & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{2} :  } & \lstick{{eig}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \ctrl{2} & \qw & \ghost{\mathrm{IQFT}}_<<<{2} & \qw & \qw & \meter & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{3} :  } & \lstick{{eig}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{1} & \ghost{\mathrm{IQFT}}_<<<{3} & \qw & \qw & \qw & \meter & \qw & \qw\\
+	 	\nghost{{phi}_{0} :  } & \lstick{{phi}_{0} :  } & \gate{\mathrm{X}} & \multigate{4}{\mathrm{unitary\string^1}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^2}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^4}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^8}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{1} :  } & \lstick{{phi}_{1} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{1} & \ghost{\mathrm{unitary\string^2}}_<<<{1} & \ghost{\mathrm{unitary\string^4}}_<<<{1} & \ghost{\mathrm{unitary\string^8}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{2} :  } & \lstick{{phi}_{2} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{2} & \ghost{\mathrm{unitary\string^2}}_<<<{2} & \ghost{\mathrm{unitary\string^4}}_<<<{2} & \ghost{\mathrm{unitary\string^8}}_<<<{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{3} :  } & \lstick{{phi}_{3} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{3} & \ghost{\mathrm{unitary\string^2}}_<<<{3} & \ghost{\mathrm{unitary\string^4}}_<<<{3} & \ghost{\mathrm{unitary\string^8}}_<<<{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{4} :  } & \lstick{{phi}_{4} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{4} & \ghost{\mathrm{unitary\string^2}}_<<<{4} & \ghost{\mathrm{unitary\string^4}}_<<<{4} & \ghost{\mathrm{unitary\string^8}}_<<<{4} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{\mathrm{{ceig} :  }} & \lstick{\mathrm{{ceig} :  }} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-9,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-8,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-7,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-6,0] & \cw & \cw\\
+\\ }}
+\end{document}

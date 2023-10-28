@@ -283,7 +283,111 @@ qc.measure(eig, ceig)\end{lstlisting}
 
     \subsection{Oracle synthesis}
 
+    $$
+      Mult_{a^p~mod~N} : x\mapsto 
+      \left\{
+      \begin{array}{ll}
+      (a^p\cdot x)~mod~N & \text{si }x < N
+      \\
+      x & \text{si} N \leq x < 2^n
+      \end{array}\right.
+    $$
+
+
+    \begin{lstlisting}[language=python]
+def gateMult(a,p,N,n):
+  nn = 2 ** n
+  M = [[0 for x in range(nn)] for i in range(nn)]
+  for x in range(nn):
+      if x < N:
+          M[((a**p)*x) % N][x] = 1
+      else:
+          M[x][x] = 1
+  U = Operator(M)
+  return(UnitaryGate(U))
+    \end{lstlisting}
+
+      \begin{figure}[htb]
+        \begin{center}
+
+        \begin{tabular}{c|l|l}
+          n & time & circuit size (gates) \\
+          \hline
+          3 & 28.2 ms & 61 \\
+          4 & 120  ms & 296 \\
+          5 & 527  ms & 1341 \\
+          6 & 2.46  s & 5633 \\
+          7 & 11.5  s & 23044
+        \end{tabular}
+      \label{tab:gateMult}
+      \caption{Generation of \textit{gateMult}$(3, 3, 2^n, n)$}
+      \end{center}
+    \end{figure}
+
+    \begin{enumerate}
+      \item What are the sizes of the generated circuits ?
+
+        It is written on Figure \ref{tab:gateMult}.
+
+      \item What is the complexity of the circuit size in term of number of
+        qubits ?
+
+        It is exponential.
+
+      \item Can you explain why ?
+
+        The matrix as an exponential size in function of the number of qubits
+        ($2^n * 2^n$), so this size has repercussions on the final circuit.
+
+      \item What alternate method could you suggest, with what potential
+        drawbacks ?
+    \end{enumerate}
+
     \subsection{Plugging everything together : Shor}
 
+ 
+    \begin{figure}[!htb]
+      \begin{center}
+\scalebox{1.0}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{{eig}_{0} :  } & \lstick{{eig}_{0} :  } & \gate{\mathrm{H}} & \ctrl{4} & \qw & \qw & \qw & \multigate{3}{\mathrm{IQFT}}_<<<{0} & \meter & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{1} :  } & \lstick{{eig}_{1} :  } & \gate{\mathrm{H}} & \qw & \ctrl{3} & \qw & \qw & \ghost{\mathrm{IQFT}}_<<<{1} & \qw & \meter & \qw & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{2} :  } & \lstick{{eig}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \ctrl{2} & \qw & \ghost{\mathrm{IQFT}}_<<<{2} & \qw & \qw & \meter & \qw & \qw & \qw\\
+	 	\nghost{{eig}_{3} :  } & \lstick{{eig}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{1} & \ghost{\mathrm{IQFT}}_<<<{3} & \qw & \qw & \qw & \meter & \qw & \qw\\
+	 	\nghost{{phi}_{0} :  } & \lstick{{phi}_{0} :  } & \gate{\mathrm{X}} & \multigate{4}{\mathrm{unitary\string^1}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^2}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^4}}_<<<{0} & \multigate{4}{\mathrm{unitary\string^8}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{1} :  } & \lstick{{phi}_{1} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{1} & \ghost{\mathrm{unitary\string^2}}_<<<{1} & \ghost{\mathrm{unitary\string^4}}_<<<{1} & \ghost{\mathrm{unitary\string^8}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{2} :  } & \lstick{{phi}_{2} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{2} & \ghost{\mathrm{unitary\string^2}}_<<<{2} & \ghost{\mathrm{unitary\string^4}}_<<<{2} & \ghost{\mathrm{unitary\string^8}}_<<<{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{3} :  } & \lstick{{phi}_{3} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{3} & \ghost{\mathrm{unitary\string^2}}_<<<{3} & \ghost{\mathrm{unitary\string^4}}_<<<{3} & \ghost{\mathrm{unitary\string^8}}_<<<{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{{phi}_{4} :  } & \lstick{{phi}_{4} :  } & \qw & \ghost{\mathrm{unitary\string^1}}_<<<{4} & \ghost{\mathrm{unitary\string^2}}_<<<{4} & \ghost{\mathrm{unitary\string^4}}_<<<{4} & \ghost{\mathrm{unitary\string^8}}_<<<{4} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+	 	\nghost{\mathrm{{ceig} :  }} & \lstick{\mathrm{{ceig} :  }} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-9,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-8,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-7,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-6,0] & \cw & \cw\\
+\\ }}
+      \end{center}
+      \caption{Shor algorithm}\label{fig:shor}
+    \end{figure}
+
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=0.6\textwidth]{./plot.png}
+      \end{center}
+      \caption{Result of Shor execution}\label{fig:plot}
+    \end{figure}
+    
+
+    \begin{enumerate}
+      \item What is the order $r$ of $a$ mod $N$ (here $7$ mod $30$) ?
+
+        The order $r$ of $7$ mod $30$ is $4$.
+
+      \item On the drawing, where are we supposed to see the values $\frac{s}{r}$ ?
+        The horizontal axis is graded with integers... To what real numbers
+        between 0 and 1 these correspond to ?
+
+      \item Can you infer from the graph the value of $r$ ? Where do you see it
+        on the graph ?
+
+        Yes $r = 4$, it is presented by the period of the keys.
+
+      \item Change a and N respectively to 20 and 29. Can you read the value $r$ ? Is it correct ?
+    \end{enumerate}
 
 \end{document}
