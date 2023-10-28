@@ -341,6 +341,9 @@ def gateMult(a,p,N,n):
 
       \item What alternate method could you suggest, with what potential
         drawbacks ?
+
+        You can encode certain types of number, such as powers of two.
+        However, we lose expressiveness.
     \end{enumerate}
 
     \subsection{Plugging everything together : Shor}
@@ -388,6 +391,17 @@ def gateMult(a,p,N,n):
         Yes $r = 4$, it is presented by the period of the keys.
 
       \item Change a and N respectively to 20 and 29. Can you read the value $r$ ? Is it correct ?
+
+        No I can't read the value $r$
+
+      \item The drawing is not very precise... How to make it better ? Try it !
+
+        We need to increase the precision. But the calculation is very
+        expensive.
+
+      \item Is it still working if you change the value of `a` and/or `N` to
+        other values ? Beware not to use too large values for`N`... To get some
+        inspiration, below is the list of possibilities up to 31.
     \end{enumerate}
 
 \end{document}
