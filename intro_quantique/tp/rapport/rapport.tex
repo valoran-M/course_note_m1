@@ -370,9 +370,17 @@ def gateMult(a,p,N,n):
 
     \begin{figure}
       \begin{center}
+        \includegraphics[width=0.6\textwidth]{./plot2.png}
+      \end{center}
+      \caption{result of shor execution (7 mod 30)}\label{fig:plot2}
+    \end{figure}
+
+
+    \begin{figure}
+      \begin{center}
         \includegraphics[width=0.6\textwidth]{./plot.png}
       \end{center}
-      \caption{Result of Shor execution}\label{fig:plot}
+      \caption{result of shor execution (20 mod 29)}\label{fig:plot}
     \end{figure}
     
 
@@ -396,12 +404,11 @@ def gateMult(a,p,N,n):
 
       \item The drawing is not very precise... How to make it better ? Try it !
 
-        We need to increase the precision. But the calculation is very
-        expensive.
-
       \item Is it still working if you change the value of `a` and/or `N` to
         other values ? Beware not to use too large values for`N`... To get some
         inspiration, below is the list of possibilities up to 31.
+
+        It works when the result is even.
     \end{enumerate}
 
 \end{document}
