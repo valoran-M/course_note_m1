@@ -1,0 +1,21 @@
+(* Inefficient sum *)
+
+use int.Int
+
+let sum (a b: int): int
+  requires { b >= 0 }
+  ensures  { result = a + b }
+=
+  let ref x = a in
+  let ref y = b in
+  while y > 0 do
+    invariant { x = a + b - y }
+    invariant { y >= 0 }
+    variant { y }
+    x <- x + 1;
+    y <- y - 1
+  done;
+  x
+
+let main () = sum 32 10
+

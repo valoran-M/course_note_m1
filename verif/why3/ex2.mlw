@@ -1,0 +1,21 @@
+(* Euclidean division *)
+
+use int.Int
+
+let euclide (a b: int): (int, int)
+  requires { b > 0 /\ a >= 0 }
+  returns  { q, r -> a = b * q + r /\ 0 <= r < b }
+=
+  let ref q = 0 in
+  let ref r = a in
+  while r >= b do
+    invariant { a = b * q + r }
+    invariant { 0 <= r }
+    variant   { r }
+    r <- r - b;
+    q <- q + 1
+  done;
+  q, r
+
+let main () = euclide 42 17
+

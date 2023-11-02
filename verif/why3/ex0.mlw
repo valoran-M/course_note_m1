@@ -1,0 +1,23 @@
+(* Integer square root *)
+
+use int.Int
+
+function sqr (n: int) : int = n * n
+
+let isqrt (n: int): int
+  requires { n >= 0 }
+  ensures  { result >= 0 /\ sqr result <= n < sqr (result + 1) }
+=
+  let ref sum = 1 in
+  let ref count = 0 in
+  while sum <= n do
+    invariant { count >= 0 }
+    invariant { sqr count <= n }
+    invariant { sqr (count + 1) = sum }
+    variant   { n - count }
+    count <- count + 1;
+    sum <- sum + 2 * count + 1
+  done;
+  count
+
+let main () = isqrt 42
