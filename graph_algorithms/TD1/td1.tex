@@ -1,0 +1,138 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{
+  theorems,
+  breakable,
+  skins
+}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\newtcbtheorem[number within=section]
+{correction}{Correction}{
+  colback=white,
+  colframe=black!70,
+  separator sign none,
+  description delimiters parenthesis,
+  enhanced jigsaw,
+  breakable,
+  fonttitle=\bfseries
+}{}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exercice}{Exercice}[section]
+
+\title{Graph Algorithms\\TD1 : Introduction}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{To begin}
+ 
+  \exercice Show that a graph always has an even number of odd degree vertices
+
+  \begin{correction}{}{}
+    Let $G$ a graph. Thanks to \textit{Handshaking Lemma} we have:
+
+    $$ \sum_{v \in V(G)} deg(v) = 2|G(E)| $$
+
+    So the number $\sum_{v \in V(G)} deg(v)$ is an even number. To keep this
+    property we must have an even number of odd degree vertices otherwise the
+    sum become odd.
+  \end{correction}
+
+  \exercice Show that a graph with at least 2 vertices contains 2 vertices of
+    equal degree
+
+  \begin{correction}{}{}
+    Let $G$ a graph with at least 2 vertices.
+
+    \begin{itemize}
+      \item If $G$ has no isolated vertex, the degree of a vertex is
+        between $1$ and $|V(G)| - 1$ ($v$ a vertex $1 \leq deg(v) < |V(G)|$).
+        So we have $n := |V(G)| - 1$ different values for the degree of a vertex
+        in $G$. The graph $G$ contains $n + 1$ vertices so by the Pigeonhole
+        principle we have two vertices with the same degree.
+
+      \item If $G$ has one isolated vertex, it's the same idea that the previous
+        one but the degree of a vertex is between $0$ and $|V(G)| - 2$.
+
+      \item If $G$ has at least two isolated vertices, we have $2$ vertices with
+        the same degree.
+    \end{itemize}
+
+  \end{correction}
+
+  \exercice Let $G$ be a graph of minimum degree $\delta(G) \leq 2$. Show that
+  $G$ contains a cycle.
+
+  \begin{correction}{}{}
+    Let $G$ a graph with $\delta(G) \leq 2$.
+
+    Show that $G$ has a cycle. Let $P = v_1 \ldots v_l$ be the maximum path in
+    $G$. Since it cannot be extended into a larger path, we must have $N(v_l)
+    \subseteq V(P)$. So $\exists i \leq l-1$ $v_i \in N(v_l)$ which yields that
+    $v_i, \ldots , v_l$ is a cycle.
+  \end{correction}
+
+  \exercice Let $G$ be a graph of minimum degree $d$, and of girth $2t+1$. Given
+  any vertex $v \in V(G)$, show that there are at least $d(d-1)^{i-1}$ vertices
+  at distance exactly $i$ from $v$ in $G$, for every $1 \leq i \leq t$. Deduce a
+  lower bound on the number of vertices of $G$.
+
+  \begin{correction}{}{}
+  \end{correction}
+
+
+  \section{Dense subgraphs}
+
+  \exercice Show that every graph of average degree $d$ contains a subgraph of
+  minimum degree at least $\frac d 2$.
+
+  \begin{correction}{}{}
+  \end{correction}
+
+  \exercice Can you find a similar relation between the maximum degree and the
+  minimum degree ? And between the maximum degree and the average degree ?
+
+  \exercice Show that every graph of average degree $d$ contains a bipartite
+  subgraph of average degree at least $\frac d 2$.
+
+  \section{Cuts and trees}
+
+  \exercice If $G$ is connected , and $e=uv$ is a bridge in $G$, how many
+  connected components does $G\backslash e$ contain ? Show that $u$ and $v$ are
+  cut-vertices.
+
+  \exercice Show that a graph $G$ is a tree if and only if there exists a unique
+  path from $u$ to $v$ in $G$, for every pair of vertices $u, v \in G$.
+
+  \exercice Let $T$ a BFS tree of a graph $G$. Show that every edge of $G$ is
+  contained either within a layer of $T$, or between two consecutive layers of
+  $T$.
+
+  \exercice Let $T$ be a DFS tree of a graph $G$. Show that, for every edge $e
+  \in E(G)$, ther is a branch of $T$ that contains both extremities of $e$.
+
+
+\end{document}
