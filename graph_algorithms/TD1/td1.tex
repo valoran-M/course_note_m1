@@ -111,14 +111,35 @@
 
   \begin{correction}{}{}
     Let $G$ a graph with an average degree $d$. We take the maximum average
-    degree subgraph of $G$ we note them $G'$.
+    degree subgraph of $G$ we note them $H$. We know, that we have $ad(H) =
+    mad(H) \leq d$
+
+    If we have a vertex of degree less than $\frac d 2$ in H then we have :
+
+    \begin{align*}
+      ad(H \backslash v) &= \frac{2|E(H)| - 2 deg_H(v)}{|V(H)| - 1} >
+      \frac{2|E(H)| - d}{|V(H)| - 1} \leq \frac{2|E(H)| -
+      \frac{2|E(H)|}{|V(H)|}}{|V(H)| - 1} \\
+      &> \frac{2|E(H)| \times |V(H)| - 2|E(H)|}{(|V(H)| - 1) \times |V(H)|}
+      = \frac{2[E(H)]}{|V(H)|} = d
+    \end{align*}
+
+    So if we have this type of vertex we have a contradiction $ad(H \backslash
+    v) > mad(G)$
   \end{correction}
 
   \exercice Can you find a similar relation between the maximum degree and the
   minimum degree ? And between the maximum degree and the average degree ?
 
+  \begin{correction}{}{}
+  \end{correction}
+
   \exercice Show that every graph of average degree $d$ contains a bipartite
   subgraph of average degree at least $\frac d 2$.
+
+  \begin{correction}{}{}
+    Let $H = (X, Y, E)$ a bipartite of the graph $G$ given by the minimal cut.
+  \end{correction}
 
   \section{Cuts and trees}
 
