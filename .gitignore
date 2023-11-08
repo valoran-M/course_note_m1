@@ -352,3 +352,4 @@ ipython_config.py
 
 jupyterhub*
 
+.env
