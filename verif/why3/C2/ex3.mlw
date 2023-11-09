@@ -1,0 +1,27 @@
+use int.Int
+use array.Array
+
+exception Not_found
+
+val midpoint (l u: int) : int
+  requires { l <= u }
+  ensures  { l <= result <= u }
+
+let binary_search (a: array int) (v: int) : int
+    requires { forall i1 i2: int. 0 <= i1 <= i2 < length a -> a[i1] <= a[i2] }
+    ensures { a[result] = v /\ 0 <= result < length a }
+    raises  { Not_found -> forall i. 0 <= i < length a -> a[i] <> v }
+=
+    let ref l = 0            in
+    let ref u = length a - 1 in
+    while l <= u do
+        invariant   { 0 <= l /\ u < length a }
+        invariant   { forall i. 0 <= i < l        -> a[i] < v }
+        invariant   { forall i. u <  i < length a -> a[i] > v }
+        variant     { u - l }
+        let m = midpoint l u in
+        if      a[m] = v then return m
+        else if a[m] < v then l <- m + 1
+                         else u <- m - 1
+    done;
+    raise Not_found
