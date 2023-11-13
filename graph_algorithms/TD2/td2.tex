@@ -1,0 +1,86 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{
+  theorems,
+  breakable,
+  skins
+}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\newtcbtheorem[number within=section]
+{correction}{Correction}{
+  colback=white,
+  colframe=black!70,
+  separator sign none,
+  description delimiters parenthesis,
+  enhanced jigsaw,
+  breakable,
+  fonttitle=\bfseries
+}{}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exercice}{Exercice}[section]
+
+\title{Graph Algorithms\\TD1 : Graph Colouring}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Some properties of colouring}
+
+  \exercice What is the chromatic number of an even cycle $C_{2n}$ ? Of an odd
+  cycle $C_{2n+1}$
+
+  \exercice Show that a graph is bipartite if and only if it contains no odd
+  cycle.
+
+  \exercice Show that for every graph $G$, there exists an order on the vertices
+  such that the greedy algorithm applied in this order returns a colouring with
+  $\chi(G)$ colours.
+
+  \exercice Prove that $\chi(G) \geq |V(G)| / \alpha(G)$, for every graph $G$.
+
+
+  \section{Interval graphs}
+
+  Given a set of intervals $\mathcal{I} = \{I_1, \ldots, I_n\}$ where $I_i =
+  [a_i, b_i]$ for every $1 \geq i \geq n$, the interval graph associated whit
+  $\mathcal I$ is the graph $G = (V, E)$ where $V = \{1, \ldots, n\}$ and $ij
+  \in E$ iff $I_i$ and $I_j$ intersect, i.e. $a_i \leq b_j$ and $a_j \leq b_i$,
+  for every $i \leq i, j \leq n$.
+
+  \exercice Show that in an interval graph, there exists a simplicial vertex,
+  i.e. a vertex $v$ such that $N[v]$ induces a clique.
+
+  \exercice Write an algorithm that computes an optimal proper colouring of an
+  interval graph $G$. You may assume that we know the intervals. The goal
+  complexity is $\mathcal O(n\ln n + m)$.
+
+  \exercice We now want to write an algorithms which computes a proper colouring
+  of any graph $G$, and use $\chi(G)$ colours if $G$ is an interval graph (so in
+  particular we don't know the intervals if this is the case). Show that this
+  can be done with the greedy colouring algorithm applied with a reverse
+  degeneracy ordering.
+ 
+\end{document}

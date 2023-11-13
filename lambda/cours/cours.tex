@@ -1,0 +1,214 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{capt-of}
+\usepackage{multicol}
+
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+\usepackage{tikz}
+\usetikzlibrary{angles,quotes}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercise}%[section]
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{proof}{Proof}
+\newtheorem{exam}{Example}
+\renewcommand\qedsymbol{$\square$}
+
+
+\title{$\lambda$-calculus}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Presentation}
+
+  \begin{itemize}
+    \item 1935 (a theory of computable functions)
+
+      Alonzo Church, attempt at formalizing computation
+  \end{itemize}
+
+  Functions:
+  \begin{itemize}
+    \item maths : $f : A \to B$ is a set of pairs
+    \item programming : instruction to compute an output
+  \end{itemize}
+
+  \subsection{Definitions}
+
+  We can define the set of $\lambda$-terms ($\Lambda$) with a grammar:
+  \begin{align*}
+    \Lambda :=&\; x, y, z ...         & (\text{variable}) \\
+             |&\; \lambda. \Lambda    & (\text{functions}) \\
+             |&\; \Lambda\; \Lambda   & (\text{application})
+  \end{align*}
+
+  The application is left associative: $(l_1\; l_2)\; l_3$.
+
+  \subsection{Computation}
+
+  Example, we want to compute $(\lambda x y z.\; x\; z\; (y\; z))\; (\lambda a
+  b.\; a)\; t\; u$
+
+  \begin{align*}
+    &\;(\lambda x y z.\; x\; z\; (y\; z))\; (\lambda a b.\; a)\; t\; u \\
+    =&\;(\lambda y z.\; (\lambda a b.\; a)\; z\; (y\; z))\; t\; u \\
+    =&\;(\lambda z.\; (\lambda a b.\; a)\; z\; (t\; z))\; u \\
+    =&\;(\lambda a b.\; a)\; u\; (t\; u))\\
+    =&\;(\lambda b.\; u)\; (t\; u))\\
+    =&\;u
+  \end{align*}
+
+  Here are some examples of slightly more subtle calculations:
+  \begin{multicols}{2}
+    \begin{align*}
+      &(\lambda x.\; (\lambda x.\; x))\; y \\
+      &=\; \lambda x.\; x
+    \end{align*}
+
+    \begin{align*}
+      &(\lambda x.\; (\lambda y.\; x))\; y \\
+      &=\; \lambda z.\; y
+    \end{align*}
+  \end{multicols}
+
+  We will define the reduction rewrite rule called $\beta$-reduction later.
+
+  \subsection{Inductive reasoning}
+
+  We can also define $\Lambda$ with the smallest set such that :
+
+  \begin{itemize}
+    \item $\forall x \in \text{Var}, x \in \Lambda$
+    \item $\forall x \in \text{Var}, \forall t \in \Lambda, \lambda x.t \in
+      \Lambda$
+    \item $\forall t_1 t_2, t_1\; t_2 \in \Lambda$
+  \end{itemize}
+
+  We define $\Lambda$ by induction, so we can write induction function.
+
+  For example, we can write $f_v$ the function who compute the number of
+  variable in term $t$ and $f_@$ the function who compute the number of
+  application
+  \begin{multicols}{2}
+    \[
+        \begin{cases}
+            f_v(x) &= 1 \\
+            f_v(\lambda x. t) &= f_v(t) \\
+            f_v(t_1\; t_2) &= f_v(t_1) + f_v(t_2) \\
+        \end{cases}
+    \]
+
+    \[
+        \begin{cases}
+            f_@(x) &= 0 \\
+            f_@(\lambda x. t) &= f_@(t) \\
+            f_@(t_1\; t_2) &= 1 + f_@(t_1) + f_@(t_2) \\
+        \end{cases}
+    \]
+  \end{multicols}
+
+  How to prove that some property $P(t)$ is valid for all $\lambda$-terms $t$ ?
+
+  \begin{enumerate}
+    \item Prove that $\forall x \in \text{Var}, P(x)$ is valid
+    \item Prove that $\forall x \in \text{Var}, \forall t, P(t) \Rightarrow
+      P(\lambda x.\; t)$ is valid
+    \item Prove that $\forall t_1, t_2, P(t_1) \wedge P(t_2) \Rightarrow P(t_1
+      \; t_2)$ is valid
+  \end{enumerate}
+
+  \exam We want to prove $H : \forall t, f_v(t) = 1 + f_@(t) $
+
+  \proof We proof $H$ by induction on the term $t$ :
+
+  \begin{itemize}
+    \item $t = x$, $f_v(x) = x$ and $f_@(x) = 0$, so we have $f_v(x) = 1 +
+      f_@(x)$
+
+    \item $t = \lambda x. t$, we assume that $f_v(t) = 1 + f_@(t)$.
+      We calculate $f_v(\lambda x. t) = f_v(t) = 1 + f_@(t) = 1 + f_@(\lambda
+      x.t)$
+
+    \item $t = t_1\; t_2$, we assume that $f_v(t_1) = 1 + f_@(t_1)$ and
+      $f_v(t_2) = 1 + f_@(t_2)$. By the calculation $f_v(t_1\; t_2) = f_v(t_1) +
+      f_v(t_2) = 1 + f_@(t_1) + 1 + f_@(t_2) = 1 + f_@(t_1\; t_2)$
+  \end{itemize}
+  \qedsymbol
+
+  \subsection{Bound variables and free variables}
+
+  \subsection{$\alpha$-equivalence}
+
+  \subsection{$\beta$-reduction}
+
+  \exam Make them nice
+    \begin{itemize} 
+      \item $\lambda x.\; (\lambda x.\; x\; y) (\lambda y. x\; y)$
+      \item $\lambda x y.\; x (\lambda y.\; (\lambda y.\; y)\; y\; z)$
+    \end{itemize}
+
+  \exam Compute $(\lambda f.\; f\;f)\; (\lambda a b. b\;a\;b)$
+
+  \exam Prove that $fv(t[x \leftarrow u]) \subseteq (fv(t) \ \{x\}) \cup fv(u)$
+
+\end{document}
