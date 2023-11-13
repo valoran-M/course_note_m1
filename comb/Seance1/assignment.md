@@ -144,7 +144,7 @@ What is the complexity of your implementation?
 
 ```{code-cell} ipython3
 K = GF(5)
-M = matrix(K, [[0,0,3,1,4], [3,1,5,2,1], [4,6,2,1,3]])
+M = matrix(K, [[0,0,3,1,4], [3,1,4,2,1], [4,3,2,1,3]])
 M
 ```
 
@@ -154,5 +154,6 @@ M
 ```
 
 ```{code-cell} ipython3
-
+M = matrix(K, [[0,0,3,1,4], [3,1,4,2,1], [4,3,2,1,3]])
+subspace_membership(M,[1, 1, -2])
 ```

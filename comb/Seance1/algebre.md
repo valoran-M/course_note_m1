@@ -12,6 +12,8 @@ kernelspec:
   name: sagemath
 ---
 
++++ {"jp-MarkdownHeadingCollapsed": true}
+
 # Cours Master 1 Informatique Parcours MPRI: Combinatoire et Calcul algébrique: Séance 1: Rappels d'algèbre
 
 $\newcommand{\NN}{\mathbb{N}}
