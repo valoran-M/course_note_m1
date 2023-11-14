@@ -110,12 +110,20 @@ def reduced_echelon_form(m: matrix) -> matrix:
     return m
 ```
 
-```{code-cell} ipython3
++++
 
-```
+n = ncols
+m = nrows
+
+Complexité O(n * m), dans le pire des cas on parcours chaques cases de la
+matrice.
+
+On supose que échanger deux lignes et faire des opertations sur toute la ligne
+a une complxité constante.
+
++++
 
 #### Test d'appartenance à un sous espace vectoriel / Vector subspace membership testing: B
-
 ```{code-cell} ipython3
 def subspace_membership(V: matrix, w):
     """
@@ -143,4 +151,17 @@ def subspace_membership(V: matrix, w):
     return True
 ```
 
-#### Calcul d'une base de la somme de deux espaces vectoriels / Computation of the sum of two vector spaces: A - F
++++
+
+On supose que l'operation d'échelonage est constante.
+
+On parcours chaques case de la matrice auquel on a rajouté une colone pour le
+vecteur une seule foit.
+
+n = ncols
+m = nrows
+
+O((n + 1) * m) = O(n * m)
++++
+
+#### Calcul d'une base de la somme de deux espaces vectoriels / Computation of the sum of two vector spaces: E
