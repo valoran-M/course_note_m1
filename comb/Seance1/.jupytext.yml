@@ -1,6 +1,0 @@
-hide_notebook_metadata: True
-preferred_jupytext_formats_save: "md:myst"
-preferred_jupytext_formats_read: "md:myst"
-# notebook_metadata_filter: 'rise'
-split_at_heading: True
-notebook_extensions: 'ipynb,md'
