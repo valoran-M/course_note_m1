@@ -1,3 +1,4 @@
+
 from sage.all import matrix, vector, GF
 
 def response(question: str) -> int:
@@ -15,13 +16,20 @@ def response(question: str) -> int:
 
 def reduced_echelon_form(m: matrix) -> matrix:
     """
-    Renvoie la matrice `m` mise sous forme échelon 
 
     EXAMPLES::
         sage: reduced_echelon_form(matrix(GF(5), [[0,0,3,1,4], [3,1,4,2,1], [4,3,2,1,3]]))
         [3 1 4 2 1]
         [0 0 3 1 4]
         [0 0 0 0 0]
+        
+    Complexité: `O(n * m)`, n nombre de colones et m le nombre de lignes de la matrice m
+
+    La boucle principal va itéré sur les colones (la deuxième condition est pour éviter de dépasser le nombre de ligne)
+    Dans cette boucle principal on a deux boucle principal qui peuvent au plus parcours chaques éléments d'une ligne
+    donc on fait O(2m) = O(m) itération à chaques itération de la boucle principale
+    
+    On part du principe que les opération sur la matrice se font en O(1) ce qui est faux en pratique.
     """
     i = 0
     j = 0
@@ -33,15 +41,13 @@ def reduced_echelon_form(m: matrix) -> matrix:
                 l = k
                 break
 
-        if l == -1:
-            j += 1
-        else:
+        if l != -1:
             m[i], m[l] = m[l], m[i]
             for k in range(i + 1, m.nrows()):
                 if m[k][j] != 0:
                     m[k] = m[k] * m[i][j] - m[i] * m[k][j]
             i += 1
-            j += 1
+        j += 1
     return m
 
 def subspace_membership(V, w):
@@ -51,6 +57,16 @@ def subspace_membership(V, w):
     EXAMPLES::
         sage: subspace_membership(matrix(GF(5), [[0,0,3,1,4], [3,1,4,2,1], [4,3,2,1,3]]), [1, 1, -2]) 
         True
+    
+    Complexité: `O(n * m)`, n nombre de colones et m le nombre de lignes da la matrice V
+    
+    La première boucle for est là pour initialiser la matrice à écheloné (O(n)).
+    
+    La deuxième boucle for va parcours toute les lignes O(m) de la matrice écheloné
+    Dans cette boucle on à une boucle qui peut parcourire toute la ligne de W (sauf la dernière colone)
+    donc O(n) itération donc on a bien O(n * m) itération
+    
+    On assume que toute opération sur la matrice et que reduced_echelon_form a une comlexité constante.
     """
     if V.nrows() < len(w):
         return False
@@ -81,6 +97,11 @@ def add_subspace(V, W):
     EXEMPLES::
         sage: add_subspace([[1, 0, 0], [0, 1, 0]], [[0, 0, 1]])
         [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        
+    Complexité: `O(|W|)`
+    
+    En assumant que subspace_membership à une complexité constante il est facile de voir que la boucle fait bien
+    |W| itération.
     """
     M = matrix(V)
     B = V
