@@ -164,5 +164,9 @@ subspace_membership(M,[1, 1, -2])
 ```
 
 ```{code-cell} ipython3
+add_subspace([[1, 0, 0], [0, 1, 0]], [[0, 0, 1]])
+```
+
+```{code-cell} ipython3
 
 ```
