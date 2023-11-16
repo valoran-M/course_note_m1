@@ -352,4 +352,5 @@ ipython_config.py
 
 jupyterhub*
 
+*.cache
 .env

@@ -1,0 +1,24 @@
+use int.Int
+
+type tree 'a = Leaf | Node (tree 'a) 'a (tree 'a)
+
+predicate tree_mem (x: int) (t: tree int) = match t with
+  | Node l v r -> tree_mem x l \/ x = v \/ tree_mem x r
+  | Leaf       -> false
+end
+
+let function max (x y: int) : int = if x >= y then x else y
+
+let rec tree_max (t: tree int) : int
+  variant   { t }
+  requires  { t <> Leaf }
+  ensures   { tree_mem result t /\ forall x. tree_mem x t -> result >= x }
+=
+    match t with
+    | Node Leaf v Leaf  -> v
+    | Node t1   v Leaf  -> max (tree_max t1) v
+    | Node Leaf v t2    -> max (tree_max t2) v
+    | Node t1   v t2    -> max (tree_max t1) (max (tree_max t2) v)
+    end
+
+
