@@ -1,0 +1,556 @@
+\section{Reduction strategies}
+
+  There are several possibilities when reducing terms. We can draw these
+  possibilities in the form of a graph like this one:
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(T1) at ( 0,  0) {$(\lambda x.\; x\;x)((\lambda y.\;y)\; a)$};
+    \node(T2) at (-3, -1.5) {$((\lambda y.\;y)\; a)\;((\lambda y.\;y)\; a)$};
+    \node(T3) at ( 3, -1.5) {$(\lambda x.\; x\;x)\;a$};
+    \node(T4) at ( 0, -2.5) {$((\lambda y.\;y)\; a)\;a$};
+    \node(T5) at (-3, -3.5) {$a\;((\lambda y.\;y)\;a)$};
+    \node(T6) at ( 0, -4.5) {$a\;a$};
+
+    \draw[->] (T1) edge (T2) (T2) edge (T4) (T4) edge (T6) (T3) edge (T6)
+              (T2) edge (T5) (T5) edge (T6) (T1) edge (T3);
+  \end{tikzpicture}
+  \end{center}
+
+  This raises the questions : \begin{itemize}
+    \item Are some paths better than others ?
+    \item Is there always a result in the ? Is it unique ?
+  \end{itemize}
+
+  \subsection{Normalization}
+
+  A \textit{normal form} is a term that cannot be reduced anymore,
+  formally : $N(t) = \neg \exists t', t \to t' $.
+
+  \exam.
+
+  \begin{tabular}{c|c}
+    normal form & not normal form \\
+    \hline
+    $x$ & $(\lambda x.x)\; y$ \\
+    $\lambda x.xy$ & $x\; ((\lambda y.y)\;(\lambda z.zx))$ \\
+    $x (\lambda y.y)\;(\lambda z.zx)$ &
+  \end{tabular}
+
+  \vspace{0.5cm}
+
+  If $t\to^* t'$ and $t'$ is normal, the term $t'$ is said to be a normal form
+  of $t$. This defines our informal notion of a result of a term.
+
+  Some terms do not have a normal form :
+
+  \begin{align*}
+    \Omega &= \delta\;\delta \\
+          &= (\lambda x.xx)\; (\lambda x.xx) \\
+          &\to (xx)\{\lambda x.xx\} \\
+          &= x\{\lambda x.xx\}\;x\{\lambda x.xx\} \\
+          &= (\lambda x.xx)\; (\lambda x.xx) \\
+          &= \Omega
+  \end{align*}
+
+  \paragraph{Normalization properties} A term $t$ is :
+
+  \begin{itemize}
+    \item \textit{strongly normalizing} if every reduction sequence starting
+      from $t$ eventually reaches a normal form :
+
+      \[(\lambda xy.y)\;((\lambda z.z)\;(\lambda z.z))\]
+
+    \item \textit{weakly normalizing}, or normalizable, if there is at least one
+      reduction sequence starting from $t$ and reaching a normal form :
+
+      \[(\lambda xy.y)\;((\lambda z.zz)\;(\lambda z.zz))\]
+  \end{itemize}
+
+  \subsection{Reduction strategies}
+
+  The purpose of a reduction strategy is to determine a redex reduction order
+  within a term. We have two well-known reduction orders :
+
+  \begin{itemize}
+    \item \textit{Normal order} : reduce the most external redex first. Apply
+      functions without reducing the arguments
+    \item \textit{Applicative order} : reduce the most internal redex first.
+      Normalize the arguments before reducing the function application itself.
+  \end{itemize}
+
+  \exo normal order vs. applicative order.
+
+  Compare normal order reduction and applicative order reduction of the
+  following terms :
+
+  \begin{enumerate}
+    \item $(\lambda xy.x)\;z\;\Omega$
+    \item $(\lambda x.xx)((\lambda y.y)\;z)$
+    \item $(\lambda x.x(\lambda y.y)) (\lambda z.(\lambda a.aa)(z\;b))$
+  \end{enumerate}
+
+  In each case: does another order allow shorter sequences ?
+
+  \textit{Answer}
+
+  \begin{enumerate}
+    \item Normal order
+      \begin{align*}
+        &(\lambda xy.x)\;z\;\Omega\\
+        &\to (\lambda y.z)\; \Omega\\
+        &\to z
+      \end{align*}
+
+      Applicative order
+      \begin{align*}
+        &(\lambda xy.x)\;z\;\Omega\\
+        &\to (\lambda xy.x)\; \Omega\\
+        &\to \ldots
+      \end{align*}
+
+      Normal order reduction is as short as possible.
+
+    \item Normal order
+      \begin{align*}
+        &(\lambda x.xx)\;((\lambda y.y)\;z) \\
+        &\to ((\lambda y.y)\; z)\;((\lambda y.y)\;z) \\
+        &\to z ((\lambda y.y)\;z) \\
+        &\to zz
+      \end{align*}
+
+      Applicative order
+
+      \begin{align*}
+        &(\lambda x.xx)\;((\lambda y.y)\;z) \\
+        &\to (\lambda x.xx)\;z \\
+        &\to zz
+      \end{align*}
+
+      Applicative order reduction is as short as possible.
+
+    \item Reduction graph :
+      \begin{center}
+      \begin{tikzpicture}[line width=0.3mm]
+        \node(T1) at (0, 0) {$(\lambda x.x(\lambda y.y)) (\lambda z.(\lambda a.aa)(z\;b))$};
+        \node(T2) at (0, -2) {$(\lambda z.(\lambda a.aa)(z\;b))(\lambda y.y)$};
+        \node(T3) at (0, -4) {$(\lambda a.aa)((\lambda y.y)\;b)$};
+        \node(T4) at (0, -6) {$((\lambda y.y)\;b)((\lambda y.y)\;b)$};
+        \node(T5) at (0, -8) {$b\;((\lambda y.y)\;b)$};
+        \node(T6) at (0, -10) {$bb$};
+
+        \node(T7) at (5, -2) {$(\lambda x.x(\lambda y.y)) (\lambda z.(z\;b)\;(z\;b))$};
+        \node(T8) at (5, -4) {$(\lambda z.(z\;b)\;(z\;b))(\lambda y.y)$};
+
+        \node(T9) at (-3, -7) {$(\lambda a.aa)\;b$};
+
+        \draw[->] (T1) edge (T2) (T2) edge (T3) (T3) edge (T4) (T4) edge (T5)
+                  (T5) edge (T6)
+                  (T1) edge (T7) (T7) edge (T8) (T8) edge (T4)
+                  (T3) edge (T9) (T9) edge (T6);
+      \end{tikzpicture}
+      \end{center}
+
+      The middle path is the normal order strategy, the right path is the
+      applicative order and the left path is the shortest reduction.
+  \end{enumerate}
+
+  \paragraph{Normal order property} If a term $t$ does have a normal form the
+  normal order reduction reaches this normal form.
+
+  \subsection{Confluence}
+
+  Confluence is a very useful concept to prove the uniqueness of a result of
+  a calculation rule like beta-reduction. It says that if a term can be
+  rewritten in more than one way, then there is always a way to revert to a
+  common term
+
+  Formally, the confluence is written
+  like this: $\forall t\; t_1\; t_2, t \to^* t_1 \wedge t \to^* t_2 \Rightarrow
+  \exists u, t_1 \to^* u \wedge t_2 \to^* u$
+
+  We can draw the following diagram:
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1,-1) {$t_1$};
+    \node(t2) at ( 1,-1) {$t_2$};
+    \node(u) at ( 0,-2) {$u$};
+
+    \draw[->] (t) edge node[pos=0.9, above] {$*$} (t1)
+              (t) edge node[pos=0.9, above] {$*$} (t2)
+              (t1) edge node[pos=0.9, above] {$*$} (u)
+              (t2) edge node[pos=0.9, above] {$*$} (u);
+  \end{tikzpicture}
+  \end{center}
+
+  A rewrite rule can have the \textit{diamond property}. In one rewriting step,
+  it can always fall back on the same term in the second rewriting step.
+  $\forall t\; t_1\; t_2, t \to t_1 \wedge t_2 \Rightarrow \exists u, t_1 \to u
+  \wedge t_2 \to u$
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1,-1) {$t_1$};
+    \node(t2) at ( 1,-1) {$t_2$};
+    \node(u) at ( 0,-2) {$u$};
+
+    \draw[->] (t) edge (t1)
+              (t) edge (t2)
+              (t1) edge (u)
+              (t2) edge (u);
+  \end{tikzpicture}
+  \end{center}
+
+  \lemma The diamond property implies the confluence.
+
+  \paragraph{proof}
+  We can prove that by induction
+  on $n + m$ with $n$ the number of steps of $t \to t_1$ and $m$ the number of
+  steps of $t \to t_2$.
+
+  \begin{itemize}
+    \item $n + m = 0$, then $t = t_1 = t_2$, so $t \not \to t_1$ and $t \not \to
+      t_2$ the property is true.
+
+    \item $n + m + 1$ we assume that the diamond property implies the confluence
+      on the condition that $t$ reduce to $t_1$ less that $n$ steps and $t$
+      reduce to $t_2$ less that $m$ steps.
+
+      \begin{center}
+        \begin{tikzpicture}[line width=0.3mm]
+        \node(t) at (0, 0) {$t$};
+        \node(n1) at (-1, -1) {$n_1$};
+        \node(m1) at ( 1, -1) {$m_1$};
+        \node(t1) at (-2, -2) {$t_1$};
+        \node(t2) at ( 2, -2) {$t_2$};
+        \node(u)  at ( 0, -4) {$u$};
+
+        \node(nm)  at ( 0, -2) { };
+        \node(t1n1)at ( -1, -3) { };
+
+          \draw[->] (t) edge (n1)
+                    (t) edge (m1)
+                    (n1) edge node[above, left] {$n-1$} (t1)
+                    (m1) edge node[above, right] {$m-1$} (t2);
+
+        \draw[->, dotted] (n1) edge (nm) (m1) edge (nm);
+        \draw[->, dotted] (t1) edge (t1n1) (nm) edge (t1n1);
+        \draw[->, dotted] (t2) edge (u) (t1n1) edge (u);
+
+        \node at (0, -1) {\scriptsize diamond};
+        \node at (-1, -2) {\scriptsize H.R};
+        \node at (0.5, -2.5) {\scriptsize H.R};
+
+      \end{tikzpicture}
+      \end{center}
+  \end{itemize}
+  \qedsymbol
+
+  The $\beta$-reduction does not have the diamond property :
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(T1) at ( 0,  0) {$(\lambda x.\; x\;x)((\lambda y.\;y)\; a)$};
+    \node(T3) at (-2, -1.5) {$(\lambda x.\; x\;x)\;a$};
+    \node(T2) at ( 2, -1.5) {$((\lambda y.\;y)\; a)\;((\lambda y.\;y)\; a)$};
+    \node(T6) at ( 0, -3) {$a\;a$};
+
+    \draw[->] (T1) edge (T3) (T1) edge (T2) (T3) edge (T6)
+      (T2) edge ( 1, -2.25)
+      (1, -2.25) to (T6);
+  \end{tikzpicture}
+  \end{center}
+
+  We can proof that the $\beta$-reduction is locally confluent, which is:
+  $\forall t\; t_1\; t_2, t \to t_1 \wedge t \to t_2 \Rightarrow \exists u, t_1
+  \to ^* u \wedge t_2 \to^* u$. It represents with this diagram :
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1,-1) {$t_1$};
+    \node(t2) at ( 1,-1) {$t_2$};
+    \node(u) at ( 0,-2) {$u$};
+
+    \draw[->] (t) edge (t1)
+              (t) edge (t2)
+              (t1) edge node[above, pos=0.9] {$*$} (u)
+              (t2) edge node[above, pos=0.9] {$*$} (u);
+  \end{tikzpicture}
+  \end{center}
+
+  But the local confluence does not imply the confluence, the Curry's counter
+  example. This diagram is locally confluent, but it is not confluent.
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(a) at (-0.5, 0) {$a$};
+    \node(b) at (0.5,0) {$b$};
+
+    \node(c) at (-1,-1) {$c$};
+    \node(d) at ( 1,-1) {$d$};
+
+    \draw[->] (a) edge[bend left] (b)
+              (b) edge[bend left] (a)
+              (a) edge (c)
+              (b) edge (d);
+
+  \end{tikzpicture}
+  \end{center}
+
+  The proof of confluence is therefore much more complicated than expected.
+  We will present two possible proofs.
+
+  \subsubsection{Parallel reduction}
+
+  Parallel reduction proof consists of defining a relation
+  $\rightrightarrows_\beta$ that is ``between'' $\to_\beta$ and $\to_\beta^*$.
+  This relation need to have the diamond property. Because thanks to this we can
+  prove the confluence of this new relation.
+
+  We're going to start by defining the parallel reduction :
+
+  \begin{mathpar}
+    \inferrule*[Right=Id]{ }
+              { x \\ \rightrightarrows_\beta \\ x} \\
+
+    \inferrule*[Right=Abs]{t \\ \rightrightarrows_\beta \\ t'}
+              {\lambda x.t \\ \rightrightarrows_\beta \\ \lambda x.t} \and
+    \inferrule*[Right=App]{t_1 \rightrightarrows_\beta t_1' \\ t_2
+      \rightrightarrows_\beta t_2' }
+              {t_1\;t_2 \\ \rightrightarrows_\beta \\ t_1'\; t_2'} \\
+    \inferrule*[Right=Red]{t \rightrightarrows_\beta t' \\ u
+    \rightrightarrows_\beta u'}
+        {(\lambda x. t) u \rightrightarrows_\beta t'\{x \leftarrow u'\}}
+  \end{mathpar}
+
+  \exam $(\lambda x.((\lambda y.y)\;(\lambda z.z))\;x)\;((\lambda w.w)\;a)$
+
+  \begin{mathpar}
+    \inferrule*{
+      \inferrule*{
+        \inferrule*{\inferrule*{ }{y \rightrightarrows_\beta y} \\
+          \inferrule*{\inferrule*{ }{z \rightrightarrows_\beta z}}
+            {\lambda z.z\rightrightarrows_\beta \lambda z.z}}
+          {(\lambda y.y)\;(\lambda z.z)\rightrightarrows_\beta\lambda z.z}
+        \\ \inferrule* { }{x\rightrightarrows_\beta x}}
+      {(\lambda x.((\lambda y.y)\;(\lambda z.z))\;x)\rightrightarrows_\beta (\lambda z.z)\;x}
+    \\
+    \inferrule*{\inferrule*{ }{w \rightrightarrows_\beta w} \\
+      \inferrule*{ }{a \rightrightarrows_\beta a}}
+      {(\lambda w.w)a\rightrightarrows_\beta a}}
+     {(\lambda x.((\lambda y.y)\;(\lambda z.z))\;x)\;((\lambda w.w)\;a) \rightrightarrows_\beta (\lambda z.z)\;a}
+  \end{mathpar}
+
+  \lemma \label{pid} $\forall t, t \rightrightarrows_\beta t$
+
+  \textit{Proof}: We prove by induction on $t$:
+
+  \begin{itemize}
+    \item $t = x$ by definition of $\rightrightarrows_\beta$ we have $x
+      \rightrightarrows_\beta a$.
+    \item $t = t_1\; t_2$. We have this induction hypothesis $t_1
+      \rightrightarrows_\beta t_1$ and $t_2 \rightrightarrows_\beta t_2$. So we
+      have $t_1\; t_2 \rightrightarrows_\beta t_1\; t_2$
+    \item $t = \lambda x.t_0$. We have this induction hypothesis $t_0
+      \rightrightarrows_\beta t_0$. So we have $\lambda x.t_0
+      \rightrightarrows_\beta \lambda x.t_0$.
+  \end{itemize}
+  \qedsymbol
+
+  \lemma $\forall t t', t \to_\beta t' \Rightarrow t \rightrightarrows_\beta
+  t'$\hspace{1cm} $\;\to_\beta \subseteq \rightrightarrows_\beta$
+
+  \textit{Proof}: We prove by induction on $\to_\beta$
+
+  \begin{itemize}
+    \item Case $(\lambda x.t)\; u \to_\beta t \{x \leftarrow u\}$:
+
+      \begin{mathpar}
+        \inferrule*{
+          \inferrule*[Left=Lemma-\ref{pid}]{ }{t \rightrightarrows_\beta t} \\
+          \inferrule*[Right=Lemma-\ref{pid}]{ }{u \rightrightarrows_\beta u}
+        }
+          {(\lambda x.t)\; u \rightrightarrows_\beta t \{x \leftarrow u\}}
+      \end{mathpar}
+    \item Case $t_1\;t_2 \to_\beta t_1'\;t_2$ with $t_1 \to_\beta t_2$. With
+      the induction hypothesis $t_1 \rightrightarrows_\beta t_1'$
+
+      \begin{mathpar}
+        \inferrule*{\inferrule*[Left=H.R]{ }{t_1\rightrightarrows_\beta t_1'}\\
+          \inferrule*[Right=Lemma-\ref{pid}]{ }{t_2 \rightrightarrows_\beta t_2}}
+          {t_1\;t_2 \rightrightarrows_\beta t_1'\;t_2}
+      \end{mathpar}
+    \item The other case are similar.
+  \end{itemize}
+
+  \lemma $\forall t t', t \rightrightarrows_\beta t' \Rightarrow t \to_\beta^*
+  t'$ \hspace{1cm} $\rightrightarrows_\beta \subseteq \to_\beta^*$
+
+  \textit{Proof}: by induction on $\rightrightarrows_\beta$
+
+  \begin{itemize}
+    \item Case $x \rightrightarrows_\beta x$. We have $x\to^0_\beta x$
+
+    \item Case $\lambda x. u \rightrightarrows_\beta \lambda x. u'$ with $t
+      \rightrightarrows_\beta t'$. We assume that $t \to_\beta^* t'$ (induction
+      hypothesis). We can easily prove by recurrence on the length of
+      $\to_\beta^*$, that we have well $\lambda x. t \to_\beta^* \lambda x.t'$
+
+    \item The application rule is similar.
+
+    \item Case $(\lambda x. t)\; u \rightrightarrows_\beta t'\{x \leftarrow
+      u'\}$ with $t \rightrightarrows_\beta t'$ and $u \rightrightarrows_\beta
+      u'$. Then we have $(\lambda x. t) u \to_\beta^* (\lambda x. t') u$ by
+      induction hypothesis on $t$, $(\lambda x. t') u' \to_\beta^* (\lambda x.
+      t') u'$ by induction hypothesis on $u$. And finally we have $(\lambda x.
+      t') u' \to_\beta t'\{x\leftarrow u'\}$
+  \end{itemize}
+  \qedsymbol
+
+  \paragraph{method of Tait and Martin-Löf} We want to proof that a relation has
+  the diamond property
+
+  \lemma If a relation $\to$ has the diamond property then $\to^*$ has the
+  diamond property to.
+
+  \textit{Proof} : We suppose that $\to$ has the diamond property [TODO]
+  \qedsymbol
+
+  \lemma If two relation  $\to$ and $\rightrightarrows$ are such that $\to
+  \subseteq \rightrightarrows \subseteq \to^*$ then $\rightrightarrows^* =
+  \to^*$.
+
+  \textit{Proof}: From $\to \subseteq \rightrightarrows \subseteq \to^*$ we
+  deduce $\to^* \subseteq \rightrightarrows^* \subseteq \to^{**}$. However we
+  have $\to^* = \to^{**}$. Then $\to^* \subseteq \rightrightarrows
+  \subseteq \to^*$ so we have $\rightrightarrows^* = \to^*$.\\
+  \qedsymbol
+
+  To proof that $\to^*$ has the diamond property we just need to show that
+  $\rightrightarrows_\beta$ has the diamond property. To do this we need the
+  following lemma :
+
+  \lemma  \label{dia_iter}
+  $a \rightrightarrows_\beta a' \wedge b \rightrightarrows_\beta b'
+  \Rightarrow a\{x \leftarrow b\} \rightrightarrows_\beta a'\{x \leftarrow b\}$
+
+  \textit{Proof}:
+  By induction one the derivation $a \rightrightarrows_\beta a'$.
+
+  \begin{itemize}
+    \item Case $y \rightrightarrows_\beta y$
+      \begin{itemize}
+        \item If $x = y$, then $x\{x \leftarrow b\} = b \rightrightarrows_\beta
+          b' = x\{x \leftarrow b'\}$
+
+        \item If $x \not = y$, then $y\{x \leftarrow b\} = y
+          \rightrightarrows_\beta y = y\{x \leftarrow b'\}$
+      \end{itemize}
+
+    \item Case $\lambda y. a_0 \rightrightarrows_\beta \lambda y.a_0'$ with $a_0
+      \rightrightarrows_\beta a_0'$
+
+      Then $(\lambda y.a_0)\{x\leftarrow b\} = \lambda y. a_0 \{x \leftarrow
+      b\}$. By induction hypothesis we have $a_0\{x \leftarrow b\}
+      \rightrightarrows_\beta a_0'\{x \leftarrow b'\}$.
+
+      Therefore, we have $\lambda y.a_0\{x\leftarrow b\} \rightrightarrows_\beta
+      \lambda y.a_0'\{x\leftarrow b'\} = (\lambda y.a_0')\{x\leftarrow b'\}$
+
+    \item Case $a_1\; a_2 \rightrightarrows_\beta a_1'\;a_2'$ with $a_1
+      \rightrightarrows_\beta a_1'$ and $a_2 \rightrightarrows_\beta a_2'$.
+
+      It is similar to the case above.
+
+    \item Case $(\lambda x. a_1)\;a_2\rightrightarrows_\beta (\lambda x.a_1')
+      a_2'$ with $a_1 \rightrightarrows_\beta a_1'$ and $a_2
+      \rightrightarrows_\beta a_2'$.
+
+      Then $((\lambda y. a_1)a_2)\{x \leftarrow b\} = (\lambda y. a_1\{x
+      \leftarrow b\})a_2\{x \leftarrow b\}$.
+
+      By the induction hypothesis we have $a_1\{x \leftarrow b\}
+      \rightrightarrows_\beta a_1'\{x \leftarrow b'\}$ and $a_2\{x \leftarrow
+      b\} \rightrightarrows_\beta a_2'\{x \leftarrow b'\}$.
+
+      Therefore $(\lambda y. a_1\{x\leftarrow b\})(a_2\{\leftarrow b\})
+      \rightrightarrows_\beta (a_1'\{x \leftarrow b'\}\{y \leftarrow a_2'\{x
+      \leftarrow b'\}\}$. Thanks to the substitution lemma-\ref{exo:commsubst}
+
+  \end{itemize}
+  \qedsymbol
+
+  \lemma $\rightrightarrows_\beta$ has the diamond property.
+    $\forall t\; s\; r, t \rightrightarrows_\beta s \wedge t \rightrightarrows_\beta
+    r \Rightarrow \exists u, s \rightrightarrows_\beta u \wedge r
+    \rightrightarrows_\beta u$.
+
+  \textit{Proof}: By induction on the derivation of $t\rightrightarrows_\beta
+  re$.
+
+  \begin{itemize}
+    \item Case $x \rightrightarrows_\beta x$. Then $s = x$ so we can take $u =
+      x$.
+
+    \item Case $\lambda x.t_0 \rightrightarrows_\beta \lambda x. r_0$ with
+      $t_0 \rightrightarrows_\beta r_0$. Then $s = \lambda x. s_0$ with
+      $t_0 \rightrightarrows_\beta s_0$.
+
+      By induction hypothesis we have $u_0$ such that $s_0
+      \rightrightarrows_\beta u_0$ and $r_0 \rightrightarrows_\beta u_0$.
+
+      Therefore, $\lambda x. s_0 \rightrightarrows_\beta \lambda x. u_0$ And
+      $\lambda x. r_0 \rightrightarrows_\beta \lambda x. u_0$
+
+    \item Case $t_1\;t_2 \rightrightarrows_\beta r_1\; r_2$ with $t_1
+      \rightrightarrows_\beta r_1$ and $t_2 \rightrightarrows_\beta r_2$.
+      Two case for $t_1\;t_2 \rightrightarrows_\beta s_0$:
+
+      \begin{itemize}
+        \item if $s = s_1\;s_2$ with $t_1 \rightrightarrows_\beta s_1$ and $t_2
+          \rightrightarrows_\beta s_2$ by induction hypothesis there are $u_1$
+          and $u_2$ such that $s_1 \rightrightarrows_\beta u_1$, $r_1
+          \rightrightarrows_\beta u_1$ and $s_2 \rightrightarrows_\beta u_2$,
+          $r_2 \rightrightarrows_\beta u_2$, therefore $s_1s_2
+          \rightrightarrows_\beta u_1u_2$ and $r_1r_2
+          \rightrightarrows_\beta u_1u_2$.
+
+        \item if $s = s_1\{x \leftarrow s_2\}$ with $t_1 = \lambda x.t_1$ and
+          $t_1 \rightrightarrows_\beta s_1$ and $t_2 \rightrightarrows_\beta
+          s_2$, then $r_1 = \lambda x.r_1$ with $t_1' \rightrightarrows_\beta
+          r_1'$ and by induction hypothesis there are $u_1$ and $u_2$ such that
+          $s_1 \rightrightarrows_\beta u_1$ and $r_1'\rightrightarrows_\beta
+          u_1$ and $s_2 \rightrightarrows_\beta u_2$ and $r_2
+          \rightrightarrows_\beta u_2$.
+
+          Therefore, $(\lambda x.r_1')r_2 \rightrightarrows_\beta u_1\{
+            x \leftarrow s_2\}$. And we conclude by the lemma-\ref{dia_iter}
+      \end{itemize}
+
+    \item The last case is almost the same.
+  \end{itemize}
+  \qedsymbol
+
+  \subsubsection{Strip lemma}
+
+  \subsubsection{Church-Rosser theorem}
+
+  If $t_1 =_\beta t_2$ the there is $u$ such that $t_1 \to_\beta^* u$ and $t_2
+  \to_\beta^* u$
+
+  Consequences :
+
+  \begin{itemize}
+    \item if $t$ has a normal form $n$ then $t \to_\beta^* n$
+
+    \item any $\lambda$-term can has only one normal form
+
+    \item if two normal form $n$ and $m$ are syntactically different, then $n
+      \not =_\beta m$.
+  \end{itemize}
+
+
