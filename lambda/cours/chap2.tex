@@ -432,11 +432,12 @@
   $\rightrightarrows_\beta$ has the diamond property. To do this we need the
   following lemma :
 
-  \lemma $a \rightrightarrows_\beta a' \wedge b \rightrightarrows_\beta b'
+  \lemma  \label{dia_iter}
+  $a \rightrightarrows_\beta a' \wedge b \rightrightarrows_\beta b'
   \Rightarrow a\{x \leftarrow b\} \rightrightarrows_\beta a'\{x \leftarrow b\}$
 
-  \textit{Proof}: By induction one the derivation $a \rightrightarrows_\beta
-  a'$.
+  \textit{Proof}:
+  By induction one the derivation $a \rightrightarrows_\beta a'$.
 
   \begin{itemize}
     \item Case $y \rightrightarrows_\beta y$
@@ -482,7 +483,6 @@
   \qedsymbol
 
   \lemma $\rightrightarrows_\beta$ has the diamond property.
-
     $\forall t\; s\; r, t \rightrightarrows_\beta s \wedge t \rightrightarrows_\beta
     r \Rightarrow \exists u, s \rightrightarrows_\beta u \wedge r
     \rightrightarrows_\beta u$.
@@ -510,10 +510,45 @@
 
       \begin{itemize}
         \item if $s = s_1\;s_2$ with $t_1 \rightrightarrows_\beta s_1$ and $t_2
-          \rightrightarrows_\beta s_2$ by induction hypothesis
-      \end{itemize}
-  \end{itemize}
+          \rightrightarrows_\beta s_2$ by induction hypothesis there are $u_1$
+          and $u_2$ such that $s_1 \rightrightarrows_\beta u_1$, $r_1
+          \rightrightarrows_\beta u_1$ and $s_2 \rightrightarrows_\beta u_2$,
+          $r_2 \rightrightarrows_\beta u_2$, therefore $s_1s_2
+          \rightrightarrows_\beta u_1u_2$ and $r_1r_2
+          \rightrightarrows_\beta u_1u_2$.
 
+        \item if $s = s_1\{x \leftarrow s_2\}$ with $t_1 = \lambda x.t_1$ and
+          $t_1 \rightrightarrows_\beta s_1$ and $t_2 \rightrightarrows_\beta
+          s_2$, then $r_1 = \lambda x.r_1$ with $t_1' \rightrightarrows_\beta
+          r_1'$ and by induction hypothesis there are $u_1$ and $u_2$ such that
+          $s_1 \rightrightarrows_\beta u_1$ and $r_1'\rightrightarrows_\beta
+          u_1$ and $s_2 \rightrightarrows_\beta u_2$ and $r_2
+          \rightrightarrows_\beta u_2$.
+
+          Therefore, $(\lambda x.r_1')r_2 \rightrightarrows_\beta u_1\{
+            x \leftarrow s_2\}$. And we conclude by the lemma-\ref{dia_iter}
+      \end{itemize}
+
+    \item The last case is almost the same.
+  \end{itemize}
   \qedsymbol
+
+  \subsubsection{Strip lemma}
+
+  \subsubsection{Church-Rosser theorem}
+
+  If $t_1 =_\beta t_2$ the there is $u$ such that $t_1 \to_\beta^* u$ and $t_2
+  \to_\beta^* u$
+
+  Consequences :
+
+  \begin{itemize}
+    \item if $t$ has a normal form $n$ then $t \to_\beta^* n$
+
+    \item any $\lambda$-term can has only one normal form
+
+    \item if two normal form $n$ and $m$ are syntactically different, then $n
+      \not =_\beta m$.
+  \end{itemize}
 
 
