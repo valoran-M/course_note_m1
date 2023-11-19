@@ -83,6 +83,7 @@
 
   \tableofcontents
 
+  \newpage
   \section{Presentation}
 
   \begin{itemize}
@@ -379,6 +380,119 @@
   \exo Prove that $fv(t[x \leftarrow u]) \subseteq (fv(t) \backslash \{x\})
     \cup fv(u)$
 
+  \textit{Answer :} Proof by induction on the structure of $t$
+
+  \begin{itemize}
+    \item Case where $t$ is a variable
+      \begin{itemize}
+        \item case x: $fv(x\{x\leftarrow u\}) = fv(u) \subseteq (fv(t)
+          \backslash \{x\} \cup fv(u)$
+        \item case $y\not =x$: $fv(y\{x\leftarrow u\} ) fv(y) = \{y\}$ and
+          $\{y\}$ is indeed a subset of ($fv(y)\backslash \{x\}) \cup fv(u) =
+          \{y\} \cup fv(u)$)
+      \end{itemize}
+
+    \item case where $t$ is an application $t_1\;t_2$. Assume
+      $fv(t_1\{x\leftarrow y\})\subseteq fv(t_1) \backslash \{x\} \cup fv(u)$ and
+      $fv(t_2\{x\leftarrow y\})\subseteq fv(t_2) \backslash \{x\} \cup fv(u)$.
+      Then
+
+      \begin{align*}
+        &fv((t_1\;t_2)\{x \leftarrow u\}) \\
+        &= fv(t_1\{x \leftarrow u\}\; t_2\{x \leftarrow u\}) & \text{by
+        definition of the substitution} \\
+        &= fv(t_1\{x \leftarrow u\}) \cup fv(t_2)\{x \leftarrow u\}) & \text{by
+        definition of $fv$} \\
+        &\subseteq fv(t_1 \backslash \{x\} \cup fv(u) \cup
+        fv(t_2 \backslash \{x\} \cup fv(u) & \text{by induction hypothesis} \\
+        &=fv(t_1 \backslash \{x\} \cup fv(t_2) \backslash \{x\}
+        \cup fv(u) \\
+        &=(fv(t_1 \cup fv(t_2)) \backslash \{x\}
+        \cup fv(u) \\
+        &= (fv(t_1\;t_2) \backslash \{x\}) \cup fv(u)
+      \end{align*}
+
+    \item Case where $t$ is $\lambda$-abstraction $\lambda y.t_0$. Asume
+      $fv(t_0\{x\leftarrow u\} \subseteq (fv(t_0) \backslash \{x\} \cup fv(u)$.
+      Then
+
+      \begin{align*}
+        &fv(\lambda y.t_0)\{x \leftarrow u\} \\
+        &= fv(\lambda y.t_0\{x \leftarrow u\}) \\
+        &= fv(t_0\{x \leftarrow u\})\{y\} \\
+        &\subseteq ((fv(t_0) \backslash\{x\})\cup fv(u))\backslash \{y\} &
+        \text{induction hypothesis} \\
+        &= (fv(t_0) \backslash\{x\} \backslash \{y\})\cup fv(u)\backslash \{y\}
+        \\
+        &= (fv(t_0) \backslash\{x\} \backslash \{y\})\cup fv(u) \\
+        &= (fv(t_0) \backslash \{y\} \backslash\{x\})\cup fv(u) \\
+        &= (fv(\lambda y.t_0) \backslash \{x\} \cup fv(u) \\
+      \end{align*}
+  \end{itemize}
+  \qedsymbol
+
+  \exo \label{exo:commsubst} Prove when $x\not\in fv(v)$ and $x \not = y$ then
+  $t\{x\leftarrow u\}\{y\leftarrow v\} = t\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\}$
+
+  \textit{Answer} Proof by induction on $t$
+  \begin{itemize}
+    \item Case where $t$ is a variable $z$:
+      \begin{itemize}
+        \item $z = x$ :
+          \begin{multicols}{2}
+            \begin{align*}
+              &x\{x\leftarrow u\}\{y\leftarrow v\} \\
+              &= u\{y\leftarrow v\} \\ 
+            \end{align*}
+
+            \begin{align*}
+              &x\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} \\
+              &= x\{x\leftarrow u\}\{y\leftarrow v\}\} \\
+              &= u\{y\leftarrow v\} \\
+            \end{align*}
+          \end{multicols}
+
+        \item $z = y$ :
+          \begin{multicols}{2}
+            \begin{align*}
+              &y\{x\leftarrow u\}\{y\leftarrow v\} \\
+              &= y\{y\leftarrow v\} \\
+              &= v \\
+            \end{align*}
+
+            \begin{align*}
+              &y\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} \\
+              &= v\{x\leftarrow u\{y\leftarrow v\}\} \\
+              &= v & \text{$x$ is not free in $v$} \\
+            \end{align*}
+          \end{multicols}
+        \item $z \not = y$ and $z \not = x$ :
+          $z\{x\leftarrow u\}\{y\leftarrow v\} = z$ and
+          $z\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} = z$
+      \end{itemize}
+
+    \item $t = t_1\; t_2$:
+      \begin{align*}
+        &(t_1\;t_2)\{x\leftarrow u\}\{y\leftarrow v\} \\
+        &t_1\{x\leftarrow u\}\{y\leftarrow v\}\;t_2\{x\leftarrow u\}\{y\leftarrow v\} \\
+        &t_1\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\}\;
+         t_2\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} &
+         \text{induction hypothesis} \\
+        &(t_1\;t_2)\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\}\\
+      \end{align*}
+
+    \item $t = \lambda z.\;t_0$
+      \begin{align*}
+        &(\lambda z.\;t_0)\{x\leftarrow u\}\{y\leftarrow v\} \\
+        &\lambda z.\;t_0\{x\leftarrow u\}\{y\leftarrow v\} \\
+        &\lambda z.\;t_0\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} &
+        \text{induction hypothesis}\\
+        &(\lambda z.\;t_0)\{y\leftarrow v\}\{x\leftarrow u\{y\leftarrow v\}\} \\
+      \end{align*}
+
+  \end{itemize}
+  \qedsymbol
+
   \subsection{$\beta$-reduction}
 
     The $\beta$-reduction is a rewrite rule who apply an argument to a function.
@@ -552,6 +666,66 @@
     \item $=_\beta$ reflexive, symmetric, transitive closure (equivalence)
   \end{itemize}
 
+  \subsubsection{Context}
+
+  We can also formalize our reduction with a context that is intuitively a
+  lambda term with a hole. So we have two steps, replace a variable with a hole
+  and replace the hole with a lambda term. So there is no need for substitution.
+
+  We define a context with the following grammar:
+
+  \begin{align*}
+    \mathcal C :=&\; \square              & (\text{hole})\\
+             |&\; x, y, z ...             & (\text{variable}) \\
+             |&\; \lambda x.\; \mathcal C & (\text{functions}) \\
+             |&\; \mathcal C\; \mathcal C & (\text{application})
+  \end{align*}
+
+  The operation $\mathcal C[u]$ is the result of filling the hole of $\mathcal
+  C$ with the term $u$.
+
+  \exo Here are some decompositions of $\lambda x.(x\; \lambda y.xy)$ into a
+  context and a term $\mathcal C[u]$
+
+  \begin{center}
+  \begin{tabular}{c|c|c|c|c|c}
+    $\mathcal C$ & $\square$ & $\lambda x.\square$ & $\lambda x.(\square\;
+    \lambda y.xy)$ & $\lambda x.(x\; \square)$ & $\ldots$ \\
+    \hline
+    $u$ & $\lambda x.(x\; \lambda y.xy)$ & $x\; \lambda y.xy$ & $x$ & $\lambda
+    y.\; x\;y$ & $\ldots$
+  \end{tabular}
+  \end{center}
+
+  What are the other possible decompositions ?
+
+  We already showed that
+
+  \[
+    (\lambda x.x\; ((\lambda y.zy)x))z \to (\lambda x.x\; (zx))\; z
+  \]
+  What are the context and the redex associated to this reduction ?
+
+  \textit{Answer} Other decompositions of $\lambda x.(x\; \lambda y.xy)$
+
+  \begin{center}
+  \begin{tabular}{c|c|c|c|}
+    $\mathcal C$ & $\lambda x.(x\; \lambda y.\square)$ & $\lambda x.(x\; \lambda
+    y.\square\; y)$ & $\lambda x.(x\; \lambda y. x\; \square)$ \\
+    \hline
+    $u$ & $xy$ & $x$ & $y$
+  \end{tabular}
+  \end{center}
+
+  Decomposition of the reduction:
+
+  \[
+    \mathcal C[(\lambda y.xy)x] \to \mathcal C [zx]
+  \]
+
+  with $\mathcal C = (\lambda x.x\;\square)\;z$
+
+
 
   \newpage
   \section{Reduction strategies}
@@ -561,8 +735,8 @@
 
   \begin{center}
   \begin{tikzpicture}
-    \node(T1) at ( 0,  0) {$(\lambda x.\; x\;x)((\lambda y.\;y); a)$};
-    \node(T2) at (-3, -1.5) {$((\lambda y.\;y); a)\;((\lambda y.\;y); a)$};
+    \node(T1) at ( 0,  0) {$(\lambda x.\; x\;x)((\lambda y.\;y)\; a)$};
+    \node(T2) at (-3, -1.5) {$((\lambda y.\;y)\; a)\;((\lambda y.\;y)\; a)$};
     \node(T3) at ( 3, -1.5) {$(\lambda x.\; x\;x)\;a$};
     \node(T4) at ( 0, -2.5) {$((\lambda y.\;y)\; a)\;a$};
     \node(T5) at (-3, -3.5) {$a\;((\lambda y.\;y)\;a)$};
@@ -580,7 +754,139 @@
 
   \subsection{Normalization}
 
+  A \textit{normal form} is a term that cannot be reduced anymore,
+  formally : $N(t) = \neg \exists t', t \to t' $.
+
+  \exam.
+
+  \begin{tabular}{c|c}
+    normal form & not normal form \\
+    \hline
+    $x$ & $(\lambda x.x)\; y$ \\
+    $\lambda x.xy$ & $x\; ((\lambda y.y)\;(\lambda z.zx))$ \\
+    $x (\lambda y.y)\;(\lambda z.zx)$ &
+  \end{tabular}
+
+  \vspace{0.5cm}
+
+  If $t\to^* t'$ and $t'$ is normal, the term $t'$ is said to be a normal form
+  of $t$. This defines our informal notion of a result of a term.
+
+  Some terms do not have a normal form :
+
+  \begin{align*}
+    \Omega &= \delta\;\delta \\
+          &= (\lambda x.xx)\; (\lambda x.xx) \\
+          &\to (xx)\{\lambda x.xx\} \\
+          &= x\{\lambda x.xx\}\;x\{\lambda x.xx\} \\
+          &= (\lambda x.xx)\; (\lambda x.xx) \\
+          &= \Omega
+  \end{align*}
+
+  \paragraph{Normalization properties} A term $t$ is :
+
+  \begin{itemize}
+    \item \textit{strongly normalizing} if every reduction sequence starting
+      from $t$ eventually reaches a normal form :
+
+      \[(\lambda xy.y)\;((\lambda z.z)\;(\lambda z.z))\]
+
+    \item \textit{weakly normalizing}, or normalizable, if there is at least one
+      reduction sequence starting from $t$ and reaching a normal form :
+
+      \[(\lambda xy.y)\;((\lambda z.zz)\;(\lambda z.zz))\]
+  \end{itemize}
+
   \subsection{Reduction strategies}
+
+  The purpose of a reduction strategy is to determine a redex reduction order
+  within a term. We have two well-known reduction orders :
+
+  \begin{itemize}
+    \item \textit{Normal order} : reduce the most external redex first. Apply
+      functions without reducing the arguments
+    \item \textit{Applicative order} : reduce the most internal redex first.
+      Normalize the arguments before reducing the function application itself.
+  \end{itemize}
+
+  \exo normal order vs. applicative order.
+
+  Compare normal order reduction and applicative order reduction of the
+  following terms :
+
+  \begin{enumerate}
+    \item $(\lambda xy.x)\;z\;\Omega$
+    \item $(\lambda x.xx)((\lambda y.y)\;z)$
+    \item $(\lambda x.x(\lambda y.y)) (\lambda z.(\lambda a.aa)(z\;b))$
+  \end{enumerate}
+
+  In each case: does another order allow shorter sequences ?
+
+  \textit{Answer}
+
+  \begin{enumerate}
+    \item Normal order
+      \begin{align*}
+        &(\lambda xy.x)\;z\;\Omega\\
+        &\to (\lambda y.z)\; \Omega\\
+        &\to z
+      \end{align*}
+
+      Applicative order
+      \begin{align*}
+        &(\lambda xy.x)\;z\;\Omega\\
+        &\to (\lambda xy.x)\; \Omega\\
+        &\to \ldots
+      \end{align*}
+
+      Normal order reduction is as short as possible.
+
+    \item Normal order
+      \begin{align*}
+        &(\lambda x.xx)\;((\lambda y.y)\;z) \\
+        &\to ((\lambda y.y)\; z)\;((\lambda y.y)\;z) \\
+        &\to z ((\lambda y.y)\;z) \\
+        &\to zz
+      \end{align*}
+
+      Applicative order
+
+      \begin{align*}
+        &(\lambda x.xx)\;((\lambda y.y)\;z) \\
+        &\to (\lambda x.xx)\;z \\
+        &\to zz
+      \end{align*}
+
+      Applicative order reduction is as short as possible.
+
+    \item Reduction graph :
+      \begin{center}
+      \begin{tikzpicture}
+        \node(T1) at (0, 0) {$(\lambda x.x(\lambda y.y)) (\lambda z.(\lambda a.aa)(z\;b))$};
+        \node(T2) at (0, -2) {$(\lambda z.(\lambda a.aa)(z\;b))(\lambda y.y)$};
+        \node(T3) at (0, -4) {$(\lambda a.aa)((\lambda y.y)\;b)$};
+        \node(T4) at (0, -6) {$((\lambda y.y)\;b)((\lambda y.y)\;b)$};
+        \node(T5) at (0, -8) {$b\;((\lambda y.y)\;b)$};
+        \node(T6) at (0, -10) {$bb$};
+
+        \node(T7) at (5, -2) {$(\lambda x.x(\lambda y.y)) (\lambda z.(z\;b)\;(z\;b))$};
+        \node(T8) at (5, -4) {$(\lambda z.(z\;b)\;(z\;b))(\lambda y.y)$};
+
+        \node(T9) at (-3, -7) {$(\lambda a.aa)\;b$};
+
+        \draw[->] (T1) edge (T2) (T2) edge (T3) (T3) edge (T4) (T4) edge (T5)
+                  (T5) edge (T6)
+                  (T1) edge (T7) (T7) edge (T8) (T8) edge (T4)
+                  (T3) edge (T9) (T9) edge (T6);
+      \end{tikzpicture}
+      \end{center}
+
+      The middle path is the normal order strategy, the right path is the
+      applicative order and the left path is the shortest reduction.
+  \end{enumerate}
+
+  \paragraph{Normal order property} If a term $t$ does have a normal form the
+  normal order reduction reaches this normal form.
 
   \subsection{Confluence}
 
