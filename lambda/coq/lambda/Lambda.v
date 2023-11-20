@@ -189,6 +189,15 @@ Inductive star (R : lambda -> lambda -> Prop) : lambda -> lambda -> Prop :=
   | step : forall M M' N, R M M' -> star R M' N -> star R M N
 .
 
+Lemma star_trans:
+  forall R M M' M'', star R M M' -> star R M' M'' -> star R M M''.
+Proof.
+  intros * Hmm'; generalize dependent M''.
+  induction Hmm'; intros M'' Hmm''.
+  - easy.
+  - econstructor. apply H. now apply IHHmm'.
+Qed.
+
 (* Beta-reduction *)
 
 Inductive b_red : lambda -> lambda -> Prop :=
@@ -200,51 +209,141 @@ Inductive b_red : lambda -> lambda -> Prop :=
 
 Definition b_star := star b_red.
 
-(* parralel reduction *)
-
-Inductive b_parr: lambda -> lambda -> Prop :=
-  | refl_p   : forall x, b_parr (Var x) (Var x)
-  | betap    : forall M N M' N',
-      b_parr M M' -> b_parr N N' ->
-      b_parr (App (Abs M) N) (subst M' N' 0)
-  | bp_abs   : forall M M', b_parr M M' -> b_parr (Abs M) (Abs M')
-  | bp_app   : forall M M' N N',
-      b_parr M M' -> b_parr N N' ->
-      b_parr (App M N) (App M' N')
-.
-
-Lemma par_refl:
-  forall T,
-  b_parr T T.
+Lemma abs_star:
+  forall M N,
+  b_star M N ->
+  b_star (Abs M) (Abs N).
 Proof.
-  induction T.
+  intros M N H; induction H.
   - constructor.
-  - constructor. apply IHT.
-  - eapply bp_app; auto.
+  - apply step with (M' := Abs M').
+    now constructor. auto.
 Qed.
 
-Lemma b_to_par:
-  forall T T',
-  b_red T T' -> b_parr T T'.
+Lemma app_star1:
+  forall M M' N,
+  b_star M M' ->
+  b_star (App M N) (App M' N).
 Proof.
-  intros T T' H. induction H.
-  - constructor; apply par_refl.
-  - constructor. apply IHb_red. 
-  - econstructor. apply IHb_red.
-    apply par_refl.
-  - eapply bp_app. apply par_refl.
-    apply IHb_red.
+  intros M M' N H; induction H.
+  - constructor.
+  - apply step with (M' := App M' N).
+    now constructor. auto.
 Qed.
 
-Lemma par_to_star:
-  forall T T',
-  b_parr T T' -> b_star T T'.
+Lemma app_star2:
+  forall M N N',
+  b_star N N' ->
+  b_star (App M N) (App M N').
 Proof.
-  intros T T' H. induction H.
+  intros M N N' H; induction H.
   - constructor.
-  - econstructor. constructor.
-    admit.
-  - admit.
+  - apply step with (M' := App M M').
+    now constructor. auto.
+Qed.
+
+Lemma app_star:
+  forall M M' N N',
+  b_star M M' -> b_star N N' ->
+  b_star (App M N) (App M' N').
+Proof.
+  intros M M' N N' H;
+  generalize dependent N; generalize dependent N';
+  induction H; intros N' N0 Hn.
+  - now apply app_star2.
+  - apply star_trans with (M':=App M' N0).
+    + apply app_star1. econstructor; eauto.
+      constructor.
+    + now apply IHstar.
+Qed.
+
+Lemma lift_subst:
+  forall M N n n',
+  b_red (App (Abs (lift_rec M (S n') n)) (lift_rec N n' n))
+    (lift_rec (subst_rec 0 M N 0) n' n).
+Proof.
+  intros *.
+  assert (H:(lift_rec (subst_rec 0 M N 0) n' n) =
+            (lift_rec M (S n') n)[0 <- lift_rec N n' n]).
+  { induction M.
+    - simpl. destruct n0.
+      + unfold subst. simpl. unfold lift. rewrite 2!lift_neutral.
+        easy.
+      + simpl. admit.
+    - admit.
+    - admit.
+  }
+  rewrite H. apply beta.
+Admitted.
+
+Lemma lift_beta:
+  forall M M' n n',
+  b_red M M' -> b_red (lift_rec M n' n) (lift_rec M' n' n).
+Proof.
+  intros * Hmm'.
+  generalize dependent n.
+  generalize dependent n'.
+  induction Hmm'; intros n' n;
+    try (simpl; constructor; apply IHHmm').
+  - simpl. unfold subst. apply lift_subst.
+Qed.
+
+Lemma lift_star:
+  forall M M' n,
+  b_star M M' -> b_star (lift_rec M 0 n) (lift_rec M' 0 n).
+Proof.
+  intros M M' n Hmm'.
+  generalize dependent n.
+  induction Hmm'; intros n.
+  - constructor.
+  - econstructor.
+    + apply lift_beta. apply H.
+    + apply IHHmm'.
+Qed.
+
+
+Lemma subst_start1:
+  forall M N N' n,
+  b_star N N' ->
+  b_star (subst_rec n M N 0) (subst_rec n M N' 0).
+Proof.
+  induction M; intros N N' n' Hnn'.
+  - unfold subst. simpl.
+    destruct n.
+    + case (n' =? 0); try constructor.
+      unfold lift. now apply lift_star.
+    + case (n' =? S n); try constructor.
+      unfold lift; now apply lift_star.
+  - unfold subst in *. simpl.
+    now apply abs_star, IHM.
+  - simpl. apply app_star.
+    + now apply IHM1.
+    + now apply IHM2.
+Qed.
+
+Lemma subst_start2:
+  forall M M' N n,
+  b_star M M' ->
+  b_star (subst_rec n M N 0) (subst_rec n M' N 0).
+Proof.
+  induction M; intros N N' n' Hnn'.
+  - unfold subst. simpl.
+    inversion Hnn'; subst; [|inversion H].
+    cbn. case (n' =? n); constructor.
+  - simpl. admit.
   - admit.
 Admitted.
+
+Lemma abs_susbst:
+  forall M M' N N',
+  b_star M M' -> b_star N N' ->
+  b_star (M[0 <- N]) (M'[0 <- N']).
+Proof.
+  intros * HMM'; generalize dependent N; generalize dependent N'.
+  induction HMM' as [|M M' M'' HMs IHM']; intros N' N HNN'.
+  - now apply subst_start1.
+  - apply star_trans with (M' := M'[0 <- N]).
+    * apply subst_start2. econstructor. apply HMs. constructor.
+    * now apply IHIHM'.
+Qed.
 

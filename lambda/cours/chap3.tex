@@ -178,10 +178,10 @@
     \node(t2) at ( 1,-1) {$t_2$};
     \node(u) at ( 0,-2) {$u$};
 
-    \draw[->] (t) edge node[pos=0.9, above] {$*$} (t1)
-              (t) edge node[pos=0.9, above] {$*$} (t2)
-              (t1) edge node[pos=0.9, above] {$*$} (u)
-              (t2) edge node[pos=0.9, above] {$*$} (u);
+    \draw[->>](t)  edge (t1)
+              (t)  edge (t2)
+              (t1) edge (u)
+              (t2) edge (u);
   \end{tikzpicture}
   \end{center}
 
@@ -276,9 +276,9 @@
     \node(u) at ( 0,-2) {$u$};
 
     \draw[->] (t) edge (t1)
-              (t) edge (t2)
-              (t1) edge node[above, pos=0.9] {$*$} (u)
-              (t2) edge node[above, pos=0.9] {$*$} (u);
+              (t) edge (t2);
+    \draw[->>] (t1) edge (u)
+               (t2) edge (u);
   \end{tikzpicture}
   \end{center}
 
@@ -536,6 +536,382 @@
   \qedsymbol
 
   \subsubsection{Strip lemma}
+
+  Since confluence is difficult to show duo to the infinity of the two branches,
+  we define a new property called `strip lemma`. The concept is simple, instead
+  of having the relation $\to^*$ on both sides of the confluence we use the
+  relation $\to$ and $\to^*$. It is formally defined as follows : $\forall
+  t\;t_1\;t_2, t \to t_1 \wedge t \to t_2 \Rightarrow \exists u, t_1 \to^* u
+  \wedge t_2 \to^* u$. We can draw this diagram :
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1, -1) {$t_1$};
+    \node(t2) at ( 2, -1.5) {$t_2$};
+    \node(u) at  ( 1,  -2.5) {$u$};
+
+    \draw[->] (t) edge (t1);
+    \draw[->>](t) edge (t2);
+    \draw[dotted, ->>](t1) edge (u)
+                      (t2) edge (u);
+  \end{tikzpicture}
+  \end{center}
+
+  This property given the confluence :
+
+  \textit{Proof} : We can proof by induction on the length on the left reduction
+  (confluence diagram).
+
+  \begin{itemize}
+    \item When $n = 0$ is trivial, $t_1 = t$ then $t_1 \to^* t_2$.
+    \item For $n + 1$, we have $t \to_{n} t_1' \to t_1$, such that exists $u'$
+      with $t_2 \to^* u'$ and $t_1' \to u$ (induction hypothesis).
+
+      We just need to apply the strip lemma to have $u$ such that $t_1 \to u$
+      and $u' \to^* u$
+  \end{itemize}
+
+  It's easier to understand the proof with this drawing :
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1, -1) { };
+    \node(t11) at (-2, -2) { };
+    \node(t111') at (-3, -3) {$t_1'$};
+    \node(t111) at (-4, -4) {$t_1$};
+
+    \node(t2) at  (4, -4) {$t_2$};
+    \node(t22) at (3, -5) { };
+    \node(t222) at (2, -6) { };
+    \node(u') at (1, -7) {$u'$};
+    \node(u) at (0, -8) {$u$};
+
+    \draw[->] (t) edge (t1)
+              (t1) edge (t11)
+              (t111') edge (t111);
+    \draw[->>](t) edge (t2);
+
+    \draw[dotted] (t11) edge (t111') (t222) edge (u');
+    \draw[dotted, ->>]
+          (t1)    edge (t22)
+          (t11)   edge (t222)
+          (t22)   edge (t222)
+          (t111') edge (u')
+          (t111)  edge (u)
+          (u')    edge (u)
+          (t2)    edge (t22);
+  \end{tikzpicture}
+  \end{center}
+  \qedsymbol
+
+  \newpage
+  To proof that the $\lambda$-calculus respect the ``strip lemma'' we need to
+  define the $\underline{\lambda}$-calculus ($\underline{\Lambda}$ the set of
+  $\underline{\lambda}$-terms).
+
+  \defi $\Mlambda$ Set:
+
+  \begin{itemize}
+    \item $\forall x \in \text{Var}, x \in \underline{\Lambda}$
+    \item $\forall x \in \text{Var}, t \in \underline{\Lambda}, (\lambda x. t) \in \underline{\Lambda}$
+    \item $\forall t_1\;t_2 \in \underline{\Lambda}, t_1\;t_2
+      \in \underline{\Lambda}$
+    \item $\forall x \in \text{Var}, t_1\;t_2 \in \underline{\Lambda},
+      (\underline{\lambda} x. t_1)\; t_2 \in \underline{\Lambda}$
+  \end{itemize}
+
+  We write $|T|$ the operation who remove every mark on a $\underline
+  \lambda$-term.
+
+  \[
+    \begin{cases}
+      |x| &= x \\
+      |\lambda x. t| &= \lambda x. |t| \\
+      |t_1\;t_2|     &= |t_1|\; |t_2| \text{\hspace{2cm}if } t_1 \not = \underline \lambda x. t'\\
+      |(\underline \lambda x. t_1) \; t_2| &= (\lambda x. |t_1|)\; |t_2|
+    \end{cases}
+  \]
+
+  We need to define a new substitution and a new rewrite rule :
+
+  \defi Substitution on $\underline \Lambda$
+
+  Substitution is defined as for normal lambda terms. We only add the
+  following rule:
+
+  $$((\underline{\lambda}x.t)u)\{y \leftarrow v\} \equiv
+  (\underline{\lambda}x.t\{y \leftarrow v\})u\{y \leftarrow v\} $$
+
+  \defi For the $\underline \beta$-reduction we define 2 rules that propagate
+  recursively on the other cases :
+
+  $$\beta_0: (\underline \lambda x. t) u \to t\{x \leftarrow u\}$$
+  $$\beta_0: (\lambda x. t) u \to t\{x \leftarrow u\}$$
+
+
+  \defi We define the function $\varphi$ who contract all marked redex on a
+  $\mlambda$-term :
+
+  \[
+    \begin{cases}
+      \varphi(x) &= x \\
+      \varphi(u\;v) &= \varphi(u)\;\varphi(v)\text{\hspace{1cm}if }u\not=\mlambda x.t\\
+      \varphi(\lambda x. t) &= \lambda x. \varphi(t) \\
+      \varphi((\mlambda x. t)\;u) &= \varphi(t)\{x \leftarrow \varphi(u)\}
+    \end{cases}
+  \]
+
+  \lemma $|t|$ property:
+    \label{lemm:abs}
+
+  \begin{enumerate}
+    \item $\forall m' \in \mlambda, m n \in \lambda, m' \xrightarrow{|\;|} m
+      \wedge M \xrightarrow{\beta} N \Rightarrow \exists N' \in \Mlambda, M'
+      \xrightarrow{\mbeta} N' \wedge N' \xrightarrow{|\;|} N$
+
+      \begin{center}
+      \begin{tikzpicture}[line width=0.3mm]
+        \node(M') at (0,  0) {$M'$};
+        \node(N') at (3,  0) {$N'$};
+        \node(M)  at (0, -1.5) {$M$};
+        \node(N)  at (3, -1.5) {$N$};
+
+        \draw[->>, dotted] (M') edge node[above] {$\mbeta$} (N');
+        \draw[->,  dotted] (N') edge node[right] {$|\;|$}   (N);
+        \draw[->] (M') edge node[left] {$|\;|$}   (M);
+        \draw[->>](M)  edge node[below] {$\beta$} (N);
+      \end{tikzpicture}
+      \end{center}
+
+    \item $\forall m' \in \mlambda, m n \in \lambda, m' \xrightarrow{|\;|} m
+      \wedge M \xrightarrow{\beta} N \Rightarrow \exists N' \in \Mlambda, M'
+      \xrightarrow{\mbeta} N' \wedge N' \xrightarrow{|\;|} N$
+
+      \begin{center}
+      \begin{tikzpicture}[line width=0.3mm]
+        \node(M') at (0,  0) {$M'$};
+        \node(N') at (3,  0) {$N'$};
+        \node(M)  at (0, -1.5) {$M$};
+        \node(N)  at (3, -1.5) {$N$};
+
+        \draw[->>] (M') edge node[above] {$\mbeta$} (N');
+        \draw[-> ] (N') edge node[right] {$|\;|$}   (N);
+        \draw[->,  dotted] (M') edge node[left]  {$|\;|$} (M);
+        \draw[->>, dotted] (M)  edge node[below] {$\beta$} (N);
+      \end{tikzpicture}
+      \end{center}
+  \end{enumerate}
+  \textit{Proof}:
+    \begin{enumerate}
+      \item We proceed by induction on the reduction $M \rsbeta N$. 
+        \begin{itemize}
+          \item $M \rsbeta M$, then $M = N$. We just take $M' = M$ (easy).
+          \item $M \rbeta M_t$ and $M_t \rsbeta N$. By induction hypothesis we
+            have $M_t'$ such that $|M_t'| = M_t $ and $M_t' \rsbeta N'$.
+
+            The reduction $M' \to_\mbeta M'_t$ exists, we can contract the same
+            redex (if it was marked we would contract the new unmarked).
+
+            So we have $M' \to_\mbeta M'_t \to_\mbeta N' \xrightarrow{|\;|} N$
+        \end{itemize}
+      \item Similar.
+    \end{enumerate}
+  \qedsymbol
+
+  \lemma $\varphi$ property
+    \label{lemm:phi}
+
+    \begin{enumerate}
+      \item $\forall u v \in \Mlambda, \varphi(u\{x \leftarrow v\}) =
+        \varphi(u)\{x \leftarrow \varphi(v)\}$
+
+      \item $\forall M N \in \Mlambda, M \tosmbeta N \Rightarrow \varphi(M)
+        \rsbeta \varphi(N)$
+
+        \begin{center}
+        \begin{tikzpicture}
+          \node(M)  at (0, 0) {$M$};
+          \node(N)  at (3, 0) {$N$};
+          \node(PM) at (0, -1.5) {$\varphi(M)$};
+          \node(PN) at (3, -1.5) {$\varphi(N)$};
+
+          \draw[->] (M) edge (PM) (N) edge (PN);
+          \draw[->>] (M) edge (N);
+          \draw[->>, dotted] (PM) edge (PN);
+        \end{tikzpicture}
+        \end{center}
+    \end{enumerate}
+    \textit{Proof}:
+      \begin{enumerate}
+        \item We proceed by induction on the term $u$.
+
+          \begin{itemize}
+            \item Case $u = z$
+              \begin{itemize}
+                \item if $z = x$, then
+                  $\varphi(x\{x \leftarrow v\}) = \varphi(v) = \varphi(x)\{x
+                  \leftarrow \varphi(v)\}$
+                \item if $z \not = x$, then
+                  $\varphi(z\{x \leftarrow v\}) = z = \varphi(z)\{x
+                  \leftarrow \varphi(v)\}$
+              \end{itemize}
+
+            \item Case $t = \lambda y. t_0$,
+              \begin{align*}
+                \varphi((\lambda y. t_0)\{x \leftarrow v\})
+                &= \varphi(\lambda y. t_0\{x \leftarrow v\}) \\
+                &= \lambda y. \varphi(t_0\{x \leftarrow v\}) & \text{By
+                convention} \\
+                &= \lambda y. \varphi(t_0)\{x\leftarrow \varphi(v)\} & \text{By
+                induction hypothesis} \\
+                &= \varphi(\lambda y.t_0)\{x\leftarrow \varphi(v)\}
+              \end{align*}
+
+            \item Case $t = t_1\;t_2$
+              \begin{align*}
+                \varphi((t_1\;t_2)\{x \leftarrow v\})
+                &= \varphi(t_1\{x \leftarrow v\}) (\varphi(t_2\{x \leftarrow v\})) \\
+                &= \varphi(t_1)\{x \leftarrow \varphi(v)\} \varphi(t_2)\{x
+                  \leftarrow \varphi(v)\}) & \text{By induction hypothesis}\\
+                &= (\varphi(t_1)\;\varphi(t_2)) \{x \leftarrow \varphi(v)\}) \\
+                &= (\varphi(t_1\;t_2)) \{x \leftarrow \varphi(v)\}) \\
+              \end{align*}
+
+            \item Case $t=(\mlambda y. t_0)\;t_1$
+              \begin{align*}
+                \varphi(((\mlambda y. t_0)\;t_1)\{x \leftarrow v\})
+                &=\varphi((\mlambda y. t_0\{x \leftarrow v\})\;t_1\{x
+                \leftarrow v\}) \\
+                &=\varphi(t_0\{x \leftarrow v\})\{y\leftarrow \varphi(t_1\{x
+                \leftarrow v\})\} \\
+                &=\varphi(t_0)\{x \leftarrow \varphi(v)\})\{y\leftarrow
+                \varphi(t_1)\{x \leftarrow \varphi(v)\}\} & \text{By induction
+                hypothesis}\\
+                &=\varphi(t_0)\{y\leftarrow \varphi(t_1)\}
+                            \{x \leftarrow \varphi(v)\} & \text{By the lemma
+                            \ref{exo:commsubst}}\\
+                &=\varphi((\mlambda y. t_0)\; t_1)\{x \leftarrow \varphi(v)\}
+             \end{align*}
+          \end{itemize}
+        \item By induction on $\tosmbeta$, using $(1)$
+      \end{enumerate}
+    \qedsymbol
+
+  \newpage
+  \lemma \label{lemma:bar-phi}
+  $\forall t, |t| \rsbeta \varphi(t)$
+
+  \begin{center}
+  \begin{tikzpicture}
+    \node(t) at (90:1) {$t$}; 
+    \node(bt) at (210:1) {$|t|$}; 
+    \node(pt) at (330:1) {$\varphi(t)$}; 
+
+    \draw[->] (t) edge node[left] {$|\;|$} (bt)
+              (t) edge node[right] {$\varphi$} (pt);
+    \draw[->>, dotted] (bt) edge node[below] {$\beta$} (pt);
+  \end{tikzpicture}
+  \end{center}
+  \textit{Proof}: We will show our property by induction on the term $t$.
+  \begin{itemize}
+    \item Case $t = x$, $|x| = x = \varphi(x)$, so we have $|t| \to_\beta^0
+      \varphi(t)$.
+    \item Case $t = \lambda x. t_0$, by the induction hypothesis we know that
+      $|t_0| \rsbeta \varphi(t_0)$.
+      \begin{align*}
+        |(\lambda x. t_0)| &= \lambda x. |t_0| \\
+        &\rsbeta \lambda x. \varphi(t_0) & \text{By induction hypothesis} \\
+        &= \varphi(\lambda x. t_0)
+      \end{align*}
+
+    \item Case $t = t_1\; t_2$, by the induction hypothesis we know that
+      $|t_1| \rsbeta \varphi(t_1)$ and $|t_2| \rsbeta \varphi(t_2)$.
+      \begin{align*}
+        |t_1\;t_2| &= |t_1|\;|t_2| \\
+        &\rsbeta \varphi(t_1)\;\varphi(t_2) & \text{By induction hypothesis} \\
+        &= \varphi(t_1\;t_2)
+      \end{align*}
+
+    \item Case $t=(\mlambda x. t_0)\;t_1$, by the induction hypothesis we know that
+      $|t_0| \rsbeta \varphi(t_0)$ and $|t_1| \rsbeta \varphi(t_1)$.
+
+        \begin{align*}
+          |(\mlambda x. t_0)\;t_1| &= (\lambda x. |t_0|)\;|t_1| \\
+            &\rsbeta (\lambda x. \varphi(t_0))\;\varphi(t_1) & \text{By
+            induction hypothesis}\\
+            &\to \varphi(t_0)\{x \leftarrow \varphi(t_1)\} \\
+            &=\varphi((\mlambda x. t_0)\;t_1)
+        \end{align*}
+
+  \end{itemize}
+
+  \qedsymbol
+
+  \newpage
+  \lemma Strip-lemma:
+
+   $$\forall t\;t_1\;t_2, t \to t_1 \wedge t \to t_2 \Rightarrow \exists u, t_1
+   \to^* u \wedge t_2 \to^* u$$
+
+  \begin{center}
+  \begin{tikzpicture}[line width=0.3mm]
+    \node(t) at (0, 0) {$t$};
+    \node(t1) at (-1, -1) {$t_1$};
+    \node(t2) at ( 2, -1.5) {$t_2$};
+    \node(u) at  ( 1,  -2.5) {$u$};
+
+    \draw[->] (t) edge (t1);
+    \draw[->>](t) edge (t2);
+    \draw[dotted, ->>](t1) edge (u)
+                      (t2) edge (u);
+  \end{tikzpicture}
+  \end{center}
+
+  \textit{Proof}:
+    Let $t'$, such that $|t'| = t$ and $\varphi(t') = t_1$. By hypothesis, we
+    know that, $t \rsbeta t_2$, so we have by the Lemma-\ref{lemm:abs} $t_2' \in
+    \Mlambda$ with $|t_2'| = t_2$. We take $u = \varphi(t_2')$.
+
+    Then by the Lemma-\ref{lemm:phi}, we have
+    $t_1 \rsbeta u$ and $\varphi(t_2') = u$. We finally have $t_2' \rsbeta u$
+    thanks to the Lemma-\ref{lemma:bar-phi}.
+
+    We can resume this proof with the diagram below:
+
+    \begin{center}
+    \begin{tikzpicture}[line width=0.3mm]
+      \node(t)  at (0, 0, 0) {$t$};
+      \node(t') at (0, -2,-2) {$t'$};
+      \node(t1) at (0, -2, 2) {$t_1$};
+
+      \node(t2)  at (3, -1, 0) {$t_2$};
+      \node(t2') at (3, -3,-2) {$t_2'$};
+      \node(u)   at (3, -3, 2) {$u$};
+
+      \draw[->](t') edge node[right] {$|\;|$} (t)
+               (t') edge node[below] {$\varphi$} (t1)
+               (t)  edge node[left]  {$\beta$} (t1);
+      \draw[->>](t) edge node[above] {$\beta$} (t2);
+      \draw[->>, dotted] (t') edge node[below] {$\beta$} (t2');
+      \draw[->>, dotted](t1) edge node[below] {$\beta$} (u);
+      \draw[->>, dotted] (t2) edge node[left]  {$\beta$} (u);
+      \draw[->,  dotted](t2')edge node[right] {$|\;|$}    (t2);
+      \draw[->,  dotted](t2')edge node[below] {$\varphi$} (u);
+    \end{tikzpicture}
+    \end{center}
+
+    Resume:
+    \begin{enumerate}
+      \item Lemma-\ref{lemm:abs}, give $t_2'$ : $t' \rsbeta t_2'$ and $|t_2'| =
+        t_2$.
+      \item Lemma-\ref{lemma:bar-phi}, give $t_2 \rsbeta \varphi(t_2') = u$.
+      \item Lemma-\ref{lemm:phi}, give $t_1 \rsbeta \varphi(t_2') = u$
+    \end{enumerate}
+
+  \qedsymbol
+
 
   \subsubsection{Church-Rosser theorem}
 
