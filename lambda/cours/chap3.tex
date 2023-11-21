@@ -705,7 +705,7 @@
   \end{enumerate}
   \textit{Proof}:
     \begin{enumerate}
-      \item We proceed by induction on the reduction $M \rsbeta N$. 
+      \item We proceed by induction on the reduction $M \rsbeta N$.
         \begin{itemize}
           \item $M \rsbeta M$, then $M = N$. We just take $M' = M$ (easy).
           \item $M \rbeta M_t$ and $M_t \rsbeta N$. By induction hypothesis we
@@ -731,7 +731,7 @@
         \rsbeta \varphi(N)$
 
         \begin{center}
-        \begin{tikzpicture}
+        \begin{tikzpicture}[line width=0.3mm]
           \node(M)  at (0, 0) {$M$};
           \node(N)  at (3, 0) {$N$};
           \node(PM) at (0, -1.5) {$\varphi(M)$};
@@ -804,10 +804,10 @@
   $\forall t, |t| \rsbeta \varphi(t)$
 
   \begin{center}
-  \begin{tikzpicture}
-    \node(t) at (90:1) {$t$}; 
-    \node(bt) at (210:1) {$|t|$}; 
-    \node(pt) at (330:1) {$\varphi(t)$}; 
+    \begin{tikzpicture}[line width=0.3mm, scale=1.4]
+    \node(t) at (90:1) {$t$};
+    \node(bt) at (210:1) {$|t|$};
+    \node(pt) at (330:1) {$\varphi(t)$};
 
     \draw[->] (t) edge node[left] {$|\;|$} (bt)
               (t) edge node[right] {$\varphi$} (pt);
