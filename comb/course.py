@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!./.env/bin/python
 
 from travo import GitLab
 from travo.jupyter_course import JupyterCourse

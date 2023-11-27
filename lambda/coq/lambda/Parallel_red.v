@@ -43,11 +43,17 @@ Lemma par_to_star:
 Proof.
   intros T T' H. induction H.
   - constructor.
-  - econstructor. constructor.
-    fold b_star. now apply abs_susbst.
+  - eapply star_trans.
+    + eapply app_star.
+      * eapply abs_star, IHb_parr1.
+      * apply IHb_parr2.
+    + econstructor. constructor.
+      constructor.
   - now apply abs_star.
   - now apply app_star.
 Qed.
+
+
 
 
 

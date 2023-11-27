@@ -1,0 +1,272 @@
+\section{Semantics of the $\lambda$-calculus}
+
+  \subsection{Typed $\lambda$-calculus}
+
+  The main objective is to create a type system for verified the semantics
+  well-formation of a $\lambda$-term.
+
+  \begin{align*}
+    \tau ::=&\; o & \text{base type} \\
+        |&\; \tau \to \tau
+  \end{align*}
+
+  And now we define the Church-typed $\lambda$-terms.
+  
+  \begin{align*}
+    t ::=&\; x \\
+      |&\; \lambda x^\sigma. t \\
+      |&\; t\;t
+  \end{align*}
+
+  We define the typing rule with this formula :
+
+  $$\Gamma \vdash t : \tau$$
+
+  The $\Gamma$ is the context (environment) $\Gamma = \{x_1^{\sigma_1}, \ldots,
+  x_n^{\sigma_n}\}$.
+
+  We can type a $\lambda$-term with the following inference rules :
+
+  \begin{mathpar}
+    \inferrule*[Right=Var]{x^\sigma \in \Gamma}{\Gamma \vdash x : \sigma} \\
+
+    \inferrule*[Left=Abs]{\Gamma, x^\sigma \vdash t : \tau}
+              {\Gamma \vdash \lambda x. t : \sigma \to \tau} \and
+    \inferrule*[Left=App]{\Gamma \vdash t : \sigma \to \tau \\ 
+      \Gamma \vdash u : \sigma}
+              {\Gamma \vdash t\; u : \tau}
+  \end{mathpar}
+
+  For example, we have this derivation tree :
+
+  \begin{mathpar}
+    \inferrule*[Right=Abs]
+      {\inferrule*[Right=Var]{x \in \{x^\sigma\}}{x^\sigma \vdash x : \sigma}}
+      {\vdash \lambda x. x : \sigma \to \sigma} \\
+
+    \inferrule*[Right=3$\times$Abs]
+      { 
+      \inferrule*[Right=App]
+      { 
+        \inferrule*[Left=Var]{
+        }
+        {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} x : \beta \to
+          \gamma} \\
+        \inferrule*[Right=App]{ 
+          \inferrule*[Left=Var]{ }
+            {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} y : \alpha \to
+          \beta} \\
+          \inferrule*[Right=Var]{ }
+            {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} z : \alpha}
+        }
+        {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} y\;z : \beta} \\
+      }
+      {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} x\;(y\;z) : \gamma}
+      }
+      {\vdash \lambda x\;y\;z. x\;(y\;z) : (\beta \to \gamma) \to (\alpha \to
+          \beta) \to \alpha \to \gamma} \\
+
+    \inferrule*[Right=Abs]
+      { 
+        \inferrule*[Right=App]
+        {
+          \inferrule*[Left=Var]{\color{red}\text{No solution}}
+          {x^\sigma \vdash x : \sigma \to \tau} \\
+          \inferrule*[Right=Var]{ }
+          {x^\sigma \vdash x : \sigma}
+        }
+        {x^\sigma \vdash x\;x : \tau}
+      }
+      {\vdash \lambda x. x\;x : \sigma \to \tau}
+  \end{mathpar}
+  
+  \lemma Type preservation by substitution
+
+  $$\Gamma, x^\sigma \vdash t : \tau \wedge \Gamma \vdash u : \tau
+    \Rightarrow \Gamma \vdash t\{x \leftarrow u\} : \tau
+  $$
+
+  \textit{Proof}: By induction on the derivation of
+  $\Gamma, x^\sigma \vdash t : \tau$
+
+  \begin{itemize}
+    \item Case $\Gamma, x^\sigma \vdash y : \tau$
+      \begin{itemize}
+        \item if $y \not = x$ then $y\{x \leftarrow u\} = y$
+          we have already $\Gamma, x^\sigma \vdash y : \tau$
+        \item if $y = x$ then $y\{x \leftarrow u\} = u$
+          one again we have $\Gamma\vdash u : \tau$ in our hypothesis.
+      \end{itemize}
+
+    \item Case $\Gamma, x^\sigma \vdash \lambda y.v : \tau_1 \to \tau_2$ with
+      $\Gamma, x^\sigma, y^{\tau_1} \vdash v : \tau_2$
+
+      By induction hypothesis we have $\Gamma, x^\sigma
+      \vdash v\{x\leftarrow u\} : \tau_2$
+
+    \item Case $\Gamma, x^\sigma \vdash t_1\;t_2 : \tau$ with 
+      $\Gamma, x^\sigma \vdash t_1 : \tau ' \to \tau$ and
+      $\Gamma, x^\sigma \vdash t_2 : \tau '$.
+      
+      By induction hypothesis we have
+      $\Gamma, x^\sigma \vdash t_1\{x \leftarrow u\} : \tau ' \to \tau$ and
+      $\Gamma, x^\sigma \vdash t_2\{x\leftarrow\} : \tau '$.
+  \end{itemize}
+
+  \qedsymbol
+
+  \lemma Type preservation lemma (subject reduction lemma)
+
+  $$\Gamma\vdash t : \tau \wedge t \to_\beta \Rightarrow \Gamma \vdash t' : \tau$$
+
+  \textit{Proof}: By induction on $\Gamma \vdash t : \tau$
+
+  \begin{itemize}
+    \item Case $\Gamma \vdash x : \sigma$ with $x^\sigma \in \Gamma$
+      
+      We can not reduce $x$, so we don't have $t'$ such as $t\rbeta t'.$
+
+    \item Case $\Gamma \vdash \lambda x.t$ with $\Gamma, x^\sigma \vdash t :
+      \tau$. Assume $\lambda x. t \rbeta \lambda x. t'$ with $t \rbeta t'$.
+
+      By induction hypothesis we have $\Gamma, x^\sigma t' : \tau$. The by the
+      rule \textit{Abs} we have $\Gamma \vdash \lambda x. t' : \sigma : \tau$
+
+    \item Case $\Gamma \vdash t\;u: \tau$ with $\Gamma t : \sigma \to \tau$ and
+      $\Gamma \vdash u : \sigma$.
+
+      We have 3 case on $\rbeta$:
+
+      \begin{itemize}
+        \item $t\;u \rbeta t'\;u$ with $t \rbeta t'$ 
+          By induction hypothesis we have $\Gamma \vdash t' : \sigma \to \tau$
+
+          The by \textit{App} we deduce $\Gamma \vdash t'\;u: \tau$.
+
+        \item $t\;u \rbeta t\;u'$ with $u \rbeta  u'$ (Similar)
+
+        \item $(\lambda x.v)\; u \rbeta v\{x \leftarrow u\}$
+      \end{itemize}
+  \end{itemize}
+  \qedsymbol
+
+  \subsection{Denotational semantics}
+
+    $\mathcal D^\tau$ domain of the type $\tau$ :
+
+    \begin{itemize}
+      \item $\mathcal D^{int} = \mathbb N$
+      \item $\mathcal D^{\tau \to \sigma} = \mathcal D^\sigma \to \mathcal
+        D^\tau$ ($\to$ set of actual math functions)
+    \end{itemize}
+
+    We defined $\semop t \semcl_\rho \in \mathcal D^\tau$, $\Gamma \vdash t : u$
+    and $\forall x\in dom(\Gamma), \rho(x) \in \mathcal D^{\Gamma(x)}$
+    $\Gamma(x)$ represent the type of $x$ in $\Gamma$
+
+    We want to associate each term to a mathematical function
+
+    \begin{align*}
+      \semop x \semcl_\rho &= \rho(x) \\
+      \semop t\;u \semcl_\rho &= \semop t \semcl_\rho\;\semop u \semcl_\rho
+      & \semop t \semcl \in \mathcal D^{\sigma \to \tau} \text{ and }
+        \semop u \semcl \in \mathcal D^\tau \\
+      \semop \lambda x. t\semcl_\rho &= a \mapsto \semop t \semcl_{\rho. x\leftarrow a}
+      & a \in \mathcal D^\sigma
+    \end{align*}
+
+    \lemma $t \to t' \wedge \Gamma \vdash t : \tau \Rightarrow \semop t
+    \semcl_\rho = \semop t' \semcl_\rho$ in any $\rho$ compatible with $\Gamma$
+
+    \corr If $t$ has a normal formal $v$ ($t \rsbeta v \not \rbeta$)
+      then $\semop t \semcl_\rho = \semop v \semcl_\rho$
+
+    \corr If $t =_\beta t'$ by the Church-Rosser theorem we have $\semop t
+    \semcl_\rho = \semop t' \semcl_\rho$
+
+  \subsection{Head normal form (HNF) and Bhöme tree}
+
+  [TODO], fixpoint exemple
+
+  $$\lambda x_1 \ldots x_n. y\; t_1\;\ldots\;t_k$$
+
+  \begin{center}
+  \begin{tikzpicture}
+    \node(X1) at (0,  0) {$\lambda x_1$};
+    \node(X2) at (0, -1) {$\lambda x_2$};
+    \node(Xn) at (0, -2) {$\lambda x_n$};
+
+    \draw (X1) -- (X2);
+    \draw[dotted] (X2) -- (Xn);
+
+    \node(A1) at ( 0, -3) {$@$};
+    \node(A2) at (-1, -4) {$@$};
+    \node(An) at (-2, -5) {$@$};
+    \node(y)  at (-3, -6) {$y$};
+    \node(t1) at (-1, -6) {$t_1$};
+    \node(t') at ( 0, -5) {$t_{k-1}$};
+    \node(tk) at ( 1, -4) {$t_k$};
+
+    \draw (Xn) -- (A1) -- (A2) (An) -- (y) (An) -- (t1) (A2) -- (t') (A1) -- (tk);
+    \draw[dotted] (A2) -- (An);
+  \end{tikzpicture}
+  \end{center}
+
+  The Böhm tree (Corrado Böme) of the term $t$ is
+
+  \begin{itemize}
+    \item If $t$ has no HNF : $\perp$
+    \item If the HNF of $t$ is $\lambda x_1 \ldots x_n. y\; t_1\;\ldots\;t_k$
+      and $\forall i, T_i$ is the Bhöm tree of $t_i$:
+  \begin{center}
+  \begin{tikzpicture}
+    \node(X1) at (0,  0) {$\lambda x_1$};
+    \node(X2) at (0, -0.75) {$\lambda x_2$};
+    \node(Xn) at (0, -1.5) {$\lambda x_n$};
+
+    \draw (X1) -- (X2);
+    \draw[dotted] (X2) -- (Xn);
+
+    \node(A1) at ( 0, -2.25) {$@$};
+    \node(A2) at (-0.75, -3) {$@$};
+    \node(An) at (-1.5, -3.75) {$@$};
+    \node(y)  at (-2.25, -4.5) {$y$};
+    \node(t1) at (-0.75, -4.5) {$T_1$};
+    \node(t') at (0, -3.75) {$T_{k-1}$};
+    \node(tk) at (0.75, -3) {$T_k$};
+
+    \draw (Xn) -- (A1) -- (A2) (An) -- (y) (An) -- (t1) (A2) -- (t') (A1) -- (tk);
+    \draw[dotted] (A2) -- (An);
+  \end{tikzpicture}
+  \end{center}
+  \end{itemize}
+
+  If $t$ has a normal form, BT does not contain $\perp$
+
+  If $t$ has no normal form its BT is infinite (not an inductive definition)
+  or contains $\perp$.
+
+  \subsection{Strong normalization property}
+
+  $(E, \leq)$ such that $<$ is an order relation (reflexive, transitive and
+  anti-symmetric).\\
+  Well-founded order : order with no infinite strictly decreasing sequence. \\
+  (WF) Well-founded induction principle :
+
+  $P$ : property on the elements of $E$,
+  $\forall x, (\forall y, y < x \Rightarrow P(x)) \Rightarrow \forall P (x)$
+
+  How to use it ?
+
+  Let $x \in E$, Assume $P(y)$ for all $y < x$ Prove $P(x)$
+
+  \lemma
+  If $\Gamma \vdash t : \tau$ then $t$ is a SN (no infinite reduction sequence
+  from t).
+
+  \textit{Proof}:
+
+  \qedsymbol
+
+
+
