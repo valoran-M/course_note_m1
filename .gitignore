@@ -354,3 +354,12 @@ jupyterhub*
 
 *.cache
 .env
+
+*Makefile*
+*.glob
+*.vo
+*.vok
+*.vos
+
+lambda/exo/*
+.frama-c/**
