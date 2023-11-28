@@ -379,21 +379,21 @@
           \begin{algorithmic}[1]
             \Function{k-coloring}{$G$ : graph}
               \State k = 0
-              \State M = \{\}
+              \State X = \{\}
               \While{$V(G)$ not in M}
                 \State k = k + 1
                 \ForAll{$C \subseteq V(G)$}
-                  \If{$C \in $ M}
+                  \If{$C \in $ X}
                     \State Continue
                   \EndIf
                   \ForAll{$S \subseteq C$}
-                    \If{$S \not \in$ M}
+                    \If{$S \not \in$ X}
                     \State Continue
                     \EndIf
-                    \State $\phi_s$ = M[S] $\cup \{v \to k| \forall v \in C
+                    \State $\phi_s$ = X[S] $\cup \{v \to k| \forall v \in C
                       \backslash S\}$
                     \If{\Call{is\_coloring}{$C$, $\phi_s$}}
-                      \State M[C] $\leftarrow \phi_s$
+                      \State X[C] $\leftarrow \phi_s$
                       \State Break
                     \EndIf
                   \EndFor
@@ -406,7 +406,10 @@
 
           The algorithms above finished, because a graph always has a colouring
           ($\leq n$). It repeats the algorithm detailed in the previous question
-          at most $n$ times, so it has a complexity of $\mathcal O^*(3^n)$ .
+          at most $n$ times, so it has a complexity of $\mathcal O^*(3^n)$.
+
+          The dictionary $X$ containing, at worst, all the parts of the set of
+          vertices. So the space complexity is $\mahtcal O^*(2^n)$
       \end{enumerate}
   \end{enumerate}
 
