@@ -92,7 +92,7 @@
           their parents, so they only have 2 as we have a root and n-1 children
           then, there are $3 \times 2^{n-1}$ coloring options.
 
-         We can proof this property by induction on $n$.
+          We can proof this property by induction on $n$.
           \begin{itemize}
             \item $n=0$, the case where the tree contains no vertex is not
               interesting
@@ -103,8 +103,8 @@
             \item $n+1$, by hypothesis induction, we know that a tree with
               $n$-vertices has $3\times2^{n-1}$ 3-coloring options.
 
-              If we had a vertex on a tree, then it has two possible color
-              options, so there is $3\times2^{n-1}\times 2 = 3 \times 2^n$
+              If we had a vertex on a leaf of the tree, then it has two possible
+              color options, so there is $3\times2^{n-1}\times 2 = 3 \times 2^n$
               3-coloring options.
           \end{itemize}
 
@@ -354,23 +354,32 @@
     \newpage
     \item
       \begin{enumerate}
-        \item We have $X \subseteq V(G)$ and $1 \leq j < k$ such that
-          $\chi(G[X]) \leq j$. We want to compute $Y \subseteq V(G)$ such that
+        \item Let $X \subseteq V(G)$ and $1 \leq j < k$ such that
+          $\chi(G[X]) \leq j$.
+
+          We want to compute $Y \subseteq V(G)$ such that
           $\chi(G[Y]) \leq j + 1$. The function $\mathcal P(X)$ give all
-          possible subset of a set $X$. So for all $S \in \mathcal P (V(G))$
-          if $S$ is on $X$ then $\chi(G[S]) \leq j \leq j + 1$. Otherwise,
-          if we find $S_p \in \mathcal P(S)$ such as $S_p \in X$ ($\phi_p$,
-          $j$-coloring of $S_p$) and $\phi$ such that $\phi(x) = \phi_p(x)$ if
-          $x \in S_p$ else $\phi(x) = j + 1$ is a $j+1$-coloring of $S$, then
-          $S$ is in $Y$.
+          possible subset of a set $X$.
+
+          So for all $S \in \mathcal P (V(G))$
+          if $S$ is on $X$ then $\chi(G[S]) \leq j \leq j + 1$.
+
+          Otherwise, if we find $S_p \in \mathcal P(S)$ such as $S_p \in X$ with
+          $\phi_p$ the $j$-coloring of $S_p$ and $\phi$ defined bellow is a
+          $j+1$ coloring of $S$ then $S$ is in $Y$
+
+          \[
+            \phi(x) = \begin{cases}
+              \phi_p(x) & \text{if } x \in S \\
+              j + 1 & \text{if } x \not \in S
+            \end{cases}
+          \]
 
           For all subset we have to potentially calculate all the subset of a
-          subset of cardinal $t$($\mathcal O^*(2^n))$. We did this operation
+          subset of cardinal $t$ ($\mathcal O^*(2^t))$. We did this operation
           for all the subsets of vertices in the graph.
 
-          So we have a complexity of
-
-          $$\sum_{t=0}^n \binom n t \mathcal O^*(2^t) = \mathcal O^*(3^n)$$
+          So we have a complexity of $\mathcal O^*(3^n)$
 
       \item The final algorithm :
 
@@ -409,7 +418,7 @@
           at most $n$ times, so it has a complexity of $\mathcal O^*(3^n)$.
 
           The dictionary $X$ containing, at worst, all the parts of the set of
-          vertices. So the space complexity is $\mahtcal O^*(2^n)$
+          vertices. So the space complexity is $\mathcal O^*(2^n)$
       \end{enumerate}
   \end{enumerate}
 
