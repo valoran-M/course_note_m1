@@ -1,0 +1,121 @@
+\section{Computability}
+
+  \begin{itemize}
+    \item General recursive functions (1930-1934) (Güdel-Herbrand)
+
+    \item $\lambda$-calculus (1932-1935)
+
+    \item Turing machines (1935-1937)
+  \end{itemize}
+
+  Effectively computable function $\mathbb N^k \to \mathbb N$.
+
+  We have already defined :
+
+  \begin{itemize}
+    \item $I = \lambda x. x$
+    \item $f \circ h = \lambda x. f\; (g\;x)$
+    \item $\circ = \lambda fgx. f\; (g\;x)$
+  \end{itemize}
+
+  We can define boolean. You need to be able to write a test of the form
+  \texttt{if $t_1$ then $t_2$ else $t_3$}. So for that we define 
+
+  \begin{align*}
+    T &= \lambda xy.x \\
+    F &= \lambda xy.y \\
+  \end{align*}
+
+  The test is written as $t_1\;t_2\;t_3$ with $t_1 = T / F$
+
+  \begin{align*}
+    \text{if } T \text{ then } t_2 \text{ else } t_3 &= T\;t_2\;t_3 \\
+    &\rbeta^2 t_2
+  \end{align*}
+
+  Pairs $\langle t, u \rangle$ and the first and second projection can also be defined.
+
+  \begin{align*}
+    \langle t, u \rangle &= \lambda x, x\;t\;u \\
+    \pi_1\; \langle t, u \rangle &= \langle t, u \rangle\;T \rbeta T\;t\;u \rbeta t \\
+    \pi_2\; \langle t, u \rangle &= \langle t, u \rangle\;F \rbeta F\;t\;u \rbeta u
+  \end{align*}
+
+  Peano numbers:
+  \texttt{N = 0 | S(N) }
+
+  We have many possibilities to define numbers :
+
+  \begin{enumerate}
+    \item
+      \begin{align*}
+        0 &= I \\
+        S(n) &= \langle F, n \rangle
+      \end{align*}
+
+      $$isZ(t) = \pi_1\;t $$
+
+      \begin{multicols}{2}
+        \begin{align*}
+          \pi_1 \langle F, n \rangle \rbeta F
+        \end{align*}
+
+        \begin{align*}
+          \pi_1 \langle I \rangle &\rbeta (\lambda p.p\;T) I \\
+          &\rbeta I T \\
+          &\rbeta T
+        \end{align*}
+      \end{multicols}
+
+      $$add\;[n]\;[m] = [n + m]$$
+
+      \[
+        \begin{cases}
+          add\;0\;[m] &= m \\
+          add\;[S n]\;[m] &= S\;(add\;[n]\;[m]) \\
+        \end{cases}
+      \]
+
+      \begin{align*}
+        add\;[n]\;[m] &\equiv \texttt{if } isZ\;[n] \texttt{ then } [m]
+                           \texttt{ else } S\; (add\;(P\;[n])\;[m]) \\
+        add &\equiv \lambda n\; m.\; \texttt{if } isZ\;[n] \texttt{ then } [m]
+                           \texttt{ else } S\; (add\;(P\;[n])\;[m]) \\
+            &\equiv \lambda f\;n\;m\; \texttt{if } isZ\;[n] \texttt{ then } [m]
+                           \texttt{ else } S\; (f\;(P\;[n])\;[m]) \\
+      \end{align*}
+
+      For this we need to have a Fixpoint (Fixpoint theorem in
+      $\lambda$-calculus any term has a fixpoint)
+
+      $$F \equiv (\lambda x.\;F\;(x\;x)) (\lambda x.\; F\;(x\;x)) \rbeta 
+          F ((\lambda x.\;F\;(x\;x)) (\lambda x.\; F\;(x\;x)))$$
+
+      $$Y = \lambda f.\;(\lambda x. f\;(x\;x))\;(\lambda x.f\;(x\;x))$$
+
+      \begin{itemize}
+        \item $A = \lambda x\;y.\; y(x\;x\;y)$
+        \item Fix point : $\Theta = A A$ 
+      \end{itemize}
+
+      So add begin 
+
+      \begin{align*}
+        add \equiv Y \lambda\;f\; \lambda\;n\;m.\texttt{if } isZ\;[n]
+          \texttt{ then } [m] \texttt{ else } S\; (f\;(P\;[n])\;[m])
+      \end{align*}
+
+    \item $[n] = \lambda f x.f^n\;x$ (Church encoding).
+
+      We can define the usual operation :
+      
+      \begin{itemize}
+        \item $isZ = \lambda n. n\;F\;T$
+        \item $S = \lambda n\;f\;x.n\;f\;(f x) $
+        \item $add = \lambda n\;m\;f\;x. n\;f\;(m\;f\;x)$
+        \item $mul = \lambda n\;m\;f\;x. n\;(m\;f)\;x$
+      \end{itemize}
+
+      But the operator $Pred$ is more complicated.
+  \end{enumerate}
+

@@ -1,0 +1,209 @@
+\section{Typed $\lambda$-calculus}
+
+  \subsection{Simply typed $\lambda$-calculus}
+
+  The main objective is to create a type system for verified the
+  well-formation of a $\lambda$-term.
+
+  \begin{align*}
+    \tau ::=&\; o & \text{base type} \\
+        |&\; \tau \to \tau
+  \end{align*}
+
+  And now we define the Church-typed $\lambda$-terms.
+  
+  \begin{align*}
+    t ::=&\; x \\
+      |&\; \lambda x^\sigma. t \\
+      |&\; t\;t
+  \end{align*}
+
+  We define the typing rule with this formula :
+
+  $$\Gamma \vdash t : \tau$$
+
+  The $\Gamma$ is the context (environment) $\Gamma = \{x_1^{\sigma_1}, \ldots,
+  x_n^{\sigma_n}\}$.
+
+  We can type a $\lambda$-term with the following inference rules :
+
+  \begin{mathpar}
+    \inferrule*[Right=Var]{x^\sigma \in \Gamma}{\Gamma \vdash x : \sigma} \\
+
+    \inferrule*[Left=Abs]{\Gamma, x^\sigma \vdash t : \tau}
+              {\Gamma \vdash \lambda x. t : \sigma \to \tau} \and
+    \inferrule*[Left=App]{\Gamma \vdash t : \sigma \to \tau \\ 
+      \Gamma \vdash u : \sigma}
+              {\Gamma \vdash t\; u : \tau}
+  \end{mathpar}
+
+  For example, we have this derivation tree :
+
+  \begin{mathpar}
+    \inferrule*[Right=Abs]
+      {\inferrule*[Right=Var]{x \in \{x^\sigma\}}{x^\sigma \vdash x : \sigma}}
+      {\vdash \lambda x. x : \sigma \to \sigma} \\
+
+    \inferrule*[Right=3$\times$Abs]
+      { 
+      \inferrule*[Right=App]
+      { 
+        \inferrule*[Left=Var]{
+        }
+        {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} x : \beta \to
+          \gamma} \\
+        \inferrule*[Right=App]{ 
+          \inferrule*[Left=Var]{ }
+            {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} y : \alpha \to
+          \beta} \\
+          \inferrule*[Right=Var]{ }
+            {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} z : \alpha}
+        }
+        {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} y\;z : \beta} \\
+      }
+      {x^{\beta \to \gamma}, y^{\alpha \to \beta, z^\alpha} x\;(y\;z) : \gamma}
+      }
+      {\vdash \lambda x\;y\;z. x\;(y\;z) : (\beta \to \gamma) \to (\alpha \to
+          \beta) \to \alpha \to \gamma} \\
+
+    \inferrule*[Right=Abs]
+      { 
+        \inferrule*[Right=App]
+        {
+          \inferrule*[Left=Var]{\color{red}\text{No solution}}
+          {x^\sigma \vdash x : \sigma \to \tau} \\
+          \inferrule*[Right=Var]{ }
+          {x^\sigma \vdash x : \sigma}
+        }
+        {x^\sigma \vdash x\;x : \tau}
+      }
+      {\vdash \lambda x. x\;x : \sigma \to \tau}
+  \end{mathpar}
+  
+  \lemma Type preservation by substitution
+
+  $$\Gamma, x^\sigma \vdash t : \tau \wedge \Gamma \vdash u : \tau
+    \Rightarrow \Gamma \vdash t\{x \leftarrow u\} : \tau
+  $$
+
+  \textit{Proof}: By induction on the derivation of
+  $\Gamma, x^\sigma \vdash t : \tau$
+
+  \begin{itemize}
+    \item Case $\Gamma, x^\sigma \vdash y : \tau$
+      \begin{itemize}
+        \item if $y \not = x$ then $y\{x \leftarrow u\} = y$
+          we have already $\Gamma, x^\sigma \vdash y : \tau$
+        \item if $y = x$ then $y\{x \leftarrow u\} = u$
+          one again we have $\Gamma\vdash u : \tau$ in our hypothesis.
+      \end{itemize}
+
+    \item Case $\Gamma, x^\sigma \vdash \lambda y.v : \tau_1 \to \tau_2$ with
+      $\Gamma, x^\sigma, y^{\tau_1} \vdash v : \tau_2$
+
+      By induction hypothesis we have $\Gamma, x^\sigma
+      \vdash v\{x\leftarrow u\} : \tau_2$
+
+    \item Case $\Gamma, x^\sigma \vdash t_1\;t_2 : \tau$ with 
+      $\Gamma, x^\sigma \vdash t_1 : \tau ' \to \tau$ and
+      $\Gamma, x^\sigma \vdash t_2 : \tau '$.
+      
+      By induction hypothesis we have
+      $\Gamma, x^\sigma \vdash t_1\{x \leftarrow u\} : \tau ' \to \tau$ and
+      $\Gamma, x^\sigma \vdash t_2\{x\leftarrow\} : \tau '$.
+  \end{itemize}
+
+  \qedsymbol
+
+  \lemma Type preservation lemma (subject reduction lemma)
+
+  $$\Gamma\vdash t : \tau \wedge t \to_\beta \Rightarrow \Gamma \vdash t' : \tau$$
+
+  \textit{Proof}: By induction on $\Gamma \vdash t : \tau$
+
+  \begin{itemize}
+    \item Case $\Gamma \vdash x : \sigma$ with $x^\sigma \in \Gamma$
+      
+      We can not reduce $x$, so we don't have $t'$ such as $t\rbeta t'.$
+
+    \item Case $\Gamma \vdash \lambda x.t$ with $\Gamma, x^\sigma \vdash t :
+      \tau$. Assume $\lambda x. t \rbeta \lambda x. t'$ with $t \rbeta t'$.
+
+      By induction hypothesis we have $\Gamma, x^\sigma t' : \tau$. The by the
+      rule \textit{Abs} we have $\Gamma \vdash \lambda x. t' : \sigma : \tau$
+
+    \item Case $\Gamma \vdash t\;u: \tau$ with $\Gamma t : \sigma \to \tau$ and
+      $\Gamma \vdash u : \sigma$.
+
+      We have 3 case on $\rbeta$:
+
+      \begin{itemize}
+        \item $t\;u \rbeta t'\;u$ with $t \rbeta t'$ 
+          By induction hypothesis we have $\Gamma \vdash t' : \sigma \to \tau$
+
+          The by \textit{App} we deduce $\Gamma \vdash t'\;u: \tau$.
+
+        \item $t\;u \rbeta t\;u'$ with $u \rbeta  u'$ (Similar)
+
+        \item $(\lambda x.v)\; u \rbeta v\{x \leftarrow u\}$
+      \end{itemize}
+  \end{itemize}
+  \qedsymbol
+
+  \subsection{Strong normalization property}
+
+  $(E, \leq)$ such that $\leq$ is an order relation (reflexive, transitive and
+  anti-symmetric).\\
+  Well-founded order : order with no infinite strictly decreasing sequence. \\
+  (WF) Well-founded induction principle :
+
+  $P$ : property on the elements of $E$,
+  $\forall x, (\forall y, y < x \Rightarrow P(x)) \Rightarrow \forall P (x)$
+
+  How to use it ?
+
+  Let $x \in E$, Assume $P(y)$ for all $y < x$ Prove $P(x)$
+
+  \lemma
+  If $\Gamma \vdash t' : \tau'$ and $\Gamma, x^{\tau'} \vdash t : \tau$ then $t\{x
+  \leftarrow t'\}$ is SN.
+
+  \textit{Proof}:
+  
+  We will use the well-founded induction principle on the triplet $(|t'|)$ with the
+  lexical order $\leq_l$.
+
+  \qedsymbol
+
+  \lemma
+  If $\Gamma \vdash t : \tau$ then $t$ is a SN (no infinite reduction sequence
+  from t).
+
+  \textit{Proof}:
+
+  By induction on $t$.
+
+  \begin{itemize}
+    \item If $t = x$, then $t$ is already in normal form, so it is SN.
+
+    \item If $t = \lambda x. t_0$. Since $t$ is typed, then $t_0$ is also typed
+      (rule \textit{Abs}). So by the induction hypothesis we know that $t_0$ is
+      strongly normalizable. So $t$ is strongly normalizable.
+
+    \item If $t = t_0\; t_1$, as before $t_0$ and $t_1$ are typed, so they are
+      also strongly normalizable.
+
+      If $t_0$ is never reduce to a $\lambda$-term of the form $\lambda y. t'$,
+      then $t_0\;t_1$ is strongly normalizable by induction hypothesis.
+
+      Otherwise, we end up with $t_0\;t_1 \rsbeta (\lambda y.t')\;t_1' \rbeta
+      t'\{x \leftarrow t_1'\}$ such
+      that $t_1 \rsbeta t_1'$, $t_0 \rsbeta$, $\Gamma \vdash t_1' : \tau_1'$ and
+      $\Gamma, y^{\tau_1} \vdash t' : \tau'$.
+  \end{itemize}
+
+
+  \qedsymbol
+
+
+
