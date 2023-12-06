@@ -1,0 +1,150 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{capt-of}
+\usepackage{multicol}
+\usepackage{mathpartir}
+
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+\usepackage{tikz}
+\usetikzlibrary{angles,quotes, 3d}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{proof}{Proof}
+\newtheorem*{exam}{Example}
+\renewcommand\qedsymbol{$\square$}
+
+\newtheorem*{defi}{Definition}
+\newtheorem{exo}{Exercise}%[section]
+\newtheorem{ans}{Answer}%[section]
+\newtheorem*{lemma}{Lemma}%[section]
+
+\newcommand{\toto}{\twoheadrightarrow}
+
+\newcommand{\rbeta}{\to_\beta}
+\newcommand{\rsbeta}{\to_\beta^*}
+
+\newcommand{\Mlambda}{{\underline \Lambda}}
+\newcommand{\mlambda}{{\underline \lambda}}
+\newcommand{\mbeta}{{\underline \beta}}
+\date{}
+\newcommand{\tombeta}{\to_\mbeta}
+\newcommand{\tosmbeta}{\to_\mbeta^*}
+
+\title{$\lambda$-calculus}
+\author{Valeran MAYTIE}
+
+\begin{document}
+  \maketitle
+
+  \section*{Halting problem}
+
+  \begin{center}
+    There is no $\lambda$-term $H$ such has $H[t] = T$ if T has a normal
+    form and $H[T] = F$ if $T$ has no normal form.
+  \end{center}
+
+  Let $N$ the set of $\lambda$-term that have a normal form.
+
+  $N$ is not empty (it contains all the variables) and $N$ is not equal to
+  $\Lambda$ because it not contains the $\lambda$-term $\Omega$.
+
+  So we have $\Lambda \backslash N$ non-empty and non-equal to $\Lambda$
+
+  By Scott's theorem, the set $N$ is not recursively separable. So the
+  $\lambda$-term $H$ does not exist.
+
+  \section*{List in pure $\lambda$ calculus}
+
+  We define this useful lambda term :
+
+  \begin{multicols}{2}
+    \begin{itemize}
+      \item $[I] = \lambda x.x$
+      \item $[T] = \lambda x\;y.x$
+      \item $[F] = \lambda x\;y.y$
+    \end{itemize}
+    \columnbreak
+    \begin{itemize}
+      \item $\langle t, u \rangle = \lambda x. x\;t\;u$
+      \item $\pi_1 \langle t, u \rangle = \langle t, u \rangle [T]$
+      \item $\pi_2 \langle t, u \rangle = \langle t, u \rangle [F]$
+    \end{itemize}
+  \end{multicols}
+
+  We define our integers as follows :
+
+  \begin{multicols}{2}
+    \begin{itemize}
+      \item $[0] = [I]$
+      \item $[S] = \lambda n. \langle [F], n\rangle$
+      \item $[\textit{isZ}] = \lambda n. \pi_1\;t$
+      \item $[P] = \lambda n. \pi_2\;t$
+    \end{itemize}
+  \end{multicols}
+
+  Finally, we define our lists as follows :
+
+  \begin{itemize}
+    \item $[] = \lambda n\;f.\; n$
+    \item $x :: l = \lambda n\;f.\; f\; x\; l$
+  \end{itemize}
+
+  \begin{center}
+    The list $0 :: 1 :: []$ is represented as follows:
+  \end{center}
+  $$\lambda n_0\; f_0.\; f_0\; [0]\; (\lambda n_1\;f_1.\; f_1\;[1]\;(\lambda
+  n\;f.\;n))$$
+
+\end{document}
