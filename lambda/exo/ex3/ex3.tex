@@ -44,12 +44,12 @@
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
+    basicstyle=\ttfamily,
+    xleftmargin=.17\textwidth, xrightmargin=.15\textwidth,
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
     keepspaces=true,
-    numbers=left,
     numbersep=5pt,
     showspaces=false,
     showstringspaces=false,
@@ -74,6 +74,11 @@
 
 \newcommand{\rbeta}{\to_\beta}
 \newcommand{\rsbeta}{\to_\beta^*}
+
+\newcommand{\nil}{[\text{Nil}]}
+\newcommand{\nth}{\textit{nth}}
+\newcommand{\some}{[\textit{Some}]}
+\newcommand{\none}{[\textit{None}]}
 
 \newcommand{\Mlambda}{{\underline \Lambda}}
 \newcommand{\mlambda}{{\underline \lambda}}
@@ -134,17 +139,95 @@
     \end{itemize}
   \end{multicols}
 
+  We take the following fixpoint :
+
+  \begin{align*}
+    A &= (\lambda xy.y(xxy)) \\
+    \Theta &= A\;A
+  \end{align*}
+
   Finally, we define our lists as follows :
 
   \begin{itemize}
-    \item $[] = \lambda n\;f.\; n$
-    \item $x :: l = \lambda n\;f.\; f\; x\; l$
+    \item $\nil = \lambda n\;f.\; n$
+    \item $[x :: l] = \lambda n\;f.\; f\; x\; [l]$
   \end{itemize}
 
   \begin{center}
-    The list $0 :: 1 :: []$ is represented as follows:
+    The list $0 :: 1 :: \nil$ is represented as follows:
   \end{center}
   $$\lambda n_0\; f_0.\; f_0\; [0]\; (\lambda n_1\;f_1.\; f_1\;[1]\;(\lambda
   n\;f.\;n))$$
+
+  The function \nth $\;k$ $l$ which return the
+  $k^{nth}$ element of the list $l$. We return an option if $k$ is too large.
+  The options are defined as follows :
+
+  \begin{itemize}
+    \item $[\textit{None}] = \lambda n s.\;n$
+    \item $[\textit{Some}(x)] = \lambda n s.\;s x$
+  \end{itemize}
+
+  Now we can define \textit{nth} function :
+
+    \begin{lstlisting}[caption=Nth function on list, mathescape=true]
+nth = $\Theta$ ($\lambda$ f k l. l [None]
+                    ($\lambda$ x l'. [isZ] k [Some(x)])
+                                     (f ([P] k) l'))
+    \end{lstlisting}
+
+\newpage
+
+  We want to proof this property $\forall k\;l\;x, \textit{nth}\; [k]\; [l]
+  =_\beta \textit{nth}\;[k+1]\;[x :: l]$.
+
+  \proof
+  The calculations have been simplified to
+  make the proof easier to read.
+
+  We proceed by induction on $[k]$ :
+
+  \begin{itemize}
+    \item if $ k = 0$
+      \begin{itemize}
+        \item if $l = \nil$, then 
+          \begin{multicols}{2}
+          \begin{align*}
+            \nth\; [0]\; \nil &\rsbeta \nil\; \none\; (\ldots) \\
+                              &\rbeta \none
+          \end{align*}
+
+          \begin{align*}
+            \nth\; [1]\; [x::\nil] &\rsbeta \nth\;[0]\;\nil \\
+                                   &\rsbeta \none
+          \end{align*}
+          \end{multicols}
+
+        \item if $l = [x' :: [l]]$, then
+          \begin{multicols}{2}
+          \begin{align*}
+            \nth\; [0]\; [x'::[l]] &\rsbeta
+                              [\textit{isZ}]\; [0]\; [\textit{Some(x')}]\;
+                              (\ldots) \\
+                              &\rbeta [\textit{Some(x')}]
+          \end{align*}
+
+          \begin{align*}
+            \nth\; [1]\; [x::x'::[l]] &\rsbeta
+                              \nth\; [0]\; [x' :: [l]] \\
+                              &\rsbeta [\textit{Some(x')}]
+          \end{align*}
+          \end{multicols}
+      \end{itemize}
+    \item if $k = n + 1$ by induction hypothesis we know that 
+      $\forall l\;x, \nth\; [n]\; [l] =_\beta \nth\;[n+1]\;[x :: l]$
+
+      \begin{align*}
+        \nth\; [k + 2]\;[x'::x:: l] &\rsbeta \nth\;[n+1]\;[x::l] & &\text{One
+        step on \nth} \\
+        &=_\beta \nth\;[n]\;[l] & &\text{Induction Hypothesis}
+      \end{align*}
+  \end{itemize}
+  \qedsymbol
 
 \end{document}
