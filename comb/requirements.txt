@@ -1,9 +1,0 @@
-notebook
-rise
-widgetsnbextension
-pip
-jupyter_contrib_nbextensions
-ipywidgets
-jupytext
-sage
-
