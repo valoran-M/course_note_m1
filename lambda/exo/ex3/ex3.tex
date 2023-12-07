@@ -107,8 +107,8 @@
 
   So we have $\Lambda \backslash N$ non-empty and non-equal to $\Lambda$
 
-  By Scott's theorem, the set $N$ is not recursively separable. So the
-  $\lambda$-term $H$ does not exist.
+  By Scott's theorem, the set $N$ and $\Lambda \backslash N$ are not recursively
+  separable. So the $\lambda$-term $H$ does not exist.
 
   \section*{List in pure $\lambda$ calculus}
 
@@ -150,7 +150,7 @@
 
   \begin{itemize}
     \item $\nil = \lambda n\;f.\; n$
-    \item $[x :: l] = \lambda n\;f.\; f\; x\; [l]$
+    \item $[x :: l] = \lambda n\;f.\; f\; x\; l$
   \end{itemize}
 
   \begin{center}
@@ -181,53 +181,85 @@ nth = $\Theta$ ($\lambda$ f k l. l [None]
   We want to proof this property $\forall k\;l\;x, \textit{nth}\; [k]\; [l]
   =_\beta \textit{nth}\;[k+1]\;[x :: l]$.
 
-  \proof
-  The calculations have been simplified to
-  make the proof easier to read.
+  \proof We just need to compute one step of $\nth\;[k+1]\;[x::l]$
+  \begin{align*}
+    \nth\;[k+1]\;[x::[l]] &\rsbeta [x::[l]]\; \none\; 
+    (\lambda x\;l.\;[\textit{isZ}]\; [k+1]\; [\textit{Some}(x)]\;
+    (\nth\;[k]\;l)) \\
+    &\rsbeta [x::[l]]\; \none\; 
+    (\lambda x\;l.\;[F]\; [\textit{Some}(x)]\;
+    (\nth\;[k]\;l)) \\
+    &\rsbeta [x::[l]]\; \none\; 
+    (\lambda x\;l.\;(\nth\;[k]\;l)) \\
+    &\rsbeta (\lambda x\;l.\;(\nth\;[k]\;l))\;x\;[l]\\
+    &\rsbeta \nth\;[k]\;[l]
+  \end{align*}
 
-  We proceed by induction on $[k]$ :
+  So by calculation, we have $\forall k\;l\;x, \textit{nth}\; [k]\; [l]
+  =_\beta \textit{nth}\;[k+1]\;[x :: l]$.
 
-  \begin{itemize}
-    \item if $ k = 0$
-      \begin{itemize}
-        \item if $l = \nil$, then 
-          \begin{multicols}{2}
-          \begin{align*}
-            \nth\; [0]\; \nil &\rsbeta \nil\; \none\; (\ldots) \\
-                              &\rbeta \none
-          \end{align*}
-
-          \begin{align*}
-            \nth\; [1]\; [x::\nil] &\rsbeta \nth\;[0]\;\nil \\
-                                   &\rsbeta \none
-          \end{align*}
-          \end{multicols}
-
-        \item if $l = [x' :: [l]]$, then
-          \begin{multicols}{2}
-          \begin{align*}
-            \nth\; [0]\; [x'::[l]] &\rsbeta
-                              [\textit{isZ}]\; [0]\; [\textit{Some(x')}]\;
-                              (\ldots) \\
-                              &\rbeta [\textit{Some(x')}]
-          \end{align*}
-
-          \begin{align*}
-            \nth\; [1]\; [x::x'::[l]] &\rsbeta
-                              \nth\; [0]\; [x' :: [l]] \\
-                              &\rsbeta [\textit{Some(x')}]
-          \end{align*}
-          \end{multicols}
-      \end{itemize}
-    \item if $k = n + 1$ by induction hypothesis we know that 
-      $\forall l\;x, \nth\; [n]\; [l] =_\beta \nth\;[n+1]\;[x :: l]$
-
-      \begin{align*}
-        \nth\; [k + 2]\;[x'::x:: l] &\rsbeta \nth\;[n+1]\;[x::l] & &\text{One
-        step on \nth} \\
-        &=_\beta \nth\;[n]\;[l] & &\text{Induction Hypothesis}
-      \end{align*}
-  \end{itemize}
+  % We proceed by induction on $[k]$ :
+  %
+  % \begin{itemize}
+  %   \item if $ k = 0$
+  %     \begin{itemize}
+  %       \item if $l = \nil$, then 
+  %         \begin{multicols}{2}
+  %         \begin{align*}
+  %           \nth\; [0]\; \nil &\rsbeta \nil\; \none\; (\ldots) \\
+  %                             &\rsbeta \none
+  %         \end{align*}
+  %
+  %         \begin{align*}
+  %           \nth\; [1]\; [x::\nil] &\rsbeta \nth\;[0]\;\nil \\
+  %                                  &\rsbeta \none
+  %         \end{align*}
+  %         \end{multicols}
+  %
+  %       \item if $l = [x' :: [l]]$, then
+  %         \begin{multicols}{2}
+  %         \begin{align*}
+  %           \nth\; [0]\; [x'::[l]] &\rsbeta
+  %                             [\textit{isZ}]\; [0]\; [\textit{Some(x')}]\;
+  %                             (\ldots) \\
+  %                             &\rsbeta [\textit{Some(x')}]
+  %         \end{align*}
+  %
+  %         \begin{align*}
+  %           \nth\; [1]\; [x::x'::[l]] &\rsbeta
+  %                             \nth\; [0]\; [x' :: [l]] \\
+  %                             &\rsbeta [\textit{Some(x')}]
+  %         \end{align*}
+  %         \end{multicols}
+  %     \end{itemize}
+  %   \item if $k = n + 1$ by induction hypothesis we know that 
+  %     $\forall l\;x, \nth\; [n]\; [l] =_\beta \nth\;[n+1]\;[x :: l]$.
+  %
+  %     We want to prove $\forall l\;x, \nth\; [k]\; [l] =_\beta \nth\;[k+1]\;[x :: l]$
+  %
+  %     \begin{itemize}
+  %       \item if $l = \nil$:
+  %
+  %         \begin{multicols}{2}
+  %           \begin{align*}
+  %             \nth\; [k]\; \nil &\rsbeta \nil\; \none\; (\ldots) \\
+  %                               &\rsbeta \none
+  %           \end{align*}
+  %
+  %           \begin{align*}
+  %             \nth\; [k + 1]\; [x::\nil] &\rsbeta \nth\;[k]\;\nil \\
+  %                                        &\rsbeta \none
+  %           \end{align*}
+  %         \end{multicols}
+  %
+  %       \item if $l = x' :: l$
+  %         \begin{align*}
+  %           \nth\; [k + 1]\;[x::x':: l] &\rsbeta \nth\;[n+1]\;[x'::l] & &\text{One
+  %           step on \nth} \\
+  %           &=_\beta \nth\;[n]\;[l] & &\text{Induction Hypothesis}
+  %         \end{align*}
+  %     \end{itemize}
+  % \end{itemize}
   \qedsymbol
 
 \end{document}
