@@ -107,6 +107,15 @@
 
   So we have $\Lambda \backslash N$ non-empty and non-equal to $\Lambda$
 
+  $N$ and $\Lambda \backslash N$ are closed by the $\beta$-reduction.
+
+  If $n, n' \in N$ such that $n =_\beta n'$ then $n' \in N$. Because $n'$
+  has the same normal form as $n$.
+
+  If $n, n' \in \Lambda \backslash N$ such that $n =_\beta n'$ then $n' \in
+  \Lambda \backslash N$. Because $n$ has no normal form so $n'$ has no
+  normal form.
+
   By Scott's theorem, the set $N$ and $\Lambda \backslash N$ are not recursively
   separable. So the $\lambda$-term $H$ does not exist.
 
@@ -176,8 +185,6 @@ nth = $\Theta$ ($\lambda$ f k l. l [None]
                     ($\lambda$ x l'. [isZ] k [Some(x)])
                                      (f ([P] k) l'))
     \end{lstlisting}
-
-\newpage
 
   We want to proof this property $\forall k\;l\;x, \textit{nth}\; [k]\; [l]
   =_\beta \textit{nth}\;[k+1]\;[x :: l]$.

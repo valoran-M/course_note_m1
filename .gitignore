@@ -361,4 +361,4 @@ jupyterhub*
 *.vok
 *.vos
 
-.frama-c/**
+.frama-c
