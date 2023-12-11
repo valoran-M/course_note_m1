@@ -1,0 +1,61 @@
+\section{On the nature of quantum information}
+
+\exo[Hadamard]~
+
+\begin{itemize}
+  \item $a = 0$
+    \begin{align*}
+      H \ket 0 &= \frac 1 {\sqrt 2}(\ket 0 + \ket 1)\\
+      &= \frac 1 {\sqrt 2}(\ket 0 + (-1)^0 \ket 1)
+    \end{align*}
+  \item $a = 1$
+    \begin{align*}
+      H \ket 1 &= \frac 1 {\sqrt 2}(\ket 0 - \ket 1)\\
+      &= \frac 1 {\sqrt 2}(\ket 0 + (-1)^1 \ket 1)
+    \end{align*}
+\end{itemize}
+
+\exo[Who controls whom?]~
+
+We define :
+\begin{align*}
+\textit{NotC} &=
+\left(\begin{array}{c c c c}
+  1 & 0 & 0 & 0\\
+  0 & 0 & 0 & 1\\
+  0 & 0 & 1 & 0\\
+  0 & 1 & 0 & 0
+\end{array}\right)
+\end{align*}
+\begin{align*}
+\textit{NotC}\ket{00} &= \ket{00}&
+\textit{NotC}\ket{01} &= \ket{11} \\
+\textit{NotC}\ket{10} &= \ket{10}&
+\textit{NotC}\ket{11} &= \ket{01} \\
+\end{align*}
+
+We want to proof $(H \otimes H) \CNot (H \otimes H) = \textit{NotC}$ :
+\begin{align*}
+  (H \otimes H) (\ket x \otimes \ket y) &= (H \ket x \otimes H \ket y) \\
+  &= \frac 1 {\sqrt 2}(\ket 0 + (-1)^x \ket 1) \otimes
+     \frac 1 {\sqrt 2}(\ket 0 + (-1)^y \ket 1) \\
+  &= \frac 1 2 (\ket{00} + (-1)^x \ket{10} + (-1)^y\ket{01} + (-1)^{x+y}\ket{11})
+\end{align*}
+We apply the operator \CNot :
+\begin{align*}
+  &\CNot (\frac 1 2 (\ket{00} + (-1)^x \ket{10} + (-1)^y\ket{01} +
+  (-1)^{x+y}\ket{11})) \\
+  &=\frac 1 2 (\ket{00} + (-1)^x \ket{11} + (-1)^y\ket{01} + (-1)^{x+y}\ket{10})
+  \\
+  &= \frac 1{\sqrt 2}(\ket 0 + (-1)^{x+y}\ket 1)\otimes (\frac 1{\sqrt 2}(\ket 0 +
+  (-1)^y\ket 1)) \\
+  &= H\ket{x \oplus y} \otimes H\ket{y} & (-1)^{x+y} = (-1)^{x\oplus y}\; (x
+  \oplus y \in \{0, 1\})
+\end{align*}
+Finlay we apply $(H \otimes H)$:
+\begin{align*}
+  HH\ket{x\oplus y} \otimes HH\ket y &= \ket{x\oplus y} \otimes \ket y\\
+  &= \textit{NotC}(\ket x \otimes \ket y)
+\end{align*}
+
+

@@ -1,0 +1,150 @@
+\section{Postulates on pure states}
+
+\exo[Evolutions]~
+
+Let $\ket \psi = \ket{0} \otimes \ket{0}$ the initial state of two
+qubits. We want to compute $\textit{CNot} (H \otimes I) \ket{\psi}$.
+
+\begin{align*}
+  \CNot (H \otimes I) (\ket 0 \otimes \ket 0) &=
+    \CNot ((\ket 0 + \ket 1)/\sqrt 2 \otimes (\ket 0 + \ket 1)/\sqrt 2) \\
+    &= \frac 1 2 \CNot (\ket{00} + \ket{01} + \ket{10} + \ket{11}) \\
+    &= \frac 1 2 (\ket{00} + \ket{01} + \ket{11} + \ket{10}) := \ket{\psi'}
+\end{align*}
+
+\begin{align*}
+  (H\otimes I)\CNot \ket{\psi'}
+  &= (H\otimes I) \frac 1 2 (\ket{00} + \ket{01} + \ket{10} + \ket{11}) \\
+  &= \ket {00} & H^2\ket \psi = \ket \psi
+\end{align*}
+
+\begin{enumerate}
+  \item $T^4H\; \ket 0$
+  \item $HT^4H\; \ket 0$
+  \item $\CNot(H\ket 0 \otimes HT^4H \ket 0)$
+  \item 
+  % \item $(I \otimes \CNot)
+  %   (\CNot (H\ket 0 \otimes \ket 0) \otimes \ket 0)$
+  \item $(H \otimes (H^2)) (\ket 0 \otimes \ket 0))$
+\end{enumerate}
+
+\exo[Measuring in another basis]~
+
+\begin{itemize}
+  \item orthogonal :
+    \begin{align*}
+      \braket + - &= (\frac 1 {\sqrt 2})^2 + \frac 1 {\sqrt 2} \times
+          \frac{-1}{\sqrt 2} \\
+            &= (\frac 1 {\sqrt 2})^2 - (\frac 1 {\sqrt 2})^2 \\
+            &= 0
+    \end{align*}
+
+  \item norm one :
+    \begin{multicols}{2}
+      \begin{align*}
+        \braket + + &= (\frac 1 {\sqrt 2})^2 + (\frac 1 {\sqrt 2})^2 \\
+            &= \frac 1 2 + \frac 1 2 \\
+            &= 1
+      \end{align*}
+
+      \begin{align*}
+        \braket - - &= (\frac 1 {\sqrt 2})^2 + (\frac{-1}{\sqrt 2})^2 \\
+            &= \frac 1 2 + \frac 1 2 \\
+            &= 1
+      \end{align*}
+    \end{multicols}
+
+  \item generate $\mathbb C^2$ 
+
+    Let $c = \alpha \ket 0 + \beta \ket 1 \in \mathbb C^2$ we want to find $x$
+    and $y$ such that $x \ket + + y \ket - = c$.
+
+    \begin{align*}
+      x \ket + + y \ket - &= 
+      \frac x {\sqrt 2}(\ket 0 + \ket 1) + \frac y {\sqrt 2}(\ket 0 - \ket 1) \\
+      &= (\frac {x + y} {\sqrt 2}) \ket 0 + (\frac {x - y}{\sqrt 2}) \ket 1
+    \end{align*}
+
+    So we have this system :
+    \begin{align*}
+      \begin{cases}
+          (x + y) / \sqrt 2 &= \alpha \\
+          (x - y) / \sqrt 2 &= \beta
+        \end{cases}
+      \Rightarrow& \begin{cases}
+          x + y &= \sqrt 2 \alpha \\
+          x - y &= \sqrt 2 \beta
+        \end{cases} \\
+      \Rightarrow& \begin{cases}
+          2x &= \sqrt 2 (\alpha + \beta) \\
+          x - y &= \sqrt 2 \beta
+        \end{cases} \\
+      \Rightarrow& \begin{cases}
+          x &= \frac {\sqrt 2} 2 (\alpha + \beta) \\
+          -x + y &= -\sqrt 2 \beta
+        \end{cases} \\
+      \Rightarrow& \begin{cases}
+          x &= \frac {\sqrt 2} 2 (\alpha + \beta) \\
+          y &= \frac {\sqrt 2} 2 (\alpha - \beta)
+        \end{cases}
+      \end{align*}
+\end{itemize}
+
+$B = \{\ket 0, \ket 1\}$ is another o.n.b of $\mathbb C^2$
+
+We need to show that $\sum_{M\in\mathcal M_{\pm}} M^\dagger M = 1$
+\begin{align*}
+  \sum_{M\in\mathcal M_{\pm}} 
+  &= (\ket + \bra +)^\dagger (\ket + \bra +) + 
+     (\ket - \bra -)^\dagger (\ket - \bra -) \\
+  &= (\ket + \braket + + \bra +) + (\ket - \braket - - \bra -)\\
+  &= \ket + \bra + + \ket - \bra - \\
+  &= \frac 1 2 (\ket 0 \bra 0 + \ket 0 \bra 1 + \ket 1 \bra 0 + \ket 1 \bra 1) +
+     \frac 1 2 (\ket 0 \bra 0 - \ket 0 \bra 1 - \ket 1 \bra 0 + \ket 1 \bra 1)
+     \\
+  &= \ket 0 \bra 0 + \ket 1 \bra 1 \\
+  &= 1
+\end{align*}
+
+So $\mathcal M_\pm$ is a valid measurement.
+
+We have $\ket \psi = \frac 1 3 \ket 0 + \frac{\sqrt 8} 3 \ket 1$
+
+\begin{itemize}
+  \item For $\ket + \bra +$
+    \begin{align*}
+      p(\ket +) &= \bra \psi (\ket + \bra +)^\dagger \ket + \bra + \ket \psi \\
+      &= \bra \psi \ket + \bra + \ket \psi \\
+      &= \braket \psi + \braket + \psi \\
+      &= (\frac 1 3 \times \frac 1 {\sqrt 2} + \frac {\sqrt 8} 3 \times \frac 1
+        {\sqrt 2})^2 \\
+      &= \frac 1 2 \times (\frac{1 + \sqrt 8} 3)^2
+      = \frac 1 2 \times \frac {(1 + \sqrt 8)^2} 9
+      = \frac {(1 + \sqrt 8)^2}{18}
+    \end{align*}
+
+  \item For $\ket - \bra -$
+\end{itemize}
+
+\exo[Measuring to distinguish]~
+
+We defined:
+
+\begin{align*}
+M_0 = \left(\begin{array}{c c}
+  1  & 0\\
+  -1 & 0
+\end{array}\right)
+\quad 
+M_+ = \left(\begin{array}{c c}
+  1 & -1\\
+  2 &  2
+\end{array}\right)
+\quad
+M_f = \left(\begin{array}{c c}
+  0 & 0\\
+  0 & 0
+\end{array}\right)
+\end{align*}
+
+
