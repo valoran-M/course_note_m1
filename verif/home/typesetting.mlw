@@ -1,0 +1,46 @@
+use int.Int
+use array.Array
+
+type chr
+
+val constant sp : chr (* "space" character *)
+val constant nl : chr (* "newline" character *)
+
+(* We can test whether two characters are the same by writing "c = d".
+   We can test whether they are different by writing "c <> d". *)
+val (=) (c d: chr) : bool ensures { result <-> c = d }
+
+(* The 'split' function takes a text 't' (an array of characters)
+   and a maximum line length 'lim' (a non-negative integer).
+   This function must split the text into lines by replacing
+   some spaces with newlines, so that no line containing spaces
+   is longer than 'lim' characters. Only the space characters
+   can be modified. If 'lim' is 0, then every space must be
+   replaced with a newline.
+
+   Write the contract and the implementation of the 'split' function
+   and prove its correctness. Your specification must be complete,
+   i.e., it must reflect all the conditions listed above.
+
+   BONUS POINTS are given if your implementation makes lines as long
+   as allowed by the rules above, and the contract reflects it.
+*)
+
+let split (t: array chr) (lim: int) : unit
+    requires { nl  <> sp }
+    requires { lim >= 0 }
+    ensures  { forall i. 0 <= i < length t /\ old t[i] <> sp ->
+                    old t[i] = t[i] }
+    ensures  { forall i j. 0 <= i <= j < length t ->
+                    j - i > lim ->
+                        (exists n. 0 <= n < length t /\ t[n] =  nl) \/
+                        (forall n. 0 <= n < length t -> t[n] <> sp)}
+=
+    for i=0 to Array.length t - 1 do
+        invariant { forall n. 0 <= n < length t /\ old t[n] <> sp ->
+                        old t[n] = t[n] }
+        invariant { forall n. 0 <= n < i -> t[n] <> sp }
+
+        if t[i] = sp then t[i] <- nl
+    done
+
