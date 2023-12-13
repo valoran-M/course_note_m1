@@ -18,14 +18,15 @@ qubits. We want to compute $\textit{CNot} (H \otimes I) \ket{\psi}$.
   &= \ket {00} & H^2\ket \psi = \ket \psi
 \end{align*}
 
+We have $I := H^2$
+
 \begin{enumerate}
   \item $T^4H\; \ket 0$
   \item $HT^4H\; \ket 0$
-  \item $\CNot(H\ket 0 \otimes HT^4H \ket 0)$
-  \item 
-  % \item $(I \otimes \CNot)
-  %   (\CNot (H\ket 0 \otimes \ket 0) \otimes \ket 0)$
-  \item $(H \otimes (H^2)) (\ket 0 \otimes \ket 0))$
+  \item $\CNot(H \otimes HT^4H)(\ket 0 \otimes \ket 0)$
+  \item $(I \otimes \CNot)(\CNot \otimes I)(H \otimes I \otimes I)
+    (\ket 0 \otimes \ket 0 \otimes \ket 0)$
+  \item $(H \otimes I) (\ket 0 \otimes \ket 0))$
 \end{enumerate}
 
 \exo[Measuring in another basis]~

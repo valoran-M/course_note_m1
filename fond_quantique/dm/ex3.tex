@@ -13,30 +13,112 @@ Let $D$ and $D'$ two diagonal matrices and $U$ a unitary matrix.
         &= UD'U^\dagger UDU^\dagger \\
         &= BA
     \end{align*}
-
   \item Let $M = UDU^\dagger$
+    \begin{align*}
+      MM^\dagger &= UDU^\dagger (UDU^\dagger)^\dagger \\
+      &= UDU^\dagger (U^\dagger)^\dagger D^\dagger U^\dagger \\
+      &= UDU^\dagger U D^\dagger U^\dagger \\
+      &= UDD^\dagger U^\dagger \\
+      &= UD^\dagger D U^\dagger \\
+      &= UD^\dagger U^\dagger  U D U^\dagger \\
+      &= (UD U^\dagger)^\dagger U D U^\dagger \\
+      &= M^\dagger M
+    \end{align*}
+  \item Let $E = UDU^\dagger$ with having only non-negative value.
+
+    Let $\ket{\psi} \in \mathcal M_{n,1}(\mathbb C)$,
+      $d_i$ such that $E_{i,i} = d_i$
+    \begin{align*}
+      \bra{\psi} E \ket \psi &= \bra \psi U D U^\dagger \ket \psi \\
+      &= (U^\dagger \ket \psi)^\dagger D (U^\dagger \ket \psi) \\
+      &= \sum^n_{i=1} d_i (U_i \ket \psi)^2 \\
+      &\geq 0
+    \end{align*}
+
+  \item Let $V = UDU^\dagger$ with $D$ having only modulus one values.
+    \begin{align*}
+      VV^\dagger &= UDU^\dagger(UDU^\dagger)^\dagger \\
+      &= UDU^\dagger UD^\dagger U^\dagger \\
+      &= UDD^\dagger U^\dagger \\
+      &= UU^\dagger & \text{$D$ has only modulus one values}\\
+      &= I
+    \end{align*}
+    So $V$ is a unitary matrix.
+
+  \item Let $E$ a non-negative matrix. $E$ is spectrally decomposable with
+    non-negative eigenvalues. We can take $M :=\sqrt E$ which is defined by its spectral decomposition being with the square roots
+    of the eigenvalues of E. $M$ is hermitian and $E = MM$, so $E^\dagger =
+    (MM)^\dagger = M^\dagger M^\dagger = MM = E$.
+
+  \item The follow matrix is not normal :
+
+    \[M=
+      \left(\begin{tabular}{c c}
+        1 & 2 \\
+        3 & 4
+      \end{tabular}\right)
+    \]
+
+    \[MM^\dagger = \left(\begin{tabular}{c c}
+        5  & 11 \\
+        11 & 25
+      \end{tabular}\right) \not = 
+      \left(\begin{tabular}{c c}
+        10 & 14 \\
+        14 & 20
+      \end{tabular}\right) = M^\dagger M\]
+
 \end{itemize}
 
 \exo[Isometry versus unitary versus involution]~
 
 \begin{itemize}
+  \item Let $M$ a unitary and hermitian matrix.
+    \begin{align*}
+      M M &= M M^\dagger & M \text{is hermitian} \\
+          &= I & M \text{ is unitary}
+    \end{align*}
   \item Matrix $2\times 2$ unitary that is not an involution :
     \begin{align*}
-      \left(
+      M = \left(
       \begin{array}{c c}
         1 & 0\\
         0 & i\\
       \end{array}
       \right)
     \end{align*}
-  \item Matrix $m\times n$ unitary that is not an involution :
-    % \begin{align*}
-    %   \left(
-    %   \begin{array}{c c}
-    %     1 & 0\\
-    %     0 & i\\
-    %   \end{array}
-    %   \right)
-    % \end{align*}
+    The inverse of $M$ is :
+    \begin{align*}
+      M^{-1} = \left(
+      \begin{array}{c c}
+        1 & 0\\
+        0 & -i\\
+      \end{array}
+      \right)
+    \end{align*}
+    We have $M \not = M^{-1}$ so $M$ is not an involution.
+  \item Matrix $m\times n$ isometry that is not a unitary:
+    \begin{align*}
+      M = \left(
+      \begin{array}{c c}
+        0 & 1\\
+      \end{array}
+      \right)
+    \end{align*}
+    \begin{align*}
+      M^\dagger M =
+      \left(\begin{array}{c}
+        1\\
+      \end{array}
+      \right) = I_1
+      \quad
+      MM^\dagger =
+      \left(\begin{array}{c c}
+        0 & 0\\
+        0 & 1
+      \end{array}
+      \right) \not = I_2
+    \end{align*}
+  \item Let $M$ an $n \times n$ isometry matrix ($M^\dagger M = I_n$)
 
 \end{itemize}
