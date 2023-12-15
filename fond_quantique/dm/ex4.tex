@@ -54,8 +54,20 @@ We apply the operator \CNot :
 \end{align*}
 Finlay we apply $(H \otimes H)$:
 \begin{align*}
-  HH\ket{x\oplus y} \otimes HH\ket y &= \ket{x\oplus y} \otimes \ket y\\
+  (H \otimes H) (H\ket{x\oplus y} \otimes H\ket y)
+  &= HH\ket{x\oplus y} \otimes HH\ket y \\
+  &= \ket{x\oplus y} \otimes \ket y\\
   &= \textit{NotC}(\ket x \otimes \ket y)
 \end{align*}
 
+In quantum circuit :
+\begin{center}
+\begin{quantikz}
+& \gate{H} & \ctrl{1} & \gate{H} & \qw \\
+& \gate{H} & \targ{}  & \gate{H} & \qw
+\end{quantikz}=\begin{quantikz}
+  & \targ{}   & \qw \\
+  & \ctrl{-1} & \qw
+\end{quantikz}
+\end{center}
 

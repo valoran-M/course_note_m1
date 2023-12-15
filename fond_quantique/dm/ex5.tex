@@ -1,0 +1,135 @@
+\section{Protocols}
+
+\exo[Canonical basis versus diagonal basis]~
+
+\begin{itemize}
+  \item If Bob measures the result in the same basis then he can retrieve the
+    information sent
+
+  \item If Bob measures in an other basis then he learns nothing about the
+    message.
+
+  \item If Eve intercepts and measures it in the same basis then Bob can have
+    some information on the message if he read the message in the same basis.
+
+  \item But if Eve intercepts and measures it in an other basis and Bob read the
+    message in the original basis then he learns nothing about the message.
+\end{itemize}
+
+\exo[BB84]~
+
+\begin{enumerate}
+  \item Alice will start by producing a random string of bits, encode each of
+    them either into the canonical or the diagonal basis, and send that to Bob.
+
+  \item Bob will measure them either using the canonical basis or the
+    diagonal basis, at random.
+
+  \item Bob will broadcast which bases he used
+
+  \item Alice will know when Bob used the same base. When Bob has used the right
+    base, Bob's information is correct, otherwise it is wrong (previous exercise).
+
+  \item Eve does not know the bases like Bob And she has very little chance of
+    having the right basic sequence ($\frac{1}{2^n}$). But she's going to
+    disrupt Bob's measurements.
+
+  \item
+\end{enumerate}
+
+\exo[Quantum random access code]~
+
+TODO
+
+\exo[The Bell basis]~
+
+\begin{align*}
+  \ket{\beta_0} &= \frac{1}{\sqrt 2}(\ket{00} + \ket{11})
+  &\ket{\beta_1} &= (X \otimes I)\ket{\beta_0} =
+    \frac{1}{\sqrt 2}(\ket{10}+\ket{01}) \\
+  \ket{\beta_2} &= (Y \otimes I)\ket{\beta_2} =
+    \frac{i}{\sqrt 2}(\ket{10} - \ket{01})
+  &\ket{\beta_3} &= (Z \otimes I)\ket{\beta_0} =
+    \frac{1}{\sqrt 2}(\ket{00}-\ket{11})
+\end{align*}
+
+These four states are orthogonal and orthonormal,
+
+orthogonal:
+\begin{align*}
+  \braket{\beta_0}{\beta_1} &= \frac 1 2 \times 0 = 0 &
+  \braket{\beta_0}{\beta_2} &= \frac i 2 \times 0 = 0 \\
+  \braket{\beta_0}{\beta_3} &= \frac 1 2 \times 0 = 0 &
+  \braket{\beta_1}{\beta_2} &= \frac i 2 \times 0 = 0 \\
+  \braket{\beta_1}{\beta_3} &= \frac 1 2 \times 0 = 0 &
+  \braket{\beta_2}{\beta_3} &= \frac i 2 \times 0 = 0
+\end{align*}
+
+orthonormal:
+\begin{align*}
+  \braket{\beta_0}{\beta_0} &= \frac 1 2 (0 + 2) = 1 &
+  \braket{\beta_1}{\beta_1} &= \frac 1 2 (1 + 1) = 1 \\
+  \braket{\beta_2}{\beta_2} &= \frac{-1}{2} (1 + 1) = -1 &
+  \braket{\beta_3}{\beta_3} &= \frac 1 2 (0 + 2) = 1 \\
+\end{align*}
+
+So, this states are an orthonormal basis.
+
+\exo[Superdense coding]~
+
+TODO
+
+\exo[Discussion: classical description of a single qubit]~
+
+A qubit is coded with this formula : $\alpha \ket 0 + \beta \ket 1$.
+We just need to send $2$ complexes numbers. So if a number is encoded with $n$
+bits we send $4n$ bits.
+
+
+\exo[Teleportation]~
+
+We verify :
+% \begin{align*}
+%   \frac 1 2\sum_i \ket{\beta_i}^{\text{Alice}} \otimes \ket{\psi}^{\text{Bob}}
+%   &= \frac 1 2 (\frac 1)
+% \end{align*}
+
+\exo[The swap test]~
+
+Before the measurement we have this state :
+
+\begin{align*}
+  \ket{\kappa}&=(H \otimes I \otimes I) \CSwap (H \otimes I \otimes I) \ket{0} \otimes
+  \ket{\phi} \otimes \ket{\psi} \\
+  &= (H \otimes I \otimes I) \CSwap ((\frac{1}{\sqrt 2}(\ket{0} + \ket{1}))
+  \otimes \ket{\phi} \otimes \ket{\psi}) \\
+  &= (H \otimes I \otimes I) \CSwap \frac{1}{\sqrt 2}
+     (\ket{0\phi\psi} + \ket{1\phi\psi}) \\
+  &= (H \otimes I \otimes I)\frac{1}{\sqrt 2}
+     (\ket{0\phi\psi} + \ket{1\psi\phi}) \\
+  &= \frac 1 2(\ket 0 \otimes (\ket{\phi\psi} + \ket{\psi\phi}) -
+               \ket 1 \otimes (\ket{\phi\psi} + \ket{\psi\phi})) \\
+  &= \frac 1 2(\ket{0\phi\psi} + \ket{0\psi\phi} +
+               \ket{1\phi\psi} - \ket{1\psi\phi})
+\end{align*}
+
+We apply the measures :
+
+\begin{align*}
+  p(0) &= \bra \kappa \ket 0 \bra 0 \ket \kappa \\
+  &= \frac 1 2 (\bra{\phi\psi} + \ket{\psi\phi}) \times
+     \frac 1 2 (\bra{\phi\psi} + \ket{\psi\phi}) \\
+  &= \frac 1 4 (2 + \braket{\phi\psi}{\psi\phi} + \braket{\psi\phi}{\phi\psi})\\
+  &= \frac 1 4 (2 + 2\braket{\phi\psi}{\psi\phi})\\
+  &= \frac 1 2 + \frac{\braket{\psi\phi}{\psi\phi}}{2}\\
+  &= \frac 1 2 + \frac 1 2 |\braket{\psi}{\phi}|^2\\
+\end{align*}
+
+we have $p(1) = 1 - p(0)$ so $p(1) = \frac 1 2 - \frac 1 2
+|\braket{\psi}{\phi}|^2$
+
+\exo[Quantum fingerprinting]~
+
+TODO
+
+
