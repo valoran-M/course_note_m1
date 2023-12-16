@@ -34,8 +34,13 @@
     having the right basic sequence ($\frac{1}{2^n}$). But she's going to
     disrupt Bob's measurements.
 
-  \item
+  \item 
 \end{enumerate}
+
+They can use common measurements bases to create an encryption key. For example,
+a basic measurements base sequence can become a binary code with 0 when we have
+the base $\mathcal M$ and 1 if we have the base $\mathcal M'$. With this
+generate key we can communicate with an existing encryption protocol.
 
 \exo[Quantum random access code]~
 
@@ -75,9 +80,47 @@ orthonormal:
 
 So, this states are an orthonormal basis.
 
+It is also a valid measurement :
+
+\begin{align*}
+  \sum_i \mathcal M _i &=
+  \ket {\beta_0} \bra {\beta_0} + \ket {\beta_1} \bra {\beta_1} +
+  \ket {\beta_2} \bra {\beta_2} + \ket {\beta_3} \bra {\beta_3} \\
+  &= I_4
+\end{align*}
+
 \exo[Superdense coding]~
 
-TODO
+At the beginning, Alice and Bob share an entangled state $\ket{\beta_0} = \frac
+1 {\sqrt 2}(\ket{00} + \ket{11}$ Alice can change $\ket{\beta_0}$ in $\ket
+{\beta_k}$ with this operation :
+
+\begin{itemize}
+  \item $\ket{\beta_0}$ : do nothing
+  \item $\ket{\beta_1}$ : apply the matrix $X$
+    \begin{align*}
+      X\ket{\beta_0} &= (X \otimes I) \frac{1}{\sqrt 2}(\ket{00} + \ket{11}) \\
+      &= \frac{1}{\sqrt 2}(\ket{10} + \ket{01}) \\
+      &= \ket{\beta_1}
+    \end{align*}
+  \item $\ket{\beta_2}$ : apply the matrix $Y$
+    \begin{align*}
+      Y\ket{\beta_0} &= (Y \otimes I) \frac{1}{\sqrt 2}(\ket{00} + \ket{11}) \\
+      &= \frac{i}{\sqrt 2}(\ket{10} - \ket{01}) \\
+      &= \ket{\beta_2}
+    \end{align*}
+  \item $\ket{\beta_3}$ : apply the matrix $Z$
+    \begin{align*}
+      Y\ket{\beta_0} &= (Z \otimes I) \frac{1}{\sqrt 2}(\ket{00} + \ket{11}) \\
+      &= \frac{1}{\sqrt 2}(\ket{00} - \ket{11}) \\
+      &= \ket{\beta_3}
+    \end{align*}
+\end{itemize}
+
+So Alice can encode the four possible pairs of bits (00, 01, 10 and 11) with the
+4 Bell states. We have shown that Alice can modify $\ket{B_0}$ on her own, so
+with  qubit she can change the communication state to one of the 4 states. Bob
+can measure the result and retrieve the information from Alice.
 
 \exo[Discussion: classical description of a single qubit]~
 
@@ -88,11 +131,7 @@ bits we send $4n$ bits.
 
 \exo[Teleportation]~
 
-We verify :
-% \begin{align*}
-%   \frac 1 2\sum_i \ket{\beta_i}^{\text{Alice}} \otimes \ket{\psi}^{\text{Bob}}
-%   &= \frac 1 2 (\frac 1)
-% \end{align*}
+TODO
 
 \exo[The swap test]~
 
