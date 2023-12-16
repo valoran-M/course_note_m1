@@ -1,0 +1,34 @@
+\section{Bell}
+
+\exo[Probability of winning the CHSH game]~
+
+We have 4 case :
+
+\begin{itemize}
+  \item s = r = 0
+
+    \begin{align*}
+      \mathcal P(\text{win}) &= \mathcal P(a = b = 0) + \mathcal P(a = b = 1) \\
+      &= |((\cos(0) \bra 0 + \sin(0) \bra 1) \otimes
+          ((\cos(\frac \pi 8) \bra 0) + \sin(\frac \pi 8) \bra 1)) \ket{\beta_0}|^2
+          \\
+      &+ |((\sin(0) \bra 0 - \cos(0) \bra 1) \otimes
+          ((\sin(\frac \pi 8) \bra 0) - \cos(\frac \pi 8) \bra 1))\ket{\beta_0}|^2
+          \\
+      &= |(\cos(\frac \pi 8)\bra{00} + \sin(\frac \pi 8)\bra{01}) \ket{\beta_0}|^2
+      + |(-\sin(\frac \pi 8)\bra{10} + \cos(\frac \pi 8)\bra{11}) \ket{\beta_0}|^2
+      \\
+      &= |\frac{1}{\sqrt 2} \cos(\frac \pi 8)|^2 +
+         |\frac{1}{\sqrt 2} \cos(\frac \pi 8)|^2 \\
+      &= \frac 1 2 \cos^2(\frac \pi 8) + \frac 1 2 \cos^2(\frac \pi 8) \\
+      &= \cos^2(\frac \pi 8)
+    \end{align*}
+
+  \item the following calculations are similar and we obtain
+    $\cos^2(\frac \pi 8)$
+\end{itemize}
+
+There are 4 different ways to draw $s$ and $r$ :
+
+$$ \mathcal P(\text{win}) = 4 \times \frac 1 4 \times \cos^2(\frac \pi 8)
+= \cos^2(\frac \pi 8)$$
