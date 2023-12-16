@@ -122,10 +122,10 @@ Let $D$ and $D'$ two diagonal matrices and $U$ a unitary matrix.
   \item Let $M$ an $n \times n$ isometry matrix ($M^\dagger M = I_n$)
     \begin{align*}
       MM^\dagger &=
-      \sum_{i,j} M_{i,j} \ket i \bra j \sum_{i,j} M_{i,j} \ket j \bra i \\
-      &= \sum_{i,j} M_{i,j} \ket{ij} \bra{ji} \\
-      &= \sum_{i,j} M_{i,j} \ket{ji} \bra{ij} \\
-      &= \sum_{i,j} M_{i,j} \ket{j} \bra{i} \sum_{i,j} M_{i,j} \ket i \bra j \\
+      \sum_{i,j} M_{i,j} \ket i \bra j \sum_{i,j} M_{j,i} \ket i \bra j \\
+      &= \sum_{i,j} M_{i,j} M_{j,i} \ket{i} \bra{i} \\
+      &= \sum_{i,j} M_{j,i} M_{i,j} \ket{i} \bra{j} \\
+      &= \sum_{i,j} M_{j,i} \ket{i} \bra{j} \sum_{i,j} M_{i,j} \ket i \bra j \\
       &= M^\dagger M \\
       &= I_n
     \end{align*}
