@@ -218,8 +218,8 @@ The last one in Dirac notation :
 \end{array}\right)
 =
 \left(\begin{array}{c}
- 1\\
  0\\
+ 1\\
  0\\
  0
 \end{array}\right)
@@ -512,11 +512,12 @@ Proof that are unitary matrix :
     \end{align*}
   \item $T$:
     \begin{align*}
-      (\ket 0 \bra 0 + e^{\frac{i\pi}{4}} \ket 1 \bra 1)^2
-      &= \ket 0 \braket 0 0 \bra 0 + e^{\frac{i\pi}{4}} \ket 0 \braket 0 1 \bra 1
+      &(\ket 0 \bra 0 + e^{\frac{i\pi}{4}} \ket 1 \bra 1)
+       (\ket 0 \bra 0 + e^{\frac{-i\pi}{4}} \ket 1 \bra 1) \\
+      =& \ket 0 \braket 0 0 \bra 0 + e^{\frac{i\pi}{4}} \ket 0 \braket 0 1 \bra 1
           + e^{\frac{i\pi}{4}}(\ket 1 \braket 1 0 \bra 0)
           + e^{\frac{i\pi}{2}}(\ket 1 \braket 1 1 \bra 1)\\
-      &= \ket 0 \bra 0 + \ket 1 \bra 1
+      =& \ket 0 \bra 0 + \ket 1 \bra 1
     \end{align*}
 \end{itemize}
 

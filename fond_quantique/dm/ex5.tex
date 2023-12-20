@@ -64,18 +64,18 @@ orthogonal:
 \begin{align*}
   \braket{\beta_0}{\beta_1} &= \frac 1 2 \times 0 = 0 &
   \braket{\beta_0}{\beta_2} &= \frac i 2 \times 0 = 0 \\
-  \braket{\beta_0}{\beta_3} &= \frac 1 2 \times 0 = 0 &
-  \braket{\beta_1}{\beta_2} &= \frac i 2 \times 0 = 0 \\
+  \braket{\beta_0}{\beta_3} &= \frac 1 2 - \frac 1 2 = 0 &
+  \braket{\beta_1}{\beta_2} &= \frac i 2 - \frac i 2 = 0 \\
   \braket{\beta_1}{\beta_3} &= \frac 1 2 \times 0 = 0 &
   \braket{\beta_2}{\beta_3} &= \frac i 2 \times 0 = 0
 \end{align*}
 
 orthonormal:
 \begin{align*}
-  \braket{\beta_0}{\beta_0} &= \frac 1 2 (0 + 2) = 1 &
-  \braket{\beta_1}{\beta_1} &= \frac 1 2 (1 + 1) = 1 \\
-  \braket{\beta_2}{\beta_2} &= \frac{-1}{2} (1 + 1) = -1 &
-  \braket{\beta_3}{\beta_3} &= \frac 1 2 (0 + 2) = 1 \\
+  \braket{\beta_0}{\beta_0} &= \frac 1 2 + \frac 1 2 = 1 &
+  \braket{\beta_1}{\beta_1} &= \frac 1 2 + \frac 1 2 = 1 \\
+  \braket{\beta_2}{\beta_2} &= \frac 1 2 + \frac 1 2 = 1 &
+  \braket{\beta_3}{\beta_3} &= \frac 1 2 + \frac 1 2 = 1 \\
 \end{align*}
 
 So, this states are an orthonormal basis.
@@ -131,7 +131,24 @@ bits we send $4n$ bits.
 
 \exo[Teleportation]~
 
-TODO
+\begin{align*}
+  \frac 1 2 \sum_i \ket{\beta_i} \otimes \sigma_i \ket{\psi}
+  =& \frac{1}{2\sqrt 2}((\ket{00}+\ket{11}) \otimes (\alpha \ket 0 + \beta \ket 1)+\\
+  &(\ket{10}+\ket{01}) \otimes (\alpha \ket 1 + \beta \ket 0)+\\
+  &(i\ket{10} - i \ket{01}) \otimes (i\alpha \ket 1 - i\beta \ket 0)+\\
+  &(\ket{00} - \ket{11}) \otimes (\alpha \ket 0 - \beta \ket 1)) \\
+  =& \frac{1}{\sqrt 2}(\alpha \ket{000} + \beta \ket{100} + \alpha \ket{011} +
+  \beta \ket{111} \\
+  =& \frac{1}{2\sqrt 2}(2\alpha(\ket{000} + \ket{011}) + 2\beta(\ket{100} +
+  \ket{111})) \\
+  =& \frac{1}{\sqrt 2}(\alpha(\ket{000} + \ket{011}) + \beta(\ket{100} + \ket{111}))
+    \\
+  =& \frac{1}{\sqrt 2}(
+    (\alpha \ket{0} + \beta \ket{1}) \otimes \ket 0 \otimes \ket 0 + 
+    (\alpha \ket{0} + \beta \ket{1}) \otimes \ket 1 \otimes \ket 1) \\
+  =& \frac{1}{\sqrt 2}(\ket{\psi} \otimes \ket{0} \otimes \ket{0}) +
+    (\ket{\psi} \otimes \ket 1 \otimes \ket 1)
+\end{align*}
 
 \exo[The swap test]~
 

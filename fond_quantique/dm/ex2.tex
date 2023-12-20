@@ -7,14 +7,14 @@ qubits. We want to compute $\textit{CNot} (H \otimes I) \ket{\psi}$.
 
 \begin{align*}
   \CNot (H \otimes I) (\ket 0 \otimes \ket 0) &=
-    \CNot ((\ket 0 + \ket 1)/\sqrt 2 \otimes (\ket 0 + \ket 1)/\sqrt 2) \\
-    &= \frac 1 2 \CNot (\ket{00} + \ket{01} + \ket{10} + \ket{11}) \\
-    &= \frac 1 2 (\ket{00} + \ket{01} + \ket{11} + \ket{10}) := \ket{\psi'}
+    \CNot ((\ket 0 + \ket 1)/\sqrt 2 \otimes \ket 0) \\
+    &= \frac 1 {\sqrt 2} \CNot (\ket{00} + \ket{10}) \\
+    &= \frac 1 {\sqrt 2} (\ket{00} + \ket{11}) := \ket{\psi'}
 \end{align*}
 
 \begin{align*}
   (H\otimes I)\CNot \ket{\psi'}
-  &= (H\otimes I) \frac 1 2 (\ket{00} + \ket{01} + \ket{10} + \ket{11}) \\
+  &= (H\otimes I) \frac 1 {\sqrt 2} (\ket{00} + \ket{10}) \\
   &= \ket {00} & H^2\ket \psi = \ket \psi
 \end{align*}
 
@@ -232,7 +232,28 @@ The measure $\mathcal M$ is valid :
 
 \exo[Measuring the phase]~
 
-a
+The probability to get a result $x$ when we measure $e^{i\theta} \ket 0$ is :
+
+\begin{align*}
+  p(x) &= e^{-i\theta } M_x^\dagger M_x e^{i\theta}\ket 0 \\
+  &= e^{-i\theta}\times e^{i\theta}(\overline\alpha \bra 0 + \overline\beta \bra 1)
+      (\alpha \ket 0 + \beta \ket 1) \\
+  &= \braket \alpha \alpha + \braket \beta \beta
+\end{align*}
+
+The result does not depend on $\theta$. So, we don't have a measure who can
+distinguish $\ket 0$ from $e^{i\theta}$
+
+We have the measurement $M_+$ who can sometimes tell the difference between
+$\frac{1}{\sqrt 2}(\ket 0 + \ket 1)$ and \\
+$\ket \psi = \frac{1}{\sqrt 2}(\ket 0 + e^{i\theta}\ket 1)$
+
+\begin{align*}
+  p(\ket +) &= \bra \psi M_+^\dagger M_+ \ket \psi \\
+  &= \frac 1 2 + \frac 1 4 e^{i\theta} + \frac 1 4 e^{i\theta}
+\end{align*}
+
+The result depends on $\theta$ :)
 
 \exo[Measuring a subsystem]~
 

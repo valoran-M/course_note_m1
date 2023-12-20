@@ -3,4 +3,39 @@
 
 \exo[Proof of the 3 qubit code against bit flip errors]~
 
-a
+Let $P = \ket{000}\bra{000} + \ket{111}\bra{111}$
+
+We define the corresponding CPTP map $\mathcal E$ (course not definition):
+
+$$\mathcal E(\rho) = p^3\rho + p^2(1-p)[X_1\rho X_1 + X_2\rho X_2 + X_3\rho X_3]$$
+
+$p$ is the probability that a qubit will flip and $X_i$ represent
+$i^{th}$qubit flip.
+
+We decompose $\mathcal E$:
+
+$$E = \{\sqrt{(1-p)^2}X_1, \sqrt{(1-p)^2}X_2, \sqrt{(1-p)^2}X_3, \sqrt{(1-p)^2}I\}$$
+
+Now we will check the quantum error-correction conditions:
+
+\begin{align*}
+  PE_i^\dagger E_j P &= 0 & i\not = j \\
+  PE_i^\dagger E_i P &= (1-p)^2p & i \in \{0, 1, 2\} \\
+  PE_3^\dagger E_3 P &= (1-p)^3
+\end{align*}
+
+This equation define the matrix
+
+\begin{align*}
+  \left(
+  \begin{array}{c c c c}
+  (1-p)^2p & 0 & 0 & 0 \\
+  0 &(1-p)^2p & 0 & 0 \\
+  0 & 0 & (1-p)^2p & 0 \\
+  0 & 0 & 0 &(1-p)^3  \\
+  \end{array}
+  \right)
+\end{align*}
+
+This matrix is clearly Hermitian, so the code corrector $P$ can correctsd the
+noisy channel $\mathcal E$
