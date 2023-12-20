@@ -257,5 +257,29 @@ The result depends on $\theta$ :)
 
 \exo[Measuring a subsystem]~
 
-a
+$\mathcal M$ is a valid measurement description :
+
+\begin{align*}
+  \sum_m M_m^\dagger M_m &=
+    (\ket 0 \bra 0 \otimes I)^2 + (\ket 1 \bra 1 \otimes I)^2 \\
+    &= \ket 0 \bra 0 \otimes I + \ket 1 \bra 1 \otimes I \\
+    &= I \otimes I \\
+    &= 1
+\end{align*}
+
+We will apply the measurement operator:
+
+\begin{align*}
+  p(0) &= \bra{\beta_0}M_0^\dagger M_0 \ket{\beta_0} =
+  \frac{1}{\sqrt 2}\bra{00}\frac{1}{\sqrt 2}\ket{00} = \frac 1 2 \\
+  p(0) &= \bra{\beta_0}M_1^\dagger M_1 \ket{\beta_0} =
+  \frac{1}{\sqrt 2}\bra{11}\frac{1}{\sqrt 2}\ket{11} = \frac 1 2
+\end{align*}
+
+Finally, the post-measurement state are :
+
+\begin{align*}
+  \ket{\psi_0} &= \frac{M_0\beta_0}{\frac{1}{\sqrt 2}} = \ket{00} \\
+  \ket{\psi_1} &= \frac{M_1\beta_0}{\frac{1}{\sqrt 2}} = \ket{11}
+\end{align*}
 

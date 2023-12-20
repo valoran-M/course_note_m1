@@ -44,7 +44,45 @@ generate key we can communicate with an existing encryption protocol.
 
 \exo[Quantum random access code]~
 
-TODO
+We have 4 cases (The calculations are not too detailed to make them easier to read):
+
+\begin{itemize}
+  \item $x = y = 0$
+    \begin{align*}
+      p(\ket +) &= \frac 1 2 + \frac 1 {2\sqrt 2} &
+      p(\ket{-i}) &= \frac 1 2 + \frac 1 {2\sqrt 2}
+    \end{align*}
+  \item $x = 0$ and $y = 1$
+    \begin{align*}
+      p(\ket +) &= \frac 1 2 + \frac 1 {2\sqrt 2} &
+      p(\ket{i}) &= \frac 1 2 + \frac 1 {2\sqrt 2}
+    \end{align*}
+
+  \item $x = 1$ and $y = 0$
+    \begin{align*}
+      p(\ket -) &= \frac 1 2 + \frac 1 {2\sqrt 2} &
+      p(\ket{-i}) &= \frac 1 2 + \frac 1 {2\sqrt 2}
+    \end{align*}
+
+  \item $x = y = 1$
+    \begin{align*}
+      p(\ket -) &= \frac 1 2 + \frac 1 {2\sqrt 2} &
+      p(\ket{-i}) &= \frac 1 2 + \frac 1 {2\sqrt 2}
+    \end{align*}
+\end{itemize}
+
+If Bob wants to find $x$ he needs to use $\mathcal M_x$.
+If Bob wants to find $y$ he needs to use $\mathcal M_{xi}$.
+
+With this method the probability to success is : 
+
+\begin{align*}
+  \mathbb P(win) &= \frac 1 4(p(+)_{x=1} + p(-)_{x=0} + p(+i)_{y=0} + p(-i)_{y=1})
+  \\
+  &= \frac 1 4 \times 4 (\frac 1 2 + \frac 1 { 2 \sqrt 2}) \\
+  &= \frac 1 2 + \frac 1 { 2 \sqrt 2} \\
+  &> \frac 3 4
+\end{align*}
 
 \exo[The Bell basis]~
 
