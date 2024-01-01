@@ -1,3 +1,4 @@
+#include "limits.h"
 
 /* -------------------------------------------------------------------------- */
 /*
@@ -133,6 +134,11 @@ unsigned long hash(const char *s) {
   your annotations.
 */
 
+/*@
+  logic Bucket last_bucket(Hashtbl *tbl, char *k) =
+    tbl->data[HashIndex(tbl, k)].buckets[tbl->data[HashIndex(tbl, k)].size - 1] ;
+*/
+
 /* -------------------------------------------------------------------------- */
 /*
   Exercise 0
@@ -141,6 +147,9 @@ unsigned long hash(const char *s) {
 */
 /* -------------------------------------------------------------------------- */
 
+/*@ requires \valid_read(tbl);
+    ensures \result == tbl->size;
+ */
 int size(const Hashtbl *tbl) {
   return tbl->size;
 }
@@ -154,9 +163,20 @@ int size(const Hashtbl *tbl) {
 */
 /* -------------------------------------------------------------------------- */
 
+/*@ requires \valid(tbl);
+    ensures tbl->size == 0;
+    ensures \forall integer i; 0 <= i < HASHTBL_LEN ==> tbl->data[i].size == 0;
+*/
 void init(Hashtbl *tbl){
   int i;
   tbl->size = 0;
+  /*@
+    loop invariant 0 <= i <= HASHTBL_LEN ;
+    loop invariant
+      \forall integer j ; 0 <= j < i ==>  tbl->data[j].size == 0 ;
+    loop assigns i, tbl->data[(0 .. HASHTBL_LEN - 1)].size;
+    loop variant HASHTBL_LEN - i ;
+  */
   for(i = 0; i < HASHTBL_LEN; i++)
     tbl->data[i].size = 0;
 }
@@ -175,6 +195,34 @@ void init(Hashtbl *tbl){
 */
 /* -------------------------------------------------------------------------- */
 
+/*@ requires \valid(tbl) ;
+    requires \valid_read(k + (0 .. STRING_LEN - 1)) ;
+    requires \valid(&tbl->data[HashIndex(tbl, k)]) ;
+
+    behavior not_full:
+      assumes tbl->data[HashIndex(tbl, k)].size < BUCKET_LEN ;
+
+      requires tbl->data[HashIndex(tbl, k)].size >= 0 ;
+      requires tbl->size + 1 <= INT_MAX ;
+      assigns tbl->size,
+              tbl->data[HashIndex(tbl, k)] ;
+
+      ensures last_bucket(tbl, k).key   == k ;
+      ensures last_bucket(tbl, k).value == d ;
+
+      ensures tbl->data[HashIndex(tbl, k)].size ==
+              \old(tbl->data[HashIndex(tbl, k)].size) + 1 ;
+      ensures tbl->size == \old(tbl->size) + 1 ;
+      ensures \result == 0 ;
+
+    behavior full:
+      assumes tbl->data[HashIndex(tbl, k)].size >= BUCKET_LEN ;
+      ensures tbl->size == \old(tbl->size) ;
+      ensures \result == -1 ;
+
+    complete behaviors;
+    disjoint behaviors;
+*/
 int add(Hashtbl *tbl, char *k, int d) {
   Bucket new_entry;
   unsigned int h = hash(k) % HASHTBL_LEN;
@@ -197,8 +245,38 @@ int add(Hashtbl *tbl, char *k, int d) {
 */
 /* -------------------------------------------------------------------------- */
 
+/*@ requires \valid_read(tbl) ;
+    requires \valid_read(&tbl->data[HashIndex(tbl, k)]) ;
+    requires \valid_read(k + (0 .. STRING_LEN - 1)) ;
+    requires \forall integer i; 0 <= i < tbl->data[HashIndex(tbl, k)].size ==>
+      \valid_read(tbl->data[HashIndex(tbl, k)].buckets[i].key +
+        (0 .. STRING_LEN - 1)) ;
+    requires 0 <= tbl->data[HashIndex(tbl, k)].size < BUCKET_LEN ;
+
+    behavior in:
+      assumes \exists integer i; 0 <= i < tbl->data[HashIndex(tbl, k)].size &&
+        tbl->data[HashIndex(tbl, k)].buckets[i].value == v &&
+        EqString(k, tbl->data[HashIndex(tbl, k)].buckets[i].key) ;
+      ensures \result == 1 ;
+
+    behavior not_in:
+      assumes \forall integer i; 0 <= i < tbl->data[HashIndex(tbl, k)].size ==>
+        tbl->data[HashIndex(tbl, k)].buckets[i].value != v ||
+        ! EqString(k, tbl->data[HashIndex(tbl, k)].buckets[i].key) ;
+      ensures \result == 0 ;
+
+    complete behaviors;
+    disjoint behaviors;
+*/
 int mem_binding(const Hashtbl *tbl, const char *k, int v) {
   int i, h = hash(k) % HASHTBL_LEN;
+  /*@ loop invariant 0 <= i <= tbl->data[h].size ;
+      loop invariant \forall integer j; 0 <= j < i ==>
+        tbl->data[HashIndex(tbl, k)].buckets[j].value != v ||
+        ! EqString(k, tbl->data[HashIndex(tbl, k)].buckets[j].key) ;
+      loop assigns i ;
+      loop variant tbl->data[h].size - i ;
+  */
   for(i = 0; i < tbl->data[h].size; i++) {
     if (eq_string(k, tbl->data[h].buckets[i].key)
         && tbl->data[h].buckets[i].value == v)
