@@ -1,0 +1,60 @@
+use int.Int
+use ref.Ref
+use array.Array
+use array.ArraySwap
+use array.ArrayPermut
+
+predicate _TO_BE_COMPLETED
+
+(* The algorithm below sorts the array of tri-state values
+   with a single pass from left to right. The postcondition
+   and the invariant stating that the values are preserved
+   are already written in the code.
+
+   Prove that at the end of the program, the array is sorted.
+   You can use the 'monochrome' predicate to express this
+   property.
+
+   BONUS POINTS are given if you add a fourth color.
+*)
+
+type color = Blue | White | Red
+
+predicate monochrome (a: array color) (i j: int) (c: color) =
+  forall k: int. 0 <= i <= k < j <= a.length -> a[k] = c
+
+let dutch_flag (a:array color) : unit
+  ensures {
+    exists b r.
+      0 <= b <= a.length /\ 0 <= b <= r <= a.length /\
+      monochrome a 0 b Blue  /\
+      monochrome a b r White /\
+      monochrome a r a.length Red
+  }
+  ensures { permut_all (old a) a }
+=
+  let ref b = 0 in
+  let ref i = 0 in
+  let ref r = a.length in
+  while i < r do
+    invariant { 0 <= b <= i /\
+                0 <= i <= r /\
+                0 <= r <= a.length }
+    invariant { monochrome a 0 b Blue }
+    invariant { monochrome a b i White }
+    invariant { monochrome a r a.length Red }
+    invariant { permut_all (old a) a }
+    variant   { r - i }
+    match a[i] with
+    | Blue ->
+        swap a b i;
+        b <- b + 1;
+        i <- i + 1
+    | White ->
+        i <- i + 1
+    | Red ->
+        r <- r - 1;
+        swap a r i
+    end
+  done
+
