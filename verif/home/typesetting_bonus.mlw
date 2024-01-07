@@ -29,18 +29,35 @@ val (=) (c d: chr) : bool ensures { result <-> c = d }
 let split (t: array chr) (lim: int) : unit
   requires { nl  <> sp }
   requires { lim >= 0 }
+  ensures { forall i: int. 0 <= i < length t /\ t[i] = sp -> 
+              exists j: int. 0 <= j < i /\
+                (t[j] = nl \/ j = 0) /\ i - j < lim }
   ensures  { forall i. 0 <= i < length t /\ old t[i] <> sp ->
-                    old t[i] = t[i] }
-  ensures  { forall i j. 0 <= i <= j < length t ->
-                j - i > lim ->
-                   (exists n. 0 <= n < length t /\ t[n] =  nl) \/
-                   (forall n. 0 <= n < length t -> t[n] <> sp) }
+               old t[i] = t[i] }
 =
+  let ref space_found = false in
+  let ref space_index = 0     in
+  let ref line_length = 0     in
+  let ghost column = Array.make (length t) 0 in
   for i=0 to Array.length t - 1 do
-    invariant { forall n. 0 <= n < length t /\ old t[n] <> sp ->
-                  old t[n] = t[n] }
-    invariant { forall n. 0 <= n < i -> t[n] <> sp }
-
-    if t[i] = sp then t[i] <- nl
+      invariant { space_found -> t[space_index] = sp }
+      invariant { line_length <= i /\ space_index <= i }
+      invariant { i - line_length = 0 \/ t[i - line_length] = nl }
+      invariant { forall x. 0 <= x < i /\ t[x] = sp ->
+                    (x - column[x] = 0 \/ t[x - column[x]] = nl) /\ 
+                     x - column[x] < lim }
+      invariant { length t <> 0 -> 0 <= space_index < length t }
+      invariant { forall n. 0 <= n < length t /\ old t[n] <> sp ->
+                    old t[n] = t[n] }
+    if t[i] = sp then (
+      space_found <- true;
+      space_index <- i
+    );
+    line_length <- line_length + 1;
+    column[i] <- line_length;
+    if line_length > lim && space_found then (
+      t[space_index] <- nl;
+      space_found <- false;
+      line_length <- line_length - (i - space_index)
+    )
   done
-
