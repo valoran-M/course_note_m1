@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+\usepackage{amssymb}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{define}{Définition}%[section]
+
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows}
+\usepackage{capt-of}
+
+\usepackage{listings}
+\definecolor{isarblue}{HTML}{006699}
+\definecolor{isargreen}{HTML}{009966}
+\definecolor{isarred}{HTML}{990066}
+\lstdefinelanguage{isabelle}{%
+    keywords=[1]{type_synonym,datatype,fun,abbreviation,definition,proof,
+                 lemma,theorem,corollary,unfolding},
+    keywordstyle=[1]\bfseries\color{isarblue},
+    keywords=[2]{where,assumes,shows,and},
+    keywordstyle=[2]\bfseries\color{isargreen},
+    keywords=[3]{if,then,else,case,of,SOME,let,in,O},
+    keywordstyle=[3]\color{isarblue},
+    keywords=[4]{apply,done},
+    keywordstyle=[4]\color{isarred}
+}
+\lstset{%
+  language=isabelle,
+  escapeinside={&}{&},
+  columns=fixed,
+  extendedchars,
+  basewidth={0.5em,0.45em},
+  basicstyle=\ttfamily,
+  captionpos=b,
+  mathescape,
+}
+
+\title{Rapport TP1}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Prise en main du logiciel Isabelle}
+
+  \section{Encodage de Church}
+    On cherche à encoder les entiers naturels en $\lambda$-calcul pur. Pour cela
+    on utilise l'encodage de Church, il est construit avec une fonction qui
+    prend en paramètre deux variables $f$ une fonction et $x$ une variable. Pour
+    représenter un nombre $n$ on compose $n$ fois la fonction $f$ appliquée
+    à $x$.
+
+    Le $\lambda$-term ressemble à :
+    $$
+      \lambda f.\lambda x. f^n\;x \equiv 
+      \lambda f.\lambda x.\;\underbrace{f\;(f\;\ldots\;(f}_{n\text{ fois}}\; x))
+    $$
+
+    En Isabelle nous définissons les entiers naturels de 0 à 5 comme ceci :
+
+    \begin{figure}[thpb]
+    \begin{lstlisting}
+definition ZERO  where "ZERO  $\equiv$ $\lambda$f x. x "
+definition ONE   where "ONE   $\equiv$ $\lambda$f x. f x"
+definition TWO   where "TWO   $\equiv$ $\lambda$f x. f (f x)"
+definition THREE where "THREE $\equiv$ $\lambda$f x. f (f (f x))"
+definition FOUR  where "FOUR  $\equiv$ $\lambda$f x. f (f (f (f x)))"
+definition FIVE  where "FIVE  $\equiv$ $\lambda$f x. f (f (f (f (f x))))"
+    \end{lstlisting}
+    \caption{Entier de Church de 0 à 5}
+    \label{fig:number}
+    \end{figure}
+
+    On peut définir des opérations sur cet encodage.
+
+  \begin{center}
+    \begin{tabular}{r c l}
+      $n + 1$      & : & $\lambda n\;f\;x.\;f (n\;f\;x)$          \\
+      $n + m$      & : & $\lambda n\; m\;f\;x.\;m\; f\;(n\;f\;x)$ \\
+      $n \times m$ & : & $\lambda n\; m\;f\;x.\;n\;(m\;f)\;x$     \\
+      $n^m$        & : & $\lambda n\; m\;f\;x.\;m\; n$            \\
+    \end{tabular}
+  \end{center}
+
+  Malheureusement les opérations prédécesseur et soustraction sont plus
+  difficile à écrire. En Isabelle on défini uniquement l'addition car elle sera
+  utile pour notre première preuve défini dans la Figure-\ref{fig:add}.
+
+    \begin{figure}[thpb]
+    \begin{lstlisting}
+definition PLUS where "PLUS $\equiv$ $\lambda$n m f x. m f (n f x)"
+    \end{lstlisting}
+    \caption{Addition avec l'encodage de Church}
+    \label{fig:add}
+    \end{figure}
+
+  Notre première démonstration consiste à prouver que $3 + 2 = 5$ en entier
+  de Church. L'énoncé s'écrit comme ceci : \texttt{PLUS TWO THREE = FIVE}.
+  Pour commencer, il faut dérouler toutes les définitions.
+  On utilise donc la tactique \texttt{unfolding} avec comme argument la
+  définition à déplier suivit de ``\textit{\_def}'' (par exemple pour la
+  défintion \textit{PLUS} : \textit{PLUS\_def}).
+
+  Le dépliage va effectuer tout les calculs possibles on aura donc :
+  $$
+  \texttt{PLUS TWO THREE }\to^*_\beta\;\lambda f\; x.\;f\;(f\;(f\;(f\;(f\;x))))
+  $$
+
+  Nous remarquons que \texttt{PLUS TWO THREE} se réduit en \texttt{FIVE}, il
+  nous reste donc à monter que \texttt{FIVE = FIVE}.
+  Nous avons vue en cours que l'égalité dans Isabelle est réflexiver
+  ($\forall x, x = x$). Il suffit donc d'appliquer le théorème de réflexivité
+  \textit{HOL.refl} que l'on peut trouver à l'aide de la commandel
+  \texttt{find\_theorems "\_ = \_"}. On peut appliquer ce théorème en utilisant
+  \texttt{apply(rule refl)}. La preuve complète de deux ligne :) se trouve ci
+  dessous (Figure-\ref{fig:preuve}).
+
+    \begin{figure}[htb]
+    \begin{lstlisting}
+lemma the_first : "PLUS TWO THREE = FIVE"
+  unfolding PLUS_def TWO_def THREE_def FIVE_def
+  apply(rule refl)
+  done
+    \end{lstlisting}
+    \caption{Preuve que $2 + 3 = 5$ avec l'encodage de Church}
+    \label{fig:preuve}
+    \end{figure}
+
+\end{document}
