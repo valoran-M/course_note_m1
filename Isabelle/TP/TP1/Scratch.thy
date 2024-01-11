@@ -14,7 +14,7 @@ prop\<open>A \<Longrightarrow> B \<Longrightarrow> C\<close>
 
 term\<open>\<lambda>n. \<lambda> f. \<lambda> x. f (n f x)\<close>
 
-term\<open>(\<lambda>x. \<lambda>y. (\<lambda>z. (\<lambda>x. z x) (\<lambda>y. z' y)) (x y))\<close>
+term\<open>(\<lambda>x. \<lambda>y. (\<lambda>z. (\<lambda>x. z x) (\<lambda>y. z y)) (x y))\<close>
 
 definition ZERO  where "ZERO  \<equiv> \<lambda>f x. x "
 definition ONE   where "ONE   \<equiv> \<lambda>f x. f x"

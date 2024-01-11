@@ -364,3 +364,4 @@ jupyterhub*
 .frama-c
 
 Isabelle2023
+*.thy~
