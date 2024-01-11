@@ -7,7 +7,7 @@ section \<open>TD1\<close>
 typ\<open>int \<Rightarrow> int\<close>
 typ\<open>'\<alpha> list \<Rightarrow> '\<beta> set\<close>
 
-term\<open>[1, 2, 3]\<close>
+term\<open>[1, 2, 3::nat]\<close>
 term\<open>\<lambda>x. x\<close>
 
 prop\<open>A \<Longrightarrow> B \<Longrightarrow> C\<close>

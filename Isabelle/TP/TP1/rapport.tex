@@ -2,8 +2,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-% \usepackage[french]{babel}
+\usepackage[french]{babel}
 \usepackage{amssymb}
+\usepackage{graphicx}
 \usepackage{ntheorem}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -32,8 +33,8 @@
 \definecolor{isargreen}{HTML}{009966}
 \definecolor{isarred}{HTML}{990066}
 \lstdefinelanguage{isabelle}{%
-    keywords=[1]{type_synonym,datatype,fun,abbreviation,definition,proof,
-                 lemma,theorem,corollary,unfolding},
+    keywords=[1]{type_synonym,datatype,fun,abbreviation,definition,proof,typ,
+                 term,lemma,theorem,corollary,unfolding},
     keywordstyle=[1]\bfseries\color{isarblue},
     keywords=[2]{where,assumes,shows,and},
     keywordstyle=[2]\bfseries\color{isargreen},
@@ -61,6 +62,84 @@
   \maketitle
 
   \section{Prise en main du logiciel Isabelle}
+
+  On a commencé par utiliser 2 commandes :
+
+  \begin{itemize}
+    \item \texttt{typ}  : détermine si un type est bien formé.
+    \item \texttt{term} : détermine si un term est bien formé et donne son type
+      s'il est typable le plus général (Algo W).
+  \end{itemize}
+
+  D'abord, on a écrit des types bien formés par exemple :
+
+  \begin{lstlisting}
+typ $\langle$int $\Rightarrow$ int$\rangle$
+typ $\langle$'$\alpha$ list $\Rightarrow$ '$\beta$ set$\rangle$
+  \end{lstlisting}
+
+  Ensuite, on a écrit des termes. Grâce à l'algorithme W implémenté dans
+  Isabelle, on peut obtenir le type le plus général des termes écrits.
+
+  Pour débuter, on a écrit deux termes assez simples :
+
+  \begin{lstlisting}
+term $\langle$$\lambda$x. x$\rangle$
+term $\langle$[1, 2, 3::nat]$\rangle$
+  \end{lstlisting}
+
+  Le \texttt{::nat} dans le deuxième terme sert à spécifier le type contenu dans
+  la liste. Si cette spécification n'est pas faite l'algorithme nous sortira le
+  type \texttt{'$\alpha$ list}. Les symboles $1$, $2$ et $3$ ne sont pas des
+  entiers, mais des types généraux : $'\alpha$ (Pour garder la possibilité de
+  redéfinir ces symboles).
+
+  L'éditeur de texte à une super fonctionnalité qui permet d'afficher les
+  fichiers de définition. Il suffit de faire un \texttt{Ctrl+clic droit} sur la
+  définition voulue.
+
+  On peut écrire des termes assez compliqués comme celui-ci :
+
+\begin{lstlisting}
+term $\langle$($\lambda$x. $\lambda$y. ($\lambda$z.($\lambda$x. z x) ($\lambda$y. z y)) (x y))$\rangle$
+\end{lstlisting}
+
+  Isabelle le rejet, car il ne peut pas être typé. En réalité ce terme cache une
+  auto application. Il se réduit en :
+  $\lambda x\;y.\;(x\;y)\;(\lambda z.\; (x\;y)\;z)$. Or ce genre
+  de $\lambda$-term ne sont pas acceptés par le système de type $\lambda2$
+  (polymorphisme).
+
+  On récupère dans la console l'erreur :
+  \begin{center}
+    \includegraphics[scale=0.5]{error.png}
+  \end{center}
+
+  Pour débuger un terme comme celui-ci, on peut remplacer la variable par une
+  variable libre en mettant une apostrophe après. On peut remarquer que les
+  variables libres sont coloriées en bleu dans l'interface.
+
+  \section{Axiome}
+    Dans une théorie logique, on va parfois utiliser des axiomes, car certains
+    énoncés jugé correct ne sont pas prouvables. Par exemple le tiers exclu ($u
+    \vee \neg u$) n'est pas prouvable dans les logiques constructives. Pour
+    cella en Isabelle, on peut ajouter des axiomes qui sont des énoncés acceptés
+    par le c\oe{}ur d'Isabelle sans preuve. Il faut donc bien faire attention
+    avant d'ajouter ce genre d'énoncé, car accepter un axiome faux va mettre à
+    malle toute la cohérence d'Isabelle.
+
+    Par exemple dans le TP, on nous demande de rajouter l'axiome du combinateur
+    de point fixe :
+
+    $$\forall f,\;\exists Y,\; Y\;f = f\;(Y\;f)$$
+
+    Malheureusement cette formule est fausse. Si on applique cette formule à $f
+    = \neg := \lambda x. \bot$ on obtient $Y\;\neg = \neg\;(Y\;\neg)$ ce qui
+    n'est pas vrai.
+
+    Un tel $\lambda$-terme existe $\lambda f.\;(\lambda x.\;f\;(x\;x))\;
+    (\lambda x.\;f\;(x\;x))$, mais il n'est pas typable, il est alors refusé par
+    Isabelle.
 
   \section{Encodage de Church}
     On cherche à encoder les entiers naturels en $\lambda$-calcul pur. Pour cela
@@ -102,10 +181,10 @@ definition FIVE  where "FIVE  $\equiv$ $\lambda$f x. f (f (f (f (f x))))"
   \end{center}
 
   Malheureusement les opérations prédécesseur et soustraction sont plus
-  difficile à écrire.
+  difficiles à écrire.
 
-  En Isabelle on défini uniquement l'addition (Figure-\ref{fig:add}) car ça sera
-  la seule utile pour notre première preuve.
+  En Isabelle, on définit uniquement l'addition (Figure-\ref{fig:add}) car ça
+  sera la seule utile pour notre première preuve.
 
     \begin{figure}[thpb]
     \begin{lstlisting}
@@ -120,21 +199,21 @@ definition PLUS where "PLUS $\equiv$ $\lambda$n m f x. m f (n f x)"
   Pour commencer, il faut dérouler toutes les définitions.
   On utilise donc la tactique \texttt{unfolding} avec comme argument la
   définition à déplier suivit de ``\textit{\_def}'' (par exemple pour la
-  défintion \textit{PLUS} : \textit{PLUS\_def}).
+  définition \textit{PLUS} : \textit{PLUS\_def}).
 
-  Le dépliage va effectuer tout les calculs possibles on aura donc :
+  Le dépliage va effectuer tous les calculs possibles, on aura donc :
   $$
   \texttt{PLUS TWO THREE }\to^*_\beta\;\lambda f\; x.\;f\;(f\;(f\;(f\;(f\;x))))
   $$
 
   Nous remarquons que \texttt{PLUS TWO THREE} se réduit en \texttt{FIVE}, il
-  nous reste donc à monter que \texttt{FIVE = FIVE}.
-  Nous avons vue en cours que l'égalité dans Isabelle est réflexiver
-  ($\forall x, x = x$). Il suffit donc d'appliquer le théorème de réflexivité
-  \textit{HOL.refl} que l'on peut trouver à l'aide de la commandel
+  nous reste à monter que \texttt{FIVE = FIVE}.
+  Nous avons vu en cours que l'égalité de Isabelle est réflexive
+  ($\forall x, x = x$). Il suffit d'appliquer le théorème de réflexivité
+  \textit{HOL.refl} que l'on peut trouver à l'aide de la commande
   \texttt{find\_theorems "\_ = \_"}. On peut appliquer ce théorème en utilisant
-  \texttt{apply(rule refl)}. La preuve complète de deux ligne :) se trouve ci
-  dessous (Figure-\ref{fig:preuve}).
+  \texttt{apply(rule refl)}. La preuve complète de deux lignes :) se trouve
+  ci-dessous (Figure-\ref{fig:preuve}).
 
     \begin{figure}[htb]
     \begin{lstlisting}
@@ -146,5 +225,15 @@ lemma the_first : "PLUS TWO THREE = FIVE"
     \caption{Preuve que $2 + 3 = 5$ avec l'encodage de Church}
     \label{fig:preuve}
     \end{figure}
+
+    Une fois que tous les buts sont prouvés, on a le message suivant indiquant
+    que la preuve est finie :
+    \begin{center}
+      \includegraphics[scale=0.3]{fin_preuve.png}
+    \end{center}
+
+    Les théorèmes prouvés sont rajoutés au c\oe{}r d'Isabelle. On peut afficher
+    l'énoncé du théorème en utilisant la commande \texttt{thm \textit{nom}}.
+    Elle va afficher l'énoncé du théorème \textit{nom} dans la console.
 
 \end{document}
