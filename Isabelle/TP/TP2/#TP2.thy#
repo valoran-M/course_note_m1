@@ -1,0 +1,97 @@
+theory TP2
+  imports Main
+begin
+
+(* Ex1 *)
+lemma q1_1 : "A \<and> B \<and> C \<longrightarrow> B \<and> A"
+  apply (rule impI)
+  apply (rule conjI)
+   apply (rule_tac Q="C" in conjunct1)
+   apply (rule_tac P="A" in conjunct2)
+   apply assumption
+   apply (rule_tac Q="B" in conjunct1)
+  apply (rule_tac Q="C" in conjunct1)
+  apply (subst conj_assoc)
+  by assumption
+
+lemma q1_1' : "A \<and> B \<and> C \<longrightarrow> B \<and> A"
+  apply(rule impI)
+  apply(erule conjE)+
+  apply (rule conjI)
+  by assumption+
+
+lemma q1_2 : "(\<forall>x. A \<longrightarrow> B(x)) = (A \<longrightarrow> (\<forall>x. B(x)))"
+  apply(rule iffI)
+   apply(rule impI)
+   apply(rule allI)
+   apply(erule allE)
+   apply(erule impE)
+    apply assumption+
+  apply(rule allI)
+  apply(rule impI)
+  apply(erule impE)
+   apply assumption
+  apply(erule allE)
+  by assumption
+
+lemma q1_3 : "(\<forall>x. A(x) \<and> B(x)) = ((\<forall>x. A(x)) \<and> (\<forall>x. B(x)))"
+  apply(rule iffI)
+   apply(rule conjI)
+    apply(rule allI)
+    apply (erule allE)
+    apply (rule_tac Q="B x" in conjunct1)
+    apply assumption
+  apply (rule allI)
+   apply (erule allE)
+    apply (rule_tac P="A x" in conjunct2)
+   apply assumption
+  apply (erule conjE)
+  apply (rule allI)
+  apply (erule allE)+
+  apply (rule conjI)
+  by assumption+
+
+lemma q1_4: "(\<exists>x. A(x) \<or> B(x)) = ((\<exists>x. A(x)) \<or> (\<exists>x. B(x)))"
+  apply(rule iffI)
+   apply(erule exE)
+   apply(erule disjE)
+    apply(rule disjI1)
+    apply(rule exI)
+    apply assumption
+    apply(rule disjI2)
+    apply(rule exI)
+   apply assumption
+  apply(erule disjE)
+   apply(erule exE)
+   apply(rule exI)
+   apply(rule disjI1)
+   apply assumption
+  apply(erule exE)
+  apply(rule exI)
+  apply(rule disjI2)
+  apply assumption
+  done
+
+lemma q1_6: "(\<exists>x. \<forall>y. A x y) \<longrightarrow> (\<forall>y. \<exists>x. A x y)"
+  apply(rule impI)
+  apply(rule allI)
+  apply(erule exE)
+  apply(erule allE)
+  apply(rule exI)
+  by assumption
+
+
+lemma q1_7: "((A \<longrightarrow> B) \<longrightarrow> A) \<longrightarrow> A"
+  apply (subst imp_conv_disj)
+  apply (subst imp_conv_disj)
+  apply (rule impI)
+  apply (erule disjE)
+   apply (subst(asm) de_Morgan_disj)
+   apply (subst(asm) not_not)
+   apply (rule_tac Q="\<not> B" in conjunct1)
+  by assumption+
+
+(* Ex2 *)
+
+  
+  
