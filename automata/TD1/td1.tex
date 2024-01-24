@@ -1,0 +1,191 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{
+  theorems,
+  breakable,
+  skins
+}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\newtcbtheorem[number within=section]
+{correction}{Correction}{
+  colback=white,
+  colframe=black!70,
+  separator sign none,
+  description delimiters parenthesis,
+  enhanced jigsaw,
+  breakable,
+  fonttitle=\bfseries
+}{}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exercice}{Exercise}[section]
+
+\title{TD n$^\circ$1}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Automata}
+
+  \exercice Let $\mathcal A$ an automata, give an automata $\mathcal A_*$ such
+    that $(L_{\mathcal A})^* = L_{\mathcal A_*}$
+
+  \begin{correction}{}{}
+    Let $\mathcal A = (Q, \Sigma, \delta, I, F)$, we want to construct $\mathcal
+    A_*$:
+
+    \begin{itemize}
+      \item We add all initial states to the finite states for recognizing
+        the empty word.
+
+      \item
+    \end{itemize}
+
+    So at the end we have $\mathcal A_* = (Q, \Sigma, \delta', I, F \cup I)$
+  \end{correction}
+
+  \exercice \;
+
+  \begin{correction}{}{}
+  \end{correction}
+
+  \exercice \;
+
+  \begin{correction}{}{}
+  \end{correction}
+
+  \exercice \;
+
+  \begin{correction}{}{}
+  \end{correction}
+
+  \exercice \;
+
+  \begin{correction}{}{}
+  \end{correction}
+
+  \exercice Let $\Sigma = \{0, 1\}$ an alphabet.
+
+    \begin{itemize}
+      \item We consider a language $L_2$ the set of binary words representing a
+        multiple of two. This language is recognizable ?
+
+      \item Same question for $L_3$ the set of binary words representing a
+        multiple of three.
+
+      \item What about the $L_6$ language for binary words representing a
+        multiple of 6 ?
+    \end{itemize}
+
+  \begin{correction}{}{}
+    \begin{itemize}
+      \item For $L_2$ we just need to recognize the words which end in 0 :
+
+        \begin{center}
+        \begin{tikzpicture}[initial text=]
+          \node[state, initial](q0) at (0,0) {$q_0$};
+          \node[state, accepting] (q1) [right= of q0] {$q_1$};
+          \path[->] (q0) edge[loop above] node[above] {1} (q0)
+                    (q1) edge[loop above] node[above] {0} (q1)
+                    (q0) edge[bend right] node[below] {0} (q1)
+                    (q1) edge[bend right] node[above] {1} (q0);
+        \end{tikzpicture}
+        \end{center}
+
+      \item For $L_3$ we have 3 $(n\bmod 3 \in \{0, 1, 2\})$.
+
+        For each edge ($k$ the number read) :
+        \begin{itemize}
+          \item If we read a zero, new result : $2k$
+          \item If we read a zero, new result : $2k + 1$
+        \end{itemize}
+        \begin{multicols}{2}
+        \begin{tabular}{c | c | l}
+          state & read & next \\
+          \hline
+          $q_0$ & 0    & $0 \times 2     \bmod 3 = 0$ \\
+                & 1    & $0 \times 2 + 1 \bmod 3 = 1$ \\
+                \hline
+          $q_1$ & 0    & $1 \times 2     \bmod 3 = 2$ \\
+                & 1    & $1 \times 2 + 1 \bmod 3 = 0$ \\
+                \hline
+          $q_2$ & 0    & $2 \times 2     \bmod 3 = 1$ \\
+                & 1    & $2 \times 2 + 1 \bmod 3 = 2$ \\
+        \end{tabular}
+        \begin{tikzpicture}[initial text=]
+          \node[state]            (q1) at (0,0)            {$q_1$};
+          \node[state, accepting] (q2) [above=of q1] {$q_2$};
+          \node[state]            (q0) [right=of q1] {$q_0$};
+          \node[state, initial, initial below] (q) [below=of q0] {$q$};
+
+          \path[->] (q)  edge               node[below] {1} (q1)
+                    (q)  edge               node[right] {0} (q0)
+                    (q0) edge[bend left=20] node[below] {1} (q1)
+                    (q0) edge[loop right]   node[right] {0} (q0)
+                    (q1) edge[bend left]    node[left ] {1} (q2)
+                    (q1) edge[bend left=20] node[above] {0} (q0)
+                    (q2) edge[bend left=20] node[right] {0} (q1)
+                    (q2) edge[loop right]   node[right] {1} (q2);
+        \end{tikzpicture}
+        \end{multicols}
+
+
+      \item For $L_6$, we can use the same construction (7 states).
+
+    \end{itemize}
+  \end{correction}
+
+
+  \exercice A Dyck language is the set $D$ of well-parenthesized words on an
+  alphabet $\{\texttt (, \texttt )\}$. For example, the word
+  \texttt{(()())(()(()))} is well parenthesized.
+
+  This property can be formally defined :
+  \begin{itemize}
+    \item For any prefix $u$ of $w$, the number of $)$ in $u$ is less than the
+      number of $($
+    \item There are as many $($ as there are $)$ in the word
+  \end{itemize}
+  Show that $D$ is not a regular language.
+
+  \begin{correction}{}{}
+    Assume that $D$ is regular.
+
+    We have the word $w = \texttt{(}^p \texttt{)}^p$ with $p \leq 1$.
+    We pose $x = \varepsilon$, $y = \texttt(^p$ and $z = \texttt )^p$.
+
+    The conditions are well verified : $|xy| \leq p$ and $|y| \geq 1$.
+
+    If we consider the word $xy^2z$. This word has $2p$ \texttt ( and
+    $p$ \texttt ). So $xy^2z$ is not in $D$.
+
+    By the pumping lemma $D$ is not regular.
+  \end{correction}
+
+\end{document}
