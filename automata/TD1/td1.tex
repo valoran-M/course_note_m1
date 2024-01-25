@@ -44,6 +44,8 @@
 \theoremseparator{~--}
 \newtheorem{exercice}{Exercise}[section]
 
+\newcommand{\dd}{\textit{dd}}
+
 \title{TD n$^\circ$1}
 \author{Valeran MAYTIE}
 \date{}
@@ -64,30 +66,113 @@
       \item We add all initial states to the finite states for recognizing
         the empty word.
 
-      \item
+      \item And we define $\delta'$
+      \[
+        \delta' = \left \{
+          \begin{tabular}{l l l r}
+            $q, a$ & $\to$ & $\delta(q, a)$ &
+              $a \in \Sigma, q \in Q$ \\
+            $f, \varepsilon$ & $\to$ & $I$ & $\forall f \in F$\\
+          \end{tabular}
+          \right.
+      \]
     \end{itemize}
 
     So at the end we have $\mathcal A_* = (Q, \Sigma, \delta', I, F \cup I)$
   \end{correction}
 
-  \exercice \;
+  \exercice Show that $(a|b)^* = (a^*b^*)^*$
 
   \begin{correction}{}{}
+    We will proceed by double inclusion :
+
+    \begin{itemize}
+      \item[$\subseteq$ :] we will proof this inclusion by induction on the
+        length of $w \in (a|b)^*$.
+        \begin{itemize}
+          \item If $|w| = 0$, so $w = \varepsilon \in (a^*b^*)^*$
+          \item By induction hypothesis we know that all words $w$ of the length
+            $n$ is in $(a^*b^*)^*$. We have two case for the words of length $n
+            + 1$ :
+          \begin{itemize}
+            \item $w \cdot a$, $a \in (a|b)$ so by induction hypothesis we have
+              $w\cdot a \in (a|b)^*(a|b) = (a|b)^*$.
+            \item $w \cdot b$ same.
+          \end{itemize}
+
+        \end{itemize}
+      \item[$\supseteq$ :] We know that $(a|b)^* = \Sigma^*$ so all words $w \in
+        (a^*b^*)^*$ is on $(a|b)^*$ because $w \in \Sigma^*$
+    \end{itemize}
   \end{correction}
 
-  \exercice \;
+  \exercice Give a DFA on $\Sigma = \{a, b\}$ recognizing all words having no
+  more than two consecutive occurrences of the same letter.
 
   \begin{correction}{}{}
+    \begin{center}
+    \begin{tikzpicture}[initial text=]
+      \node[state, initial, accepting] (E) at (0, 0) { };
+      \node[state, accepting] (A1) [above right= of E]  { };
+      \node[state, accepting] (A2) [right= of A1]       { };
+      \node[state, accepting] (B1) [below right= of E]  { };
+      \node[state, accepting] (B2) [right= of B1]       { };
+      \node[state]            (G)  [below right= of A2] { };
+
+      \path[->] (E)  edge                 node[above left ] {$a$}    (A1)
+                (A1) edge                 node[above      ] {$a$}    (A2)
+                (A2) edge                 node[above right] {$a$}    (G)
+                (E)  edge                 node[below left ] {$b$}    (B1)
+                (B1) edge                 node[below      ] {$b$}    (B2)
+                (B2) edge                 node[below right] {$b$}    (G)
+                (G)  edge [loop right]    node[      right] {$a, b$} (G)
+                (A1) edge [bend left=10]  node[      right] {$b$}    (B1)
+                (B1) edge [bend left=10]  node[      left ] {$a$}    (A1)
+                (B2) edge                 node[pos=0.2,right] {$a$}    (A1)
+                (A2) edge                 node[pos=0.2,right] {$b$}    (B1)
+      ;
+    \end{tikzpicture}
+    \end{center}
   \end{correction}
 
-  \exercice \;
+  \exercice
+  We define the duplication of a word by : $\dd(\varepsilon) =
+  \varepsilon$ and $\forall x \in \Sigma : \dd(v\cdots x) = \dd(v) \cdots xx$.
+  \\
+  Example : on $\Sigma = \{a, b\}$, $\dd(aba) = aabbaa$. We suppose that $L$ is
+  a rational language. \\
+  Show that $\dd(L) = \{\dd(v) | v \in L\}$ is rational to.
 
   \begin{correction}{}{}
+    Let $\mathcal A_L =\{Q, \Sigma, \delta, I, F\}$ an automaton who recognize
+    $L$.
+
+    We construct $\mathcal A_{\dd(L)} = \{Q', \Sigma, \delta', I, F'\}$
+    the automaton who recognize $\dd(L)$ :
+
+    \begin{itemize}
+      \item $Q' = Q \uplus Q = \{(i, q) | q \in Q, i \in \{0, 1\}\}$
+      \item $F' = \{(q, 1) | q \in F\} \cup \{(q, 0),| q \in I \cap F\}$
+      \item
+        \[
+        \delta' = \left \{
+          \begin{tabular}{l l l r}
+            $(q, 1), c$ & $\to$ & $\delta(q, c)$ & $c \in \Sigma$ \\
+            $(q, 0), c$ & $\to$ & $(q, 1)$ & $c \in \Sigma$
+          \end{tabular}
+          \right.
+      \]
+    \end{itemize}
   \end{correction}
 
-  \exercice \;
+  \exercice Given an automaton $\mathcal A$, give a (non-deterministic)
+  automaton recognizing $L^R$ the mirror language of $L_{\mathcal A}$.
 
   \begin{correction}{}{}
+    Let $\mathcal A = \{Q, \Sigma, \delta, I, F\}$ an automaton who recognize
+    $L$. So we have $\{Q, \Sigma, \delta', F, I\}$ with :
+    $$\delta'(q, x) = \{q' | q \in \delta(q', x)\}$$
+    an automaton who recognize $L^R$.
   \end{correction}
 
   \exercice Let $\Sigma = \{0, 1\}$ an alphabet.
