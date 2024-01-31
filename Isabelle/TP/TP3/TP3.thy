@@ -4,6 +4,8 @@ begin
 
 datatype 'a List = Nil | Snoc "'a List" 'a
 
+find_theorems (104) name:List name:TP3 name:induct
+
 fun filter
 where
   "filter f Nil        = Nil"
@@ -21,6 +23,8 @@ fun concat
   where
   "concat S Nil = S"
 | "concat S (Snoc l a) = Snoc (concat S l) a"
+
+thm List.induct
 
 lemma aux1 : "map f (concat R S) = concat (map f R) (map f S)"
   by (induct_tac "S") simp+
@@ -82,8 +86,6 @@ inductive typing :: "(const \<rightharpoonup> types) \<Rightarrow> (string \<rig
   | Const : "\<Sigma> c = Some C \<Longrightarrow> \<Sigma>, \<Gamma> \<turnstile> Const c : instantiate C x T"
   | Abs   : "\<Sigma>, \<Gamma> (v \<mapsto> T) \<turnstile> t : U \<Longrightarrow> \<Sigma>, \<Gamma> \<turnstile> Abs v t : (T \<rightarrow> U)"
   | App   : "\<Sigma>, \<Gamma> \<turnstile> t1 : (T2 \<rightarrow> T1) \<Longrightarrow> \<Sigma>, \<Gamma> \<turnstile> t2 : T2 \<Longrightarrow> \<Sigma>, \<Gamma> \<turnstile> (App t1 t2) : T1"
-
-
 
 
 

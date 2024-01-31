@@ -1,0 +1,250 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={3cm, 3cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem*{define}{Définition}%[section]
+
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows}
+\usepackage{capt-of}
+
+\usepackage{listings}
+\definecolor{isarblue}{HTML}{006699}
+\definecolor{isargreen}{HTML}{009966}
+\definecolor{isarred}{HTML}{990066}
+\lstdefinelanguage{isabelle}{%
+    keywords=[1]{type_synonym,datatype,fun,abbreviation,definition,proof,typ,
+                 term,lemma,theorem,corollary,unfolding, inductive_set,
+                 inductive},
+    keywordstyle=[1]\bfseries\color{isarblue},
+    keywords=[2]{where,assumes,shows,and},
+    keywordstyle=[2]\bfseries\color{isargreen},
+    keywords=[3]{if,then,else,case,of,SOME,let,in,O},
+    keywordstyle=[3]\color{isarblue},
+    keywords=[4]{apply,done},
+    keywordstyle=[4]\color{isarred}
+}
+\lstset{%
+  language=isabelle,
+  escapeinside={&}{&},
+  columns=fixed,
+  extendedchars,
+  basewidth={0.5em,0.45em},
+  basicstyle=\ttfamily,
+  captionpos=b,
+  mathescape,
+}
+
+\title{Rapport TP3}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \section{Datatypes and Simple Inductive Proofs}
+
+  En Isabelle, on peut définir des listes inversées en s'inspirant des listes
+  usuelles. Pour cela, on crée 2 constructeurs : \texttt{Nil} et \texttt{Snoc}
+  (Figure-\ref{fig:list})
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+datatype 'a List =
+  Nil
+| Snoc "'a List" 'a
+  \end{lstlisting}
+  \caption{Liste inversées}
+  \label{fig:list}
+  \end{figure}
+
+  On peut donc par exemple créé la liste : \texttt{Snoc (Snoc Nil (1::nat))
+  2::nat} $\equiv$ \texttt{[1; 2]}
+
+  Ensuite, on peut écrire des fonctions qui vont faire des opérations sur ces
+  listes. On va écrire 3 fonctions : \texttt{filter}, \texttt{map} et
+  \texttt{concat} (Figure-\ref{fig:fun}) :
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+fun filter
+where
+  "filter f Nil        = Nil"
+| "filter f (Snoc l a) = 
+    (if f a
+     then  Snoc (filter f l) a
+     else filter f l)"
+
+fun map
+where
+  "map f Nil        = Nil"
+| "map f (Snoc l a) = Snoc (map f l) (f a)"
+
+fun concat
+  where
+  "concat S Nil = S"
+| "concat S (Snoc l a) = Snoc (concat S l) a"
+  \end{lstlisting}
+  \caption{Fonction sur les listes}
+  \label{fig:fun}
+  \end{figure}
+
+Une fois que les fonctions sont créées, on peut commencer à spécifier les
+fonctions à l'aide de formule logique. Dans le TP, on veut prouver deux
+formules :
+
+\begin{itemize}
+  \item $\textit{filter}\; p\;(\textit{filter}\;q\;S) =
+         \textit{filter}\;(\lambda x. p\;x \wedge q\;x)\;S$
+  \item $\textit{map}\;f\;(\textit{concat}\;R\;S) =
+         \textit{concat}\;(\textit{map}\;f\;R)(\textit{map}\;f\;S)$
+\end{itemize}
+
+Pour prouver ces deux lemmes, on va utiliser les théorèmes de récurrence
+créés quand on déclare un type à l'aide de \texttt{datatype}. On peut les
+lister grâce à \texttt{find\_theorems name:List name:TP3 name:induct}. Après
+avoir trouvé le bon théorème, on peut l'appliquer grâce à \texttt{apply
+(rule\_tac List="?" in List.induc)}. Le point d'interrogation doit être
+remplacé par la liste sur laquelle on veut faire la récurrence. Ici, on veut la
+faire sur la liste $S$, car les fonctions font la récurrence sur celle-ci.
+
+Enfin après avoir appliqué le théorème, il faut simplifier les expressions ce
+qui fini la preuve. On peut raccourcir la preuve en utilisant la tactique
+\texttt{induct\_tac "S"}.
+
+\section{Inductive sets - Inductive Proofs}
+
+Dans cette section, on cherche à définir un prédicat inductif pour définir les
+ensembles contenant uniquement les nombre pairs (Figure-\ref{fig:ev}).
+
+    \begin{figure}[thpb]
+  \begin{lstlisting}
+inductive_set Even :: "int set"
+where
+  a: "0 $\in$ Even"
+| b: "n $\in$ Even $\Rightarrow$ (n + 2) $\in$ Even"
+| c: "n $\in$ Even $\Rightarrow$ (n - 2) $\in$ Even"
+  \end{lstlisting}
+  \caption{Ensemble des nombres pairs}
+  \label{fig:ev}
+  \end{figure}
+
+  Les notations $a$, $b$ et $c$ permettent de donner des noms aux lemmes
+  associés. On peut donc maintenant prouver assez facilement que
+  $2 \in \textit{Even}$ (Figure-\ref{fig:2ev}.
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+lemma "2 $\in$ Even"
+  using Even.a Even.b by force
+  \end{lstlisting}
+  \caption{Ensemble des nombres pairs}
+  \label{fig:2ev}
+  \end{figure}
+
+  Malheureusement, montrer que $1 \not \in \textit{Even}$ est bien plus
+  difficile. Pour faire cella, il faut d'abord montrer :
+  $x \in \textit{Even} \Rightarrow \exists k.\; x = 2 \times k$ et ensuite, on
+  peut appliquer ce lemme et montrer qu'il n'existe pas de $k$ telle que $1 = 2
+  \times k$.
+
+\section{Modeling Exercise}
+
+Dans cette partie, on va chercher à modéliser le $\lambda$-calcul dans Isabelle.
+Pour cella, on commence à définir le type des $\lambda$-termes
+(Figure-\ref{fig:lambda})
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+                datatype const =                    datatype terms =
+                    Nat nat                           Var string
+                  | Bool bool                       | Const const
+                                                    | App terms terms
+                                                    | Lambda string terms
+  \end{lstlisting}
+  \caption{$\lambda$-termes avec constante}
+  \label{fig:lambda}
+  \end{figure}
+
+\newpage
+Ensuite, on veut modéliser la règle de typage vue dans le premier cours. Donc,
+on définit les types possibles (Figure-\ref{fig:types})
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+datatype types =
+  TVar string
+| TNat
+| TBool
+| Arrow types types (infixr "$\to$" 200)
+  \end{lstlisting}
+  \caption{Définitino des types}
+  \label{fig:types}
+  \end{figure}
+
+On peut définir des notations assez simplement (plus facilement quand Coq) à
+l'aide du mot clé \texttt{infixr/l}. Le type fonction sera donc écrit avec une
+flèche dans les spécifications.
+
+Maintenant, il faut définir la fonction \texttt{instantiate}. Elle va remplacer
+un type variable par un autre type. Elle s'écrit assez simplement par récurrence
+sur les types (Figure-\ref{fig:inst}).
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+fun instantiate :: "types $\Rightarrow$ string $\Rightarrow$ types $\Rightarrow$ types"
+where
+  "instantiate (t1 $\to$ t2) s t = (instantiate t1 s t) $\to$ (instantiate t2 s t)"
+| "instantiate TNat s t = TNat"
+| "instantiate TBool s t = TBool"
+| "instantiate (TVar vs) s t = (if vs = s then t else (TVar vs))"
+  \end{lstlisting}
+  \caption{Fonction \texttt{instantiate}}
+  \label{fig:inst}
+  \end{figure}
+
+Enfin, on peut modéliser les règle d'inférence vue dans le premier cours à
+l'aide d'un prédicat inductif (Figure-\ref{fig:ptype}) 
+
+  \begin{figure}[thpb]
+  \begin{lstlisting}
+inductive typing :: "(const $\rightharpoonup$ types) $\Rightarrow$ (string $\rightharpoonup$ types) $\Rightarrow$ terms $\Rightarrow$ types $\Rightarrow$ bool"
+    ("\_, \_ $\vdash$ \_ : \_" [50, 50, 50] 50)
+  where
+    Var   : "$\Gamma$ x = Some T $\Rightarrow$ $\Sigma$, $\Gamma$ $\vdash$ Var x : T"
+  | Const : "$\Sigma$ c = Some C $\Rightarrow$ $\Sigma$, $\Gamma$ $\vdash$ Const c : instantiate C x T"
+  | Abs   : "$\Sigma$, $\Gamma$ (v $\mapsto$ T) $\vdash$ t : U $\Rightarrow$ $\Sigma$, $\Gamma$ $\vdash$ Abs v t : (T $\to$ U)"
+  | App   : "$\Sigma$, $\Gamma$ $\vdash$ t1 : (T2 $\to$ T1) $\Rightarrow$ $\Sigma$, $\Gamma$ $\vdash$ t2 : T2 $\Rightarrow$ $\Sigma$, $\Gamma$ $\vdash$ (App t1 t2) : T1"
+  \end{lstlisting}
+  \caption{Fonction \texttt{instantiate}}
+  \label{fig:ptype}
+  \end{figure}
+
+  Pour représenter les environnements, on utilise les \texttt{Map} de Isabelle
+  qui sont représenter dans le type par une fonction partiel
+  ($\rightharpoonup$).
+
+  Pour rendre les règles plus lisibles, on va défini la même notation qui est
+  utilisée sur papier ce qui donne un prédicat inductif assez joli et visuel.
+
+\end{document}
